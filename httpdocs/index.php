@@ -20,9 +20,6 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 			$winner = preg_match('/w[io]n[s]?/', $teams[0]);
 
-			print_r($winning_team_players);
-			print_r($losing_team_players);
-
 			if ($winner > 0 && count($winning_team_players[0]) > 0 && count($losing_team_players[0]) > 0) {
 
 				$winning_team = trim(preg_replace('/w[io]n[s]?/', '', $teams[0]));
