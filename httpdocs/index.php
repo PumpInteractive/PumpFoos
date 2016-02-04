@@ -15,8 +15,8 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 			$teams = preg_split('/\svs?\.?\s/', $_POST['text']);
 
 			// Get user names on each team
-			preg_match_all('/@[a-z0-9]+/', $teams[0], $winning_team_players);
-			preg_match_all('/@[a-z0-9]+/', $teams[1], $losing_team_players);
+			preg_match_all('/<(@[^\|]+)\|([^>]+)>/', $teams[0], $winning_team_players);
+			preg_match_all('/<(@[^\|]+)\|([^>]+)>/', $teams[1], $losing_team_players);
 
 			$winner = preg_match('/w[io]n[s]?/', $teams[0]);
 
@@ -28,10 +28,11 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 				$mysqli = new mysqli($database_host, $database_username, $database_password, $database_name);
 
-				foreach($losing_team_players[0] as $player){
+				foreach($losing_team_players[0] as $key => $player){
 					// Update stats
-					$mysqli->query('INSERT INTO user_stats (slack_user_name, games_played, losses) VALUES (\''.$player.'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, losses=losses + 1');
-					
+					$query = 'INSERT INTO user_stats (slack_user_id, slack_user_name, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', \'@'.$losing_team_players[2][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE slack_user_name=\'@'.$losing_team_players[2][$key].'\', games_played=games_played + 1, losses=losses + 1';
+					$mysqli->query($query);
+
 					if ($mysqli->affected_rows <1) {
 						echo json_encode(['text' => 'Hmm... there seems to be a database error. Sorry, the stats couldn\'t be saved.']);
 						die();
@@ -41,7 +42,8 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 				foreach($winning_team_players[0] as $key => $player){
 					// Update stats
-					$mysqli->query('INSERT INTO user_stats (slack_user_name, games_played, wins) VALUES (\''.$player.'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, wins=wins + 1');
+					$query = 'INSERT INTO user_stats (slack_user_id, slack_user_name, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', \'@'.$winning_team_players[2][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE slack_user_name=\'@'.$winning_team_players[2][$key].'\', games_played=games_played + 1, wins=wins + 1';
+					$mysqli->query($query);
 					
 					if ($mysqli->affected_rows <1) {
 						echo json_encode(['text' => 'Hmm... there seems to be a database error. Sorry, the stats couldn\'t be saved.']);
