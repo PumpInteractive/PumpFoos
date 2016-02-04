@@ -1,0 +1,8 @@
+<?php
+
+$slack_token = '{{Your Slack Token}}';
+
+$database_host = 'localhost';
+$database_username = 'user';
+$database_password = 'pass';
+$database_name = 'pumpfoos';
