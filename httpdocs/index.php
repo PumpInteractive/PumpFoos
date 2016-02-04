@@ -15,8 +15,8 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 			$teams = preg_split('/\svs?\.?\s/', $_POST['text']);
 
 			// Get user names on each team
-			preg_match_all('/<(@[^\|]+)\|([^>]+)>/', $teams[0], $winning_team_players);
-			preg_match_all('/<(@[^\|]+)\|([^>]+)>/', $teams[1], $losing_team_players);
+			preg_match_all('/<@([^>]+)>/', $teams[0], $winning_team_players);
+			preg_match_all('/<@([^>]+)>/', $teams[1], $losing_team_players);
 
 			$winner = preg_match('/w[io]n[s]?/', $teams[0]);
 
@@ -30,7 +30,7 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 				foreach($losing_team_players[0] as $key => $player){
 					// Update stats
-					$query = 'INSERT INTO user_stats (slack_user_id, slack_user_name, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', \'@'.$losing_team_players[2][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE slack_user_name=\'@'.$losing_team_players[2][$key].'\', games_played=games_played + 1, losses=losses + 1';
+					$query = 'INSERT INTO user_stats (slack_user_id, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, losses=losses + 1';
 					$mysqli->query($query);
 
 					if ($mysqli->affected_rows <1) {
@@ -42,7 +42,7 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 				foreach($winning_team_players[0] as $key => $player){
 					// Update stats
-					$query = 'INSERT INTO user_stats (slack_user_id, slack_user_name, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', \'@'.$winning_team_players[2][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE slack_user_name=\'@'.$winning_team_players[2][$key].'\', games_played=games_played + 1, wins=wins + 1';
+					$query = 'INSERT INTO user_stats (slack_user_id, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, wins=wins + 1';
 					$mysqli->query($query);
 					
 					if ($mysqli->affected_rows <1) {
@@ -52,12 +52,15 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 				}
 
+				$winning_team = preg_replace('/&/', '%26amp%3B', $winning_team);
+				$losing_team = preg_replace('/&/', '%26amp%3B', $losing_team);
+
 				echo json_encode(['text' => 'Congrats '.$winning_team.'! (Better luck next time '.$losing_team.')']);
 				die();
 
 			} else {
 
-				echo json_encode(['text' => 'Please tell me who won! Like this: \''.$_POST['trigger_word'].' @player and @player2 win vs. @player3 and @player4\'']);
+				echo json_encode(['text' => 'Please tell me who won (with valid slack usernames)! Like this: \''.$_POST['trigger_word'].' @player and @player2 win vs. @player3 and @player4\'']);
 				die();
 
 			}

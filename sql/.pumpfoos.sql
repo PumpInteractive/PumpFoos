@@ -12,7 +12,6 @@ DROP TABLE IF EXISTS `user_stats`;
 CREATE TABLE `user_stats` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `slack_user_id` varchar(255) NOT NULL,
-  `slack_user_name` varchar(255) NOT NULL,
   `games_played` int(10) unsigned NOT NULL,
   `wins` int(10) unsigned NOT NULL,
   `losses` int(10) unsigned NOT NULL,

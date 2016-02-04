@@ -1,6 +1,7 @@
 <?php
 
-$slack_token = '{{Your Slack Token}}';
+$slack_token = '{{Your Outgoing Integration Slack Token}}';
+$web_api_token = '{{Your Web API Slack Token}}';
 
 $database_host = 'localhost';
 $database_username = 'user';
