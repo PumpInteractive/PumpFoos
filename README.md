@@ -14,5 +14,25 @@ A Foosball Stat-tracking Slack Bot
 
 ![Slack PumpFoos Bot Settings](https://github.com/PumpInteractive/PumpFoos/raw/master/outgoing-webhook-slack.png)
 
-* Enter your Slack integation token into config.php
-* Update your database settings in config.php
+* Copy config.php.sample to config.php
+    * Enter your Slack integation token into config.php
+    * Update your database settings in config.php
+
+## Slack Commands
+
+### match:
+
+To log a match, enter the code below in the Slack channel you've enabled for the bot.
+
+```match: @slackusername1 wins vs. @slackusername2```
+
+The matching is somewhat permissive. you can enter "win", "wins", "won" after the first username, and "v", "v.", "vs", or "vs." between the teams to log a match.
+
+You can also log teams:
+
+```match: @slackusername1 and @slackusername2 win v @slackusername3 and @slackusername4```
+
+### leaderboard
+
+Enter "leaderboard" in the channel to get the results of your Slack team's logged matches.
+
