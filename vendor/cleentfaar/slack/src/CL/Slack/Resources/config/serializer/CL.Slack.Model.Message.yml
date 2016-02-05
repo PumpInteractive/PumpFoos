@@ -1,0 +1,20 @@
+CL\Slack\Model\Message:
+    properties:
+        ts:
+            type: string
+        type:
+            type: string
+        user:
+            type: string
+        username:
+            type: string
+        text:
+            type: string
+        permalink:
+            type: string
+        channel:
+            type: CL\Slack\Model\Channel
+        previous:
+            type: CL\Slack\Model\Message
+        next:
+            type: CL\Slack\Model\Message

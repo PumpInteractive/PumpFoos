@@ -1,0 +1,27 @@
+CL\Slack\Payload\ChatPostMessagePayload:
+    exclusion_policy: ALL
+    properties:
+        channel:
+            type: string
+        text:
+            type: string
+        username:
+            type: string
+        iconEmoji:
+            type: string
+        iconUrl:
+            type: string
+        unfurlLinks:
+            type: string
+        unfurlMedia:
+            type: string
+        linkNames:
+            type: string
+        parse:
+            type: string
+        asUser:
+            type: boolean
+        attachments:
+            type: string
+            accessor:
+                getter: getAttachmentsJson
