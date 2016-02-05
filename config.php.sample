@@ -1,0 +1,9 @@
+<?php
+
+define('SLACK_OUTGOING_WEBHOOKS_TOKEN', '{Your Slack Outgoing Webhooks token}');
+define('SLACK_WEB_API_TOKEN', '{Your Slack Web API token}');
+
+define('DATABASE_HOST', 'localhost');
+define('DATABASE_USERNAME', 'root');
+define('DATABASE_PASSWORD', 'root');
+define('DATABASE_NAME', 'pumpfoos');
