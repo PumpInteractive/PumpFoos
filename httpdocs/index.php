@@ -52,9 +52,6 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 				}
 
-				$winning_team = preg_replace('/&/', '%26amp%3B', $winning_team);
-				$losing_team = preg_replace('/&/', '%26amp%3B', $losing_team);
-
 				echo json_encode(['text' => 'Congrats '.$winning_team.'! (Better luck next time '.$losing_team.')']);
 				die();
 
