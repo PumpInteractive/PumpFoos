@@ -84,7 +84,7 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 			$returnString = '';
 
 		    while ($row = $result->fetch_array()) {
-    				$returnString .= $row["slack_user_name"] . ' has ' . $row['wins'] . ' wins and ' . $row['losses'] . ' losses in ' . $row['games_played'] . ' games played.\n';
+    				$returnString .= '@<' . $row["slack_user_id"] . '> has ' . $row['wins'] . ' wins and ' . $row['losses'] . ' losses in ' . $row['games_played'] . ' games played.\n';
     			}
     			
 			$response = [
