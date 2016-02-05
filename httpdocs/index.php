@@ -1,8 +1,8 @@
 <?php
 
-require_once realpath(__DIR__ . '../vendor/autoload.php');
+require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
 
-require_once realpath(__DIR__ . '../config.php');
+require_once realpath(__DIR__ . '/../').'/config.php';
 
 // Handle Outgoing Webhooks implementation
 if ($_POST['token'] == SLACK_OUTGOING_WEBHOOKS_TOKEN) { // Valid token, continue
