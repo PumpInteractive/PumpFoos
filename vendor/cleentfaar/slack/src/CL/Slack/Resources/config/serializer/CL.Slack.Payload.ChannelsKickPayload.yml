@@ -1,6 +1,0 @@
-CL\Slack\Payload\ChannelsKickPayload:
-    properties:
-        channel:
-            type: string
-        user:
-            type: string

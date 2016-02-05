@@ -1,4 +1,0 @@
-CL\Slack\Payload\UsersListPayload:
-    properties:
-        presence:
-            type: boolean

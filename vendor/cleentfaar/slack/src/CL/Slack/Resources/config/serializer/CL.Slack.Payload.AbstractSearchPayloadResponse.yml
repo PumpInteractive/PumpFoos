@@ -1,4 +1,0 @@
-CL\Slack\Payload\AbstractSearchPayloadResponse:
-    properties:
-        query:
-            type: string

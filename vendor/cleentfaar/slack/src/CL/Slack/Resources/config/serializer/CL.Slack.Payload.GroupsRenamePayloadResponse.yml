@@ -1,4 +1,0 @@
-CL\Slack\Payload\GroupsRenamePayloadResponse:
-    properties:
-        group:
-            type: CL\Slack\Model\Group

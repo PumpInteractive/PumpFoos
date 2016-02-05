@@ -1,9 +1,0 @@
-language: php
-php:
-- 5.4
-install:
-- pear install pear/PHP_CodeSniffer
-- phpenv rehash
-script:
-- phpunit
-- phpcs

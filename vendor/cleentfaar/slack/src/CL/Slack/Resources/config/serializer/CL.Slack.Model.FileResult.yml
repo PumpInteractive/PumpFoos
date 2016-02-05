@@ -1,4 +1,0 @@
-CL\Slack\Model\FileResult:
-    properties:
-        matches:
-            type: array<CL\Slack\Model\FileResultItem>

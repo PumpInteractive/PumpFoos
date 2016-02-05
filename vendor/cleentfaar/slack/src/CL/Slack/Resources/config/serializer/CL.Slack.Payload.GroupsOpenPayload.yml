@@ -1,4 +1,0 @@
-CL\Slack\Payload\GroupsOpenPayload:
-    properties:
-        channel:
-            type: string

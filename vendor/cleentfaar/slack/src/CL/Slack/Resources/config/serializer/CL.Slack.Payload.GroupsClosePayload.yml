@@ -1,4 +1,0 @@
-CL\Slack\Payload\GroupsClosePayload:
-    properties:
-        channel:
-            type: string

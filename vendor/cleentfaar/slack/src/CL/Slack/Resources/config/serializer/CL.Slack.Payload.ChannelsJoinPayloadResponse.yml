@@ -1,6 +1,0 @@
-CL\Slack\Payload\ChannelsJoinPayloadResponse:
-    properties:
-        alreadyInChannel:
-            type: boolean
-        channel:
-            type: CL\Slack\Model\Channel

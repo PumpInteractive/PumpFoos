@@ -1,4 +1,0 @@
-CL\Slack\Payload\ChannelsArchivePayload:
-    properties:
-        channel:
-            type: string

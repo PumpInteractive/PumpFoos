@@ -1,4 +1,0 @@
-CL\Slack\Payload\ChannelsInvitePayloadResponse:
-    properties:
-        channel:
-            type: CL\Slack\Model\Channel

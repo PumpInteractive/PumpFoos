@@ -1,8 +1,0 @@
-CL\Slack\Payload\ChannelsHistoryPayloadResponse:
-    properties:
-        latest:
-            type: string
-        messages:
-            type: array<CL\Slack\Model\SimpleMessage>
-        hasMore:
-            type: boolean

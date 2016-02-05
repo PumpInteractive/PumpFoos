@@ -1,4 +1,0 @@
-CL\Slack\Payload\SearchFilesPayloadResponse:
-    properties:
-        files:
-            type: CL\Slack\Model\FileResult

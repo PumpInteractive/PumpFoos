@@ -1,4 +1,0 @@
-CL\Slack\Model\GroupWithState:
-    properties:
-        isOpen:
-            type: boolean

@@ -1,8 +1,0 @@
-CL\Slack\Payload\ImOpenPayloadResponse:
-    properties:
-        noOp:
-            type: boolean
-        alreadyOpen:
-            type: boolean
-        channel:
-            type: array
