@@ -75,13 +75,36 @@ if ($_POST['token'] == $slack_token) { // Valid token, continue
 
 		case "leaderboard":
 
+			$mysqli = new mysqli($database_host, $database_username, $database_password, $database_name);
+			
+			// Get All Records
+			$query = 'SELECT * FROM user_stats ORDER BY wins ASC';
+			$result = $mysqli->query($query);
+
+			$returnString = '';
+
+		    while ($row = $result->fetch_array()) {
+    				$returnString .= $row["slack_user_name"] . ' has ' . $row['wins'] . ' wins and ' . $row['losses'] . ' losses in ' . $row['games_played'] . ' games played.\n';
+    			}
+    			
 			$response = [
-				"text" => "This doesn't do anything yet. Wanna help build it?"
+				"text" => $returnString
 			];
+
 			echo json_encode($response);
 
 			break;
 
+		case "test":
+
+			$response = [
+
+				"text" => "Works!"
+
+			];
+			echo json_encode($response);
+
+			break;
 		case "test":
 
 			$response = [
