@@ -1,0 +1,143 @@
+/*
+  
+  Gridberg v2.1
+  
+  (\/) (°,,,°) (\/)
+  
+  Author - Jacob Dyck 
+  
+*/
+
+@import '../config.scss';
+
+/* CSS Resets */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+	display: block; 
+}
+body {
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%; 
+}
+ol, ul {
+	list-style: none; 
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0; 
+}
+
+/* Global Grid Stuff */
+*, *:after, *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+body {
+    min-width: 320px;
+}
+.grid {
+	margin-left: -$column-padding-left;
+	margin-right: -$column-padding-right;
+}
+.grid:after {
+   content: " "; /* Older browser do not support empty content */
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
+[class*='col-'] {
+    float: left;
+    padding-right: $column-padding-right;
+    padding-left: $column-padding-left;
+}
+
+[class*='col-'].kill-the-padding {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+/* Use Classes */
+.clearfix:after {
+   content: " "; /* Older browser do not support empty content */
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
+.img-responsive {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*Fullsize Columns*/
+$col: $total-columns;
+@while $col > -1 {
+  .col-#{$col}-#{$total-columns} { width: $col / $total-columns * 100%; }
+  $col: $col - 1;
+}
+
+/* .col-f (Less than Full) */
+@media handheld, only screen and (max-width: $col-f-breakpoint) {
+	
+	$col-f: $total-columns;
+	@while $col-f > -1 {
+	  .col-f-#{$col-f}-#{$total-columns}  { width: $col-f / $total-columns * 100%; }
+	  $col-f: $col-f - 1;
+	} 
+	
+    [class*='col-'] {
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-right: $column-padding-right;
+		padding-left: $column-padding-left;
+    }
+    
+    [class*='col-'].col-f-lp {
+	    padding-left: $column-f-left-padding;
+    }
+   [class*='col-'] .col-f-rp {
+	    padding-right: $column-f-right-padding;
+    }
+}
+
+/* .col-t (Less than Ipad) */
+@media handheld, only screen and (max-width: $col-t-breakpoint) {
+    
+	$col-t: $total-columns;
+	@while $col-t > -1 {
+	  .col-t-#{$col-t}-#{$total-columns}  { width: $col-t / $total-columns * 100%; }
+	  $col-t: $col-t - 1;
+	}
+	 
+    [class*='col-'] {
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-right: $column-padding-right;
+		padding-left: $column-padding-left;
+    }
+    
+    [class*='col-'].col-f-lp {
+	    padding-left: 0px;
+    }
+    [class*='col-'].col-f-rp {
+	    padding-right: 0px;
+    }
+    
+    [class*='col-'].col-t-lp {
+	    padding-left: $column-t-left-padding;
+    }
+    [class*='col-'].col-t-rp {
+	    padding-right: $column-t-right-padding;
+    }
+}
+
+@import '../my.scss';
