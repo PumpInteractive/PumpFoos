@@ -1,0 +1,22 @@
+/* Your Build: */
+
+/* Set the Total Number of Columns in your Grid */
+$total-columns: 12;
+
+/* Set the 1st breakpoint in your Grid */
+$col-f-breakpoint: 1075px;
+
+/* Set the 2nd breakpoint in your Grid */
+$col-t-breakpoint: 767px;
+
+/* Set the default Padding for your Columns */
+$column-padding-right: 10px;
+$column-padding-left: 10px;
+
+/* Set a custom padding class for first breakpoint (col-f-lp, col-f-rp) */
+$column-f-left-padding: 10px;
+$column-f-right-padding: 10px;
+
+/* Set a custom padding class for second breakpoint (col-t-lp, col-t-rp) */
+$column-t-left-padding: 10px;
+$column-t-right-padding: 10px;

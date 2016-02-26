@@ -1,0 +1,378 @@
+@import 'config.scss';
+/* DO NOT EDIT ABOVE THIS LINE - Your config.scss variables are imported here.*/
+
+/* Plugins */
+
+/* Mixins */
+@mixin clearfix {
+   &:after{
+	   content: " ";
+	   visibility: hidden;
+	   display: block;
+	   height: 0;
+	   clear: both;
+   }
+}
+@mixin img-responsive {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+@mixin text-percent($value) {
+  font-size: $value / 16 * 100%;
+}
+@mixin inner {
+	margin: 0px auto;
+	width: 100%;
+	max-width: $col-f-breakpoint;
+}
+@mixin header-bold {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 700;
+}
+@mixin header-extra-bold {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 900;
+}
+@mixin text {
+	font-family: 'Dosis', sans-serif;
+	font-weight: 500;
+}
+
+/* Variables */
+$blackteam: rgba(34,34,34,0.90);
+$yellowteam: rgba(255,189,11,0.90);
+$light-white: #eee;
+$gray: #ccc;
+$charcoal: #333;
+$sage-green: #50aa00;
+#wrapper {
+	width: 100%;
+	overflow: hidden;
+	@include clearfix;
+}
+.players {
+	padding: 26px 10px 25px 10px;
+	min-height: 100%;
+}
+.player-tray {
+	height: 100px;
+	width: 100px;
+	padding: 5px;
+	border-radius: 50%;
+	background: $charcoal;
+	-webkit-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	margin-bottom: 10px;
+}
+.player {
+	border-radius: 50%;
+	width: 90px;
+	height: 90px;
+	overflow: hidden;
+	border: 4px solid $light-white;
+	margin: 0px;
+	text-align: center;
+	position: relative;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	.label {
+		@include text-percent(10);
+		@include header-bold;
+		text-transform: uppercase;
+		color: $charcoal;
+		margin-bottom: 0px;
+		background: white;
+		position: absolute;
+		top: 58px;
+		left: 0px;
+   		width: 100%;
+    	padding: 4px 15px 4px 15px;
+	}
+}
+#bench {
+	width: 124px;
+	background: $light-white;
+	border-right: 4px solid $gray;
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	-webkit-box-shadow: 4px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 4px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	box-shadow: 4px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	text-align: center;
+	padding: 0px 0px 0px 0px;
+	h5 {
+		@include text-percent(14);
+		@include header-bold;
+		text-transform: uppercase;
+		color: $charcoal;
+		margin-bottom: 20px;
+	}
+}
+#field {
+	width: 100%;
+	height: 100%;
+	padding-left: 124px;
+	background-image: url('../../images/foosgrass.jpg');
+	background-repeat: repeat;
+	background-position: center;
+	.team-box {
+		min-height: 50%;
+		width: 100%;
+		text-align: center;
+		h2 {
+			@include text-percent(26);
+			@include header-bold;
+			text-transform: uppercase;
+			padding: 20px 40px 20px 40px;
+		}
+		.team {
+			text-align: center;
+			padding: 30px 20px 20px 20px;
+			@include clearfix;
+			.on-field {
+				width: 220px;
+				margin: 0px auto;
+				@include clearfix;
+			}
+			.player-tray {
+				float: left;
+				margin: 0px 5px 10px 5px;
+				transition: all 0.35s;
+				.player {
+					overflow: visible;
+					.label {
+						top: auto;
+    					bottom: -10px;
+					}
+				}
+			}
+			.player-tray.active {
+				background: $sage-green;
+			}
+			.score {
+				width: 100%;
+				padding: 0px 0px 0px 0px;
+				max-width: 220px;
+				margin: 0px auto;
+				display: none;
+				h4 {
+					@include text-percent(24);
+					@include header-bold;
+					color: white;
+				}
+				.score-plus {
+					@include text-percent(32);
+					@include header-bold;
+					color: white;
+					background: gray;
+					float: left;
+					height: 40px;
+					width: 40px;
+					border-radius: 50%;
+					cursor: pointer;
+					text-align: center;
+					margin-top: 16px;
+				}
+				.score-minus {
+					@include text-percent(33);
+					@include header-bold;
+					color: white;
+					background: gray;
+					float: right;
+					height: 40px;
+					width: 40px;
+					border-radius: 50%;
+					cursor: pointer;
+					text-align: center;
+					margin-top: 16px;
+				}
+				.score-value {
+					@include text-percent(92);
+					@include header-bold;
+					color: white;
+					margin: -10px auto 10px auto;
+					display: inline-block;
+				}
+			}
+		}
+	}
+	#team-1 {
+		background: $blackteam;
+		h2 {
+			color: white;
+			background: $blackteam;
+		}
+	}
+	#team-2 {
+		background: $yellowteam;
+		h2 {
+			color: white;
+			background: $yellowteam;
+		}
+	}
+}
+#finish-match {
+    transition: all 0.35s;
+    position: fixed;
+    bottom: 20px;
+    right: -150px;
+    border-radius: 10px;
+    input {
+    	background: #c40000;
+	    width: 100%;
+	    -webkit-appearance: none;
+	    border: 0px;
+	    @include header-bold;
+	    @include text-percent(24);
+	    padding: 10px;
+	    text-align: center;
+	    color: white;
+	    text-transform: uppercase;
+	    cursor: pointer;
+	    outline: none;
+	    border-radius: 6px;
+    }
+}
+#finish-match.active {
+	    right: 20px;
+}
+@media handheld, only screen and (max-width: $col-f-breakpoint) {
+}
+@media handheld, only screen and (max-width: $col-t-breakpoint) {
+.players {
+	padding: 20px 5px 20px 5px;
+	min-height: 100%;
+}
+.player-tray {
+	height: 80px;
+	width: 80px;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+.player {
+	width: 70px;
+	height: 70px;
+	overflow: hidden;
+	margin: 0px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	.label {
+		position: absolute;
+		top: 41px;
+		left: 0px;
+    	padding: 4px 4px 4px 4px;
+	}
+}
+#bench {
+	width: 94px;
+	background: $light-white;
+	border-right: 4px solid $gray;
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	-webkit-box-shadow: 4px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 4px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	box-shadow: 4px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	text-align: center;
+	padding: 0px 0px 0px 0px;
+	h5 {
+		@include text-percent(14);
+		@include header-bold;
+		text-transform: uppercase;
+		color: $charcoal;
+		margin-bottom: 20px;
+	}
+}
+#field {
+	padding-left: 94px;
+	background-image: url('../../images/foosgrass.jpg');
+	background-repeat: repeat;
+	background-position: center;
+	.team-box {
+		h2 {
+			@include text-percent(22);
+			@include header-bold;
+			text-transform: uppercase;
+			padding: 20px 0px 20px 0px;
+		}
+		.team {
+			text-align: center;
+			padding: 20px 0px 20px 0px;
+			@include clearfix;
+			.on-field {
+				width: 181px;
+			}
+			.player-tray {
+				float: left;
+				margin: 0px 5px 10px 5px;
+				transition: all 0.35s;
+				.player {
+					overflow: visible;
+					.label {
+						top: auto;
+    					bottom: -10px;
+					}
+				}
+			}
+			.score {
+				width: 100%;
+				padding: 0px 0px 0px 0px;
+				max-width: 160px;
+				margin: 0px auto;
+				display: none;
+				h4 {
+					@include text-percent(18);
+					@include header-bold;
+					color: white;
+					margin-bottom: 10px;
+				}
+				.score-plus {
+					margin-top: -4px;
+				}
+				.score-minus {
+					margin-top: -4px;
+				}
+				.score-value {
+					@include text-percent(52);
+					margin: -10px auto 10px auto;
+					display: inline-block;
+				}
+			}
+		}
+	}
+	#team-2 {
+		padding-bottom: 87px;
+	}
+}
+#finish-match {
+    transition: all 0.35s;
+    position: fixed;
+    bottom: 20px;
+    right: -150px;
+    input {
+    	background: #c40000;
+	    width: 100%;
+	    -webkit-appearance: none;
+	    border: 0px;
+	    @include header-bold;
+	    @include text-percent(20);
+	    padding: 8px;
+	    text-align: center;
+	    color: white;
+	    text-transform: uppercase;
+	    cursor: pointer;
+	    outline: none;
+	    border-radius: 6px;
+    }
+}
+#finish-match.active {
+	    right: 20px;
+}
+}
