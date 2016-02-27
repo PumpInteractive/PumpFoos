@@ -23,6 +23,11 @@
 
 </head>
 <body>
+<?php 
+$loader = require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
+
+require_once realpath(__DIR__ . '/../').'/config.php';
+?>
 	<div id="wrapper">
 		<div id="bench">
 			<div class="players-dummy">
@@ -33,47 +38,37 @@
 					<!-- Use Slack to Generate Players, ID, Name, Pictures (update img/bg)? -->
 					<!-- data-tray-id should match player-id (used by js) -->
 					
-						<div class="player-tray" data-tray-id="1">
-							<div class="player" data-player-id="1" data-player-name="Jake" style="background-image: url('assets/images/jake.jpg')">
-								<div class="label">Jake</div>
-							</div>
-						</div>
-						<div class="player-tray" data-tray-id="2">
-							<div class="player" data-player-id="2" data-player-name="Sean" style="background-image: url('assets/images/sean.jpg')">
-								<div class="label">Sean</div>
-							</div>
-						</div>
-						<div class="player-tray" data-tray-id="3">
-							<div class="player" data-player-id="3" data-player-name="Scott" style="background-image: url('assets/images/scott.jpg')">
-								<div class="label">Scott</div>
-							</div>
-						</div>
-						<div class="player-tray" data-tray-id="4">
-							<div class="player" data-player-id="4" data-player-name="Liz" style="background-image: url('assets/images/liz.jpg')">
-								<div class="label">Liz</div>
-							</div>
-						</div>
-						<div class="player-tray" data-tray-id="5">
-							<div class="player" data-player-id="5" data-player-name="Troy" style="background-image: url('assets/images/troy.jpg')">
-								<div class="label">Troy</div>
-							</div>
-						</div>
-						<div class="player-tray" data-tray-id="6">
-							<div class="player" data-player-id="6" data-player-name="Andrew" style="background-image: url('assets/images/andrew.jpg')">
-								<div class="label">Andrew</div>
-							</div>
-						</div>
-						<div class="player-tray" data-tray-id="7">
-							<div class="player" data-player-id="7" data-player-name="Melissa" style="background-image: url('assets/images/empty.jpg')">
-								<div class="label">Melissa</div>
-							</div>
-						</div>
-						<div class="player-tray" data-tray-id="8">
-							<div class="player" data-player-id="8" data-player-name="Brendan" style="background-image: url('assets/images/brendan.jpg')">
-								<div class="label">Brendan</div>
-							</div>
-						</div>
+						<?php
+						$apiClient = new \CL\Slack\Transport\ApiClient(SLACK_WEB_API_TOKEN);
+						$payload   = new \CL\Slack\Payload\UsersListPayload();
+						$response  = $apiClient->send($payload);
 
+						if ($response->isOk()) {
+						    // query has been executed and result is returned (but can be empty)
+						    foreach ($response->getUsers() as $user) {
+						    	if(!$user->isBot() && !$user->isDeleted() && $user->getName() != 'sm' && $user->getName() != 'slackbot') { 
+						    		$profile = $user->getProfile(); 
+						    		$urlString = $profile->getImage192();
+						    		$fixedString = str_replace(' ','/',$urlString);
+						    		?>
+						 <div class="player-tray" data-tray-id="<?php echo $user->getId(); ?>">
+							<div class="player" data-player-id="<?php echo $user->getId(); ?>" data-player-name="<?php echo $user->getName(); ?>" 
+							style='background-image: url("<?php echo $fixedString; ?>")'>
+								<div class="label"><?php echo $user->getName(); ?></div>
+							</div>
+						  </div>
+						    <?php } // close if
+						     } // close for loop
+						} else {
+						    // something went wrong, but what?
+
+						    // simple error (Slack's error message)
+						    echo $response->getError();
+
+						    // explained error (Slack's explanation of the error, according to the documentation)
+						    echo $response->getErrorExplanation();
+						}
+						?>
 					</div>
 				</div>
 			</div>

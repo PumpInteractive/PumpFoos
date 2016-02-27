@@ -1,7 +1,7 @@
 {
     "require": {
         "eden/mysql": "^4.0",
-        "cleentfaar/slack": "^0.18"
+        "cleentfaar/slack": "~0.14"
     },
     "autoload": {
         "psr-4": {
