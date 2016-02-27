@@ -29,7 +29,7 @@
 				<div class="players handle">
 					<h5>Bench</h5>
 					<div class="players-inner">
-					
+
 					<!-- Use Slack to Generate Players, ID, Name, Pictures (update img/bg)? -->
 					<!-- data-tray-id should match player-id (used by js) -->
 					
