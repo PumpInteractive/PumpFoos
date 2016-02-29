@@ -45,21 +45,21 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 
 						if ($response->isOk()) {
 						    // query has been executed and result is returned (but can be empty)
-						    foreach ($response->getUsers() as $user) {
-						    	if(!$user->isBot() && !$user->isDeleted() && $user->getName() != 'sm' && $user->getName() != 'slackbot') { 
-						    		$profile = $user->getProfile(); 
-						    		$urlString = $profile->getImage192();
-						    		$fixedString = str_replace(' ','/',$urlString);
-						    		?>
+						foreach ($response->getUsers() as $user):
+						    if(!$user->isBot() && !$user->isDeleted() && $user->getName() != 'sm' && $user->getName() != 'slackbot'):
+						    	$profile = $user->getProfile(); 
+						    	$urlString = $profile->getImage192();
+						    	$fixedString = str_replace(' ','/',$urlString);
+						    	?>
 						 <div class="player-tray" data-tray-id="<?php echo $user->getId(); ?>">
 							<div class="player" data-player-id="<?php echo $user->getId(); ?>" data-player-name="<?php echo $user->getName(); ?>" 
 							style='background-image: url("<?php echo $fixedString; ?>")'>
 								<div class="label"><?php echo $user->getName(); ?></div>
 							</div>
 						  </div>
-						    <?php } // close if
-						     } // close for loop
-						} else {
+						    <?php endif; //close if ?>
+						     <?php endforeach; //close foreach ?>
+						<?php } else {
 						    // something went wrong, but what?
 
 						    // simple error (Slack's error message)
