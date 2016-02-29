@@ -112,9 +112,10 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		</div>
 	</div>
 
-	<form id="finish-match" action="" method="GET">
+	<form id="finish-match">
 		<!-- Players -->
-		
+		<input type="hidden" name="frontend" value="1"/>
+		<input type="hidden" name="logMatch" value="end_match"/>
 		<!-- Team 1 -->
 		<input type="hidden" name="player1" value=""/>
 		<input type="hidden" name="player2" value=""/>
@@ -127,12 +128,26 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		<input type="hidden" name="teamScore1" value="0"/>
 		<input type="hidden" name="teamScore2" value="0"/>
 
-		<input type="submit" name="go" value="End Match"/>
+		<input type="submit" value="End Match"/>
 
 	</form>
 
 	<script type="text/javascript">
-		
+		$( "#finish-match" ).submit(function( event ) {
+		  event.preventDefault();
+		  $.ajax({
+		  	type: 'POST',
+			url: 'webhook.php',
+           data: $( this ).serialize(), // serializes the form's elements.
+	           success: function(data)
+	           {
+	               obj = JSON.parse(data);
+    			   alert(obj.text);
+	               location.reload();
+	           }
+			});
+		});
+
 		//Force the Team Boxes to be at least half the screen height, just looks nice. Could remove.
 		var minHalf = $(window).outerHeight() / 2;
 		$('.team-box').css('minHeight', minHalf);

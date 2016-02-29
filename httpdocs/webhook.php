@@ -5,7 +5,7 @@ require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
 require_once realpath(__DIR__ . '/../').'/config.php';
 
 // Handle Outgoing controllers implementation
-if ($_POST['token'] == SLACK_OUTGOING_WEBHOOKS_TOKEN) { // Valid token, continue
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_WEBHOOKS_TOKEN) { // Valid token, continue
     
     /* Receives these variables from Slack
     $_POST['token'], 
@@ -49,11 +49,11 @@ if ($_POST['token'] == SLACK_OUTGOING_WEBHOOKS_TOKEN) { // Valid token, continue
             break;
 
     }
-} else if ($_GET['frontend']) {
+} else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['frontend']) {
 
     $controller = new \PumpFoos\Controller;
 
-    switch ($_GET['command']) {
+    switch ($_POST['logMatch']) {
 
         case "end_match":
 
@@ -62,22 +62,22 @@ if ($_POST['token'] == SLACK_OUTGOING_WEBHOOKS_TOKEN) { // Valid token, continue
             // Player 1 / 2 is Team 1
             // Player 3 / 4 is Team 2
 
-            $team1 = (!empty($_GET['player2'])) ? '<@'.$_GET['player1'].'> and <@'.$_GET['player2'].'>' : '<@'.$_GET['player1'].'>';
-            $team2 = (!empty($_GET['player4'])) ? '<@'.$_GET['player3'].'> and <@'.$_GET['player4'].'>' : '<@'.$_GET['player3'].'>';
+            $team1 = (!empty($_POST['player2'])) ? '<@'.$_POST['player1'].'> and <@'.$_POST['player2'].'>' : '<@'.$_POST['player1'].'>';
+            $team2 = (!empty($_POST['player4'])) ? '<@'.$_POST['player3'].'> and <@'.$_POST['player4'].'>' : '<@'.$_POST['player3'].'>';
 
-            if ($_GET['teamScore1'] > $_GET['teamScore2']) {
+            if ($_POST['teamScore1'] > $_POST['teamScore2']) {
 
                 $text = $team1 . ' win vs ' . $team2;
-                $controller->logMatchWithString($text, true);
+                $result = $controller->logMatchWithString($text, true);
 
-                return 1;
+                echo $result;
 
             } else {
 
                 $text = $team2 . ' win vs ' . $team1;
-                $controller->logMatchWithString($text, true);
+                $result = $controller->logMatchWithString($text, true);
 
-                return 1;
+                echo $result;
 
             }
 
