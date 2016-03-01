@@ -131,8 +131,17 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		<input type="submit" value="End Match"/>
 
 	</form>
+	
+	<div id="match-modal">
+    	<div class="match-modal-inner">
+        	<div class="match-modal-text"></div>
+        	<div id="new-match">New Match</div>
+    	</div>
+    	
+	</div>
 
 	<script type="text/javascript">
+		//On the form submit, fire a nicde little modal.
 		$( "#finish-match" ).submit(function( event ) {
 		  event.preventDefault();
 		  $.ajax({
@@ -142,10 +151,15 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	           success: function(data)
 	           {
 	               obj = JSON.parse(data);
-    			   alert(obj.text);
-	               location.reload();
+    			   text = obj.text
+    			   $('.match-modal-text').text(text);
+    			   $('#match-modal').addClass('display');
 	           }
 			});
+		});
+		
+		$('#new-match').on('click touch', function() {
+    		location.reload();
 		});
 
 		//Force the Team Boxes to be at least half the screen height, just looks nice. Could remove.
