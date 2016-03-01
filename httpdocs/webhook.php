@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['t
 
     }
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['frontend']) {
-
     $controller = new \PumpFoos\Controller;
 
     switch ($_POST['logMatch']) {
@@ -82,6 +81,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['t
             }
 
             break;
+        case "update_users":
+        // Query slack for changed usernames, new users and new profile pics
+        $result = $controller->updatePlayers();
+
+        echo $result;
+        break;
+
+
+
 
     }
 
