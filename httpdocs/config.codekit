@@ -63,43 +63,10 @@
 		"outputAbbreviatedPath": "\/assets\/gridberg.2.1\/css\/gridberg.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
-		"outputStyle": 0,
+		"outputStyle": 3,
 		"shouldRunAutoprefixer": 0,
 		"shouldRunBless": 0,
 		"useLibsass": 0
-		},
-	"\/assets\/images\/andrew.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 56601,
-		"inputAbbreviatedPath": "\/assets\/images\/andrew.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/andrew.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
-		},
-	"\/assets\/images\/brendan.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 62699,
-		"inputAbbreviatedPath": "\/assets\/images\/brendan.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/brendan.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
-		},
-	"\/assets\/images\/empty.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 62867,
-		"inputAbbreviatedPath": "\/assets\/images\/empty.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/empty.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
 		},
 	"\/assets\/images\/foosgrass.jpg": {
 		"fileType": 16384,
@@ -108,61 +75,6 @@
 		"initialSize": 318898,
 		"inputAbbreviatedPath": "\/assets\/images\/foosgrass.jpg",
 		"outputAbbreviatedPath": "\/assets\/images\/foosgrass.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
-		},
-	"\/assets\/images\/jake.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 47529,
-		"inputAbbreviatedPath": "\/assets\/images\/jake.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/jake.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
-		},
-	"\/assets\/images\/liz.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 51354,
-		"inputAbbreviatedPath": "\/assets\/images\/liz.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/liz.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
-		},
-	"\/assets\/images\/scott.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 55294,
-		"inputAbbreviatedPath": "\/assets\/images\/scott.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/scott.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
-		},
-	"\/assets\/images\/sean.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 63230,
-		"inputAbbreviatedPath": "\/assets\/images\/sean.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/sean.jpg",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"processed": 0
-		},
-	"\/assets\/images\/troy.jpg": {
-		"fileType": 16384,
-		"ignore": 0,
-		"ignoreWasSetByUser": 0,
-		"initialSize": 56448,
-		"inputAbbreviatedPath": "\/assets\/images\/troy.jpg",
-		"outputAbbreviatedPath": "\/assets\/images\/troy.jpg",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"processed": 0
