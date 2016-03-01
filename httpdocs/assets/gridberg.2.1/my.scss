@@ -38,6 +38,10 @@
 	font-family: 'Dosis', sans-serif;
 	font-weight: 500;
 }
+@mixin flex-wrap {
+	display: flex;
+	flex-wrap: wrap;
+}
 
 /* Variables */
 $blackteam: rgba(34,34,34,0.90);
@@ -241,6 +245,51 @@ $sage-green: #50aa00;
 #finish-match.active {
 	    right: 20px;
 }
+#match-modal {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.75);
+    top: 0px;
+    left: 0px;
+    padding: 40px;
+    display: none;
+    .match-modal-inner {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        border-radius: 10px;
+        padding: 40px;
+        @include header-bold;
+        @include text-percent(22);
+        color: $charcoal;
+        text-align: center;
+        height: auto;
+        line-height: 1.3;
+        margin: 0px auto;
+        .match-modal-text {
+            margin-bottom: 30px;
+        }
+        #new-match {
+            margin-top: 30px;
+            background: $sage-green;
+    	    width: 100%;;
+    	    border: 0px;
+    	    @include header-bold;
+    	    @include text-percent(24);
+    	    padding: 10px;
+    	    text-align: center;
+    	    color: white;
+    	    text-transform: uppercase;
+    	    cursor: pointer;
+    	    outline: none;
+    	    border-radius: 6px;
+        }
+    }
+}
+#match-modal.display {
+    display: block;
+}
 @media handheld, only screen and (max-width: $col-f-breakpoint) {
 }
 @media handheld, only screen and (max-width: $col-t-breakpoint) {
@@ -374,5 +423,15 @@ $sage-green: #50aa00;
 }
 #finish-match.active {
 	    right: 20px;
+}
+#match-modal {
+    padding: 40px 20px 40px 20px;
+    .match-modal-inner {
+        padding: 20px;
+        @include text-percent(18);
+        #new-match {
+    	    @include text-percent(20);
+        }
+    }
 }
 }
