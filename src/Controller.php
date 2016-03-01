@@ -1,7 +1,7 @@
 <?php
 
 namespace PumpFoos;
-
+require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
 // Accept incoming post from Slack
 class Controller 
 {
@@ -70,7 +70,7 @@ class Controller
 
             $message_num = array_rand($this->match_messages);
 
-            return json_encode(['text' => sprintf($this->match_messages[$message_num], $winning_team, $losing_team)]);
+            return json_encode(['text' => sprintf($this->match_messages[$message_num], $winning_team, $losing_team),'leaderboard' => sprintf($this->getLeaderboard())]);
         } else {
             return json_encode(['text' => 'Please tell me who won (with valid slack usernames)! Like this: \''.$_POST['trigger_word'].' @player and @player2 win vs. @player3 and @player4\'']);
         }
@@ -95,6 +95,41 @@ class Controller
         ];
 
         return json_encode($response);
+    }
+
+    public function updatePlayers()
+    {
+        $apiClient = new \CL\Slack\Transport\ApiClient(SLACK_WEB_API_TOKEN);
+        $payload   = new \CL\Slack\Payload\UsersListPayload();
+        $response  = $apiClient->send($payload);
+
+        $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
+
+        if ($response->isOk()) {
+            $value = false;
+        foreach ($response->getUsers() as $user){
+            if(!$user->isBot() && !$user->isDeleted() && $user->getName() != 'sm' && $user->getName() != 'slackbot'){
+                $profile = $user->getProfile();
+                $urlString = $profile->getImage192();
+                $fixedString = str_replace(' ','/',$urlString);
+                $query = 'INSERT INTO user_stats (slack_user_id, slack_user_name, slack_profile_pic_url) 
+                VALUES (\''.$user->getID(). '\' ,\'' .$user->getName(). '\',\'' .$fixedString. '\') 
+                ON DUPLICATE KEY UPDATE slack_user_name=\''.$user->getName(). '\', slack_profile_pic_url="'.$fixedString.'"';   
+                $mysqli->query($query);                
+                    if ($mysqli->affected_rows >1) {
+                        $value = true;
+                    }
+                }
+                }
+
+                return json_encode(['text' => ($value ? 'Players updated succesfully': 'No Updates Available')]);
+        } else {
+            // simple error (Slack's error message)
+            echo $response->getError();
+
+            // explained error (Slack's explanation of the error, according to the documentation)
+            echo $response->getErrorExplanation();
+        }
     }
 
 }

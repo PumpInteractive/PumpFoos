@@ -24,7 +24,7 @@
 </head>
 <body>
 <?php 
-$loader = require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
+require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
 
 require_once realpath(__DIR__ . '/../').'/config.php';
 ?>
@@ -33,42 +33,36 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			<div class="players-dummy">
 				<div class="players handle">
 					<h5>Bench</h5>
+					<div id="updatePlayers">Refresh Players</div><br /><br />
 					<div class="players-inner">
 
 					<!-- Use Slack to Generate Players, ID, Name, Pictures (update img/bg)? -->
 					<!-- data-tray-id should match player-id (used by js) -->
-					
-						<?php
-						$apiClient = new \CL\Slack\Transport\ApiClient(SLACK_WEB_API_TOKEN);
-						$payload   = new \CL\Slack\Payload\UsersListPayload();
-						$response  = $apiClient->send($payload);
+					<?php $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
 
-						if ($response->isOk()) {
-						    // query has been executed and result is returned (but can be empty)
-						foreach ($response->getUsers() as $user):
-						    if(!$user->isBot() && !$user->isDeleted() && $user->getName() != 'sm' && $user->getName() != 'slackbot'):
-						    	$profile = $user->getProfile(); 
-						    	$urlString = $profile->getImage192();
-						    	$fixedString = str_replace(' ','/',$urlString);
-						    	?>
-						 <div class="player-tray" data-tray-id="<?php echo $user->getId(); ?>">
-							<div class="player" data-player-id="<?php echo $user->getId(); ?>" data-player-name="<?php echo $user->getName(); ?>" 
-							style='background-image: url("<?php echo $fixedString; ?>")'>
-								<div class="label"><?php echo $user->getName(); ?></div>
-							</div>
-						  </div>
-						    <?php endif; //close if ?>
-						     <?php endforeach; //close foreach ?>
-						<?php } else {
-						    // something went wrong, but what?
-
-						    // simple error (Slack's error message)
-						    echo $response->getError();
-
-						    // explained error (Slack's explanation of the error, according to the documentation)
-						    echo $response->getErrorExplanation();
-						}
+					if ($mysqli->connect_errno) {
+					    printf("Connect failed: %s\n", $mysqli->connect_error);
+					    exit();
+					}
+					else {
+						/* Select queries return a resultset */
+						$result = $mysqli->query("SELECT * FROM user_stats ORDER BY slack_user_name");
+						while($row = $result->fetch_assoc()){
 						?>
+						    <div class="player-tray" data-tray-id="<?php echo $row['slack_user_id']; ?>">
+								<div class="player" data-player-id="<?php echo $row['slack_user_id']; ?>" data-player-name="<?php echo $row['slack_user_name']; ?>"
+									style='background-image: url("<?php echo $row['slack_profile_pic_url']; ?>")'>
+								<div class="label"><?php echo $row['slack_user_name']; ?></div>
+								</div>
+							</div>
+
+						<?php }    
+						/* free result set */
+						    $result->close();
+						}
+
+						$mysqli->close();
+					?>
 					</div>
 				</div>
 			</div>
@@ -257,6 +251,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	           {
 	               obj = JSON.parse(data);
     			   text = obj.text
+    			   leaderboard = obj.leaderboard;
     			   $('.match-modal-text').text(text);
     			   $('#match-modal').animate({opacity: 'show'}, 350);
     			   $('#confetti').animate({opacity: 'show'}, 350);
@@ -267,6 +262,22 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		
 		$('#new-match').on('click touch', function() {
     		location.reload();
+		});
+
+		$('#updatePlayers').on('click touch',function() {
+		  event.preventDefault();
+		  $.ajax({
+		  	type: 'POST',
+			url: 'webhook.php',
+            data: {frontend: 1,logMatch:"update_users"},
+	           success: function(data)
+	           {
+	               obj = JSON.parse(data);
+	               text = obj.text
+    			   $('.match-modal-text').text(text);
+    			   $('#match-modal').animate({opacity: 'show'}, 350);
+	           }
+			});
 		});
 
 		//Force the Team Boxes to be at least half the screen height, just looks nice. Could remove.
