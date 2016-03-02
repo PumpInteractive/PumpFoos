@@ -277,11 +277,11 @@ require_once realpath(__DIR__ . '/../').'/config.php';
     			   $('#match-modal').animate({opacity: 'show'}, 350);
     			   $('#confetti').animate({opacity: 'show'}, 350);
     			   confetti();
-    			   /* Sweet Audio Bro */
-    			   var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
-				   muchRejoicing.play();
 	           }
 			});
+			/* Sweet Audio Bro */
+	        var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
+            muchRejoicing.play();
 		});
 		
 		$('#new-match').on('click touch', function() {
