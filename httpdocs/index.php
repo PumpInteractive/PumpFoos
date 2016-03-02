@@ -277,6 +277,9 @@ require_once realpath(__DIR__ . '/../').'/config.php';
     			   $('#match-modal').animate({opacity: 'show'}, 350);
     			   $('#confetti').animate({opacity: 'show'}, 350);
     			   confetti();
+    			   /* Sweet Audio Bro */
+    			   var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
+				   muchRejoicing.play();
 	           }
 			});
 		});
@@ -313,9 +316,12 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		//set the scores to start
 		teamOneScore = 0;
 		teamTwoScore = 0;
+		plusSound = new Audio('assets/sounds/plus.mp3');
+		minusSound = new Audio('assets/sounds/minus.mp3');
 
 		//Record and Update Scores
 		$('.score-plus').on('click touch', function() {
+			//plusSound.play();
 			if ($(this).data('team') == 1) {
 				teamOneScore++;
 				$('.score-value[data-team="1"]').text(teamOneScore);
@@ -334,12 +340,14 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 					teamOneScore--;
 					$('.score-value[data-team="1"]').text(teamOneScore);
 					$('input[name=teamScore1]').attr('value', teamOneScore);
+					//minusSound.play();
 				}
 			} else {
 				if(teamTwoScore != 0) {
 					teamTwoScore--;
 					$('.score-value[data-team="2"]').text(teamTwoScore);
 					$('input[name=teamScore2]').attr('value', teamTwoScore);
+					//minusSound.play();
 				}
 			}
 			scoreChecker();
