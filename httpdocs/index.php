@@ -252,6 +252,27 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	               obj = JSON.parse(data);
     			   text = obj.text
     			   leaderboard = obj.leaderboard;
+    			   	var regex1 = /</gi, result, firstIndices = [];
+    			   	var regex2 = />/gi, result, secondIndices = [];
+					while ( (result = regex1.exec(text)) && (result1 = regex2.exec(text)) ) {
+					    firstIndices.push(result.index);
+					    secondIndices.push(result1.index);
+					}
+
+					var objectIDs = [];
+					for (var i = 0; i < firstIndices.length; i++) {
+					    //Do something
+					    var playerID = text.substring(firstIndices[i]+1,secondIndices[i]);
+					    var cleanID = playerID.replace("@","");
+					    objectIDs.push(cleanID);
+					}
+
+					for(var v = 0; v < objectIDs.length;v++)
+					{
+						var userName = $(".player[data-player-id='" + objectIDs[v] +"']").text();
+						text = text.replace("<@"+objectIDs[v]+">",userName);
+					}
+	               
     			   $('.match-modal-text').text(text);
     			   $('#match-modal').animate({opacity: 'show'}, 350);
     			   $('#confetti').animate({opacity: 'show'}, 350);
@@ -273,7 +294,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	           success: function(data)
 	           {
 	               obj = JSON.parse(data);
-	               text = obj.text
+	               text = obj.text;
     			   $('.match-modal-text').text(text);
     			   $('#match-modal').animate({opacity: 'show'}, 350);
 	           }
