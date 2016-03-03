@@ -47,6 +47,7 @@
 $blackteam: rgba(34,34,34,0.90);
 $yellowteam: rgba(255,189,11,0.90);
 $light-white: #eee;
+$medium-white: #ddd;
 $gray: #ccc;
 $charcoal: #333;
 $sage-green: #50aa00;
@@ -154,6 +155,9 @@ $sage-green: #50aa00;
     					bottom: -10px;
 					}
 				}
+			}
+			.player-tray.gray {
+    			background: $gray;
 			}
 			.player-tray.active {
 				background: $sage-green;
