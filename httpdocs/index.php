@@ -72,9 +72,9 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 				<h2>Black Team</h2>
 				<div class="team">
 					<div class="on-field">
-						<div class="player-tray drop-tray" data-active-tray-id="1" data-team="1">
+						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
 						</div>
-						<div class="player-tray drop-tray" data-active-tray-id="2" data-team="1">
+						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
 						</div>
 					</div>
 					<div class="score" id="team-1-score">
