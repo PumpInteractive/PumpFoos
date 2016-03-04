@@ -87,7 +87,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['t
 
         echo $result;
         break;
-
+        case "challenge_player":
+        // Query slack for changed usernames, new users and new profile pics
+        if(!empty($_POST['playerName']))
+        {
+            $result = $controller->challengeUser($_POST['playerName']);
+            echo $result;
+        }
+        break;
 
 
 

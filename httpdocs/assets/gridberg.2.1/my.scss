@@ -294,6 +294,51 @@ $sage-green: #50aa00;
 #match-modal.display {
     display: block;
 }
+#alert-modal {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.35);
+    top: 0px;
+    left: 0px;
+    display: none;
+    padding: 0px 40px 0px 40px;
+    .alert-modal-inner {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        border-radius: 10px;
+        padding: 40px;
+        @include header-bold;
+        @include text-percent(22);
+        color: $charcoal;
+        text-align: center;
+        height: auto;
+        line-height: 1.3;
+        margin: 40px auto 40px auto;
+        .alert-modal-text {
+            margin-bottom: 30px;
+        }
+        #alert-thanks {
+            margin-top: 30px;
+            background: $sage-green;
+    	    width: 100%;;
+    	    border: 0px;
+    	    @include header-bold;
+    	    @include text-percent(15);
+    	    padding: 10px;
+    	    text-align: center;
+    	    color: white;
+    	    text-transform: uppercase;
+    	    cursor: pointer;
+    	    outline: none;
+    	    border-radius: 6px;
+        }
+    }
+}
+#alert-modal.display {
+    display: block;
+}
 #confetti {
     display: none;
     position: fixed;

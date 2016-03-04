@@ -137,6 +137,13 @@ require_once realpath(__DIR__ . '/../').'/config.php';
     	</div>
 	</div>
 
+	<div id="alert-modal">
+    	<div class="alert-modal-inner">
+        	<div class="alert-modal-text"></div>
+        	<div id="alert-thanks">Are you not entertained?</div>
+    	</div>
+	</div>
+
 	<script type="text/javascript">
     	//Confetti
         function confetti() {
@@ -253,28 +260,8 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	           success: function(data)
 	           {
 	               obj = JSON.parse(data);
-    			   text = obj.text
+    			   text = replaceIDs(obj.text);
     			   leaderboard = obj.leaderboard;
-    			   	var regex1 = /</gi, result, firstIndices = [];
-    			   	var regex2 = />/gi, result, secondIndices = [];
-					while ( (result = regex1.exec(text)) && (result1 = regex2.exec(text)) ) {
-					    firstIndices.push(result.index);
-					    secondIndices.push(result1.index);
-					}
-
-					var objectIDs = [];
-					for (var i = 0; i < firstIndices.length; i++) {
-					    //Do something
-					    var playerID = text.substring(firstIndices[i]+1,secondIndices[i]);
-					    var cleanID = playerID.replace("@","");
-					    objectIDs.push(cleanID);
-					}
-
-					for(var v = 0; v < objectIDs.length;v++)
-					{
-						var userName = $(".player[data-player-id='" + objectIDs[v] +"']").text();
-						text = text.replace("<@"+objectIDs[v]+">",userName);
-					}
 	               
     			   $('.match-modal-text').text(text);
     			   $('#match-modal').animate({opacity: 'show'}, 350);
@@ -284,7 +271,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			});
 			/* Sweet Audio Bro */
 	        var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
-            muchRejoicing.play();
+            //muchRejoicing.play();
 		});
 		
 		$('#new-match').on('click touch', function() {
@@ -306,6 +293,32 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	           }
 			});
 		});
+
+		function replaceIDs(text)
+		{
+			var regex1 = /</gi, result, firstIndices = [];
+		   	var regex2 = />/gi, result, secondIndices = [];
+			while ( (result = regex1.exec(text)) && (result1 = regex2.exec(text)) ) {
+			    firstIndices.push(result.index);
+			    secondIndices.push(result1.index);
+			}
+
+			var objectIDs = [];
+			for (var i = 0; i < firstIndices.length; i++) {
+			    //Do something
+			    var playerID = text.substring(firstIndices[i]+1,secondIndices[i]);
+			    var cleanID = playerID.replace("@","");
+			    objectIDs.push(cleanID);
+			}
+
+			for(var v = 0; v < objectIDs.length;v++)
+			{
+				var userName = $(".player[data-player-id='" + objectIDs[v] +"']").text();
+				text = text.replace("<@"+objectIDs[v]+">",userName);
+			}
+
+			return text;
+		}
 
 		//Force the Team Boxes to be at least half the screen height, just looks nice. Could remove.
 		var minHalf = $(window).outerHeight() / 2;
@@ -423,7 +436,27 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			//activate the scoreboard for that team
 			var scoreTrigger = $(this).droppable().data('team');
 			$('#team-'+scoreTrigger+'-score').animate({opacity: 'show'}, 350);
-		}
+
+
+			var userReplace = "<@"+playerId+">";
+		    $.ajax({
+			  	type: 'POST',
+				url: 'webhook.php',
+	            data: {frontend: 1,logMatch:"challenge_player",playerName:replaceIDs(userReplace)},
+		           success: function(data)
+		           {
+			           	if(data != "" && data != undefined)
+			           	{
+			                $('.alert-modal-text').text(data);
+			   				$('#alert-modal').animate({opacity: 'show'}, 350);  
+			           	}
+		           }
+				});
+			}
+
+		$('#alert-thanks').on("click touch", function(){
+			$('#alert-modal').hide();
+		});
 	</script>
 </body>
 </html>
