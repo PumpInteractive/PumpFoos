@@ -9,7 +9,6 @@ class Controller
     public function __construct(
     ) 
     {
-
         $this->match_messages = [
             "Congrats %s! Sorry about your luck %s.",
             "Woot woot! %s snatched one from %s",
@@ -26,7 +25,7 @@ class Controller
         ];
     }
 
-    public function logMatchWithString ($text) 
+    public function logMatchWithString($text)
     {
         // match: @troy and @liz win v @scott and @andrew
         // match: @scott win v @troy
@@ -124,6 +123,31 @@ class Controller
 
                 return json_encode(['text' => ($value ? 'Players updated succesfully': 'No Updates Available')]);
         } else {
+            // simple error (Slack's error message)
+            echo $response->getError();
+
+            // explained error (Slack's explanation of the error, according to the documentation)
+            echo $response->getErrorExplanation();
+        }
+    }
+
+    public function challengeUser($username)
+    {
+        $apiClient = new \CL\Slack\Transport\ApiClient(SLACK_WEB_API_TOKEN);
+        $payload = new \CL\Slack\Payload\ChatPostMessagePayload();
+        $payload->setChannel('@'.trim($username));
+        $payload->setText('@'.trim($username).'! you have been challenged to a Foosball match! Report to the boardroom for warmup and team stretches. :simple_smile:');
+        $payload->setUsername('FoosBot');
+        $payload->setIconUrl(__DIR__.'/../httpdocs/assets/images/foosball-icon.png');
+
+        $response = $apiClient->send($payload);
+
+        if ($response->isOk()) {
+            // message has been posted
+            echo trim($username).' has been notified';
+        } else {
+            // something went wrong, but what?
+
             // simple error (Slack's error message)
             echo $response->getError();
 
