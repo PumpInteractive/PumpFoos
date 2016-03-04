@@ -60,6 +60,19 @@ $sage-green: #50aa00;
 	padding: 26px 10px 25px 10px;
 	min-height: 100%;
 }
+.player-tray-wrapper {
+    float: left;
+    .position {
+        color: white;
+        @include text-percent(14);
+		@include header-bold;
+		text-transform: uppercase;
+		margin-bottom: 5px;
+		&.charcoal {
+    		color: $charcoal;
+		} 
+    }
+}
 .player-tray {
 	height: 100px;
 	width: 100px;
@@ -157,7 +170,7 @@ $sage-green: #50aa00;
 				}
 			}
 			.player-tray.gray {
-    			background: $gray;
+    			background: white;
 			}
 			.player-tray.active {
 				background: $sage-green;
