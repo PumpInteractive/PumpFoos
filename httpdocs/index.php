@@ -75,10 +75,16 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 				<h2>Black Team</h2>
 				<div class="team">
 					<div class="on-field">
-						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
-						</div>
-						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
-						</div>
+    					<div class="player-tray-wrapper">
+    						<h4 class="position">Attack</h4>
+    						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
+    						</div>
+    					</div>
+    					<div class="player-tray-wrapper">
+        					<h4 class="position">Defence</h4>
+    						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
+    						</div>
+    					</div>
 					</div>
 					<div class="score" id="team-1-score">
 						<h4>Score</h4>
@@ -93,10 +99,16 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 				<h2>Yellow Team</h2>
 				<div class="team">
 					<div class="on-field">
-						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
-						</div>
-						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
-						</div>
+    					<div class="player-tray-wrapper">
+        					<h4 class="position charcoal">Attack</h4>
+    						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
+    						</div>
+    					</div>
+    					<div class="player-tray-wrapper">
+        					<h4 class="position charcoal">Defence</h4>
+    						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
+    						</div>
+    					</div>
 					</div>
 					<div class="score" id="team-2-score">
 						<h4>Score</h4>
