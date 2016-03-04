@@ -14,6 +14,9 @@
 	<link rel="stylesheet" href="assets/gridberg.2.1/CSS/gridberg.css">
 	<link rel="stylesheet" href="assets/js/dragdealer/dragdealer.css">
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+	
+	<!-- Icon -->
+	<link rel="apple-touch-icon" href="/assets/images/foosball-icon.png">
 
 	<!-- Scripts -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
