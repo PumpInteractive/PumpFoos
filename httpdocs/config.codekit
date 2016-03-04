@@ -68,6 +68,17 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
+	"\/assets\/images\/foosball-icon.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 3844,
+		"inputAbbreviatedPath": "\/assets\/images\/foosball-icon.png",
+		"outputAbbreviatedPath": "\/assets\/images\/foosball-icon.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
 	"\/assets\/images\/foosgrass.jpg": {
 		"fileType": 16384,
 		"ignore": 0,
