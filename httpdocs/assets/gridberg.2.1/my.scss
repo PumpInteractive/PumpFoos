@@ -51,6 +51,7 @@ $medium-white: #ddd;
 $gray: #ccc;
 $charcoal: #333;
 $sage-green: #50aa00;
+$crimson: #c40000;
 #wrapper {
 	width: 100%;
 	overflow: hidden;
@@ -62,6 +63,32 @@ $sage-green: #50aa00;
 }
 .player-tray-wrapper {
     float: left;
+    .player-info {
+        float: left;
+    }
+    .player-buttons {
+        min-width: 25px;
+        min-height: 25px;
+        &.left {
+            float: left;
+        }
+        &.right {
+            float: right;
+        }
+        .challenge {
+            display: none;
+            background: $crimson;
+            color: white;
+            @include text-percent(14);
+            @include header-bold;
+            padding: 5px;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            cursor: pointer;
+        }
+    }
     .position {
         color: white;
         @include text-percent(14);
@@ -153,12 +180,14 @@ $sage-green: #50aa00;
 			padding: 30px 20px 20px 20px;
 			@include clearfix;
 			.on-field {
-				width: 220px;
+				width: auto;
 				margin: 0px auto;
 				@include clearfix;
+				display: flex;
+				justify-content: center;
 			}
 			.player-tray {
-				float: left;
+				float: none;
 				margin: 0px 5px 10px 5px;
 				transition: all 0.35s;
 				.player {
@@ -440,7 +469,7 @@ $sage-green: #50aa00;
 			padding: 20px 0px 20px 0px;
 			@include clearfix;
 			.on-field {
-				width: 181px;
+				width: auto;
 			}
 			.player-tray {
 				float: left;

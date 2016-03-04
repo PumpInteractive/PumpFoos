@@ -77,14 +77,24 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 				<div class="team">
 					<div class="on-field">
     					<div class="player-tray-wrapper">
-    						<h4 class="position">Attack</h4>
-    						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
+    						<div class="player-buttons player-buttons-1 left">
+        						<div class="challenge" data-player-challenge-id="">C</div>
+    						</div>
+    						<div class="player-info">
+        						<h4 class="position">Attack</h4>
+        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
+    						    </div>
     						</div>
     					</div>
     					<div class="player-tray-wrapper">
-        					<h4 class="position">Defence</h4>
-    						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
+        					<div class="player-buttons player-buttons-2 right">
+        						<div class="challenge" data-player-challenge-id="">C</div>
     						</div>
+        					<div class="player-info">
+        					    <h4 class="position">Defence</h4>
+        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
+        						</div>
+        					</div>
     					</div>
 					</div>
 					<div class="score" id="team-1-score">
@@ -101,13 +111,23 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 				<div class="team">
 					<div class="on-field">
     					<div class="player-tray-wrapper">
-        					<h4 class="position charcoal">Attack</h4>
-    						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
+    						<div class="player-buttons player-buttons-3 left">
+        						<div class="challenge" data-player-challenge-id="">C</div>
+    						</div>
+    						<div class="player-info">
+        						<h4 class="position charcoal">Attack</h4>
+        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
+        						</div>
     						</div>
     					</div>
     					<div class="player-tray-wrapper">
-        					<h4 class="position charcoal">Defence</h4>
-    						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
+    						<div class="player-buttons player-buttons-4 right">
+        						<div class="challenge" data-player-challenge-id="">C</div>
+    						</div>
+    						<div class="player-info">
+        						<h4 class="position charcoal">Defence</h4>
+        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
+        						</div>
     						</div>
     					</div>
 					</div>
@@ -445,28 +465,35 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			//Add the player to the matching form input
 			var trayNumber = $(this).droppable().data('active-tray-id');
 			$('input[name=player'+trayNumber+']').attr('value', playerId);
-
+            
+            //Activate the player buttons for the added player
+            $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
+            $('.player-buttons-'+trayNumber).children('.challenge').attr('data-player-challenge-id', playerId);
+            
 			//activate the scoreboard for that team
 			var scoreTrigger = $(this).droppable().data('team');
 			$('#team-'+scoreTrigger+'-score').animate({opacity: 'show'}, 350);
 
-
-			var userReplace = "<@"+playerId+">";
-		    $.ajax({
-			  	type: 'POST',
-				url: 'webhook.php',
-	            data: {frontend: 1,logMatch:"challenge_player",playerName:replaceIDs(userReplace)},
-		           success: function(data)
-		           {
-			           	if(data != "" && data != undefined)
-			           	{
-			                $('.alert-modal-text').text(data);
-			   				$('#alert-modal').animate({opacity: 'show'}, 350);  
-			           	}
-		           }
-				});
 			}
-
+            
+        //Challenge
+        $('.challenge').on('click touch', function() {
+            var challengeId = $(this).data('player-challenge-id');
+            var userReplace = "<@"+challengeId+">";
+            $.ajax({
+		  	type: 'POST',
+			url: 'webhook.php',
+            data: {frontend: 1,logMatch:"challenge_player",playerName:replaceIDs(userReplace)},
+	           success: function(data)
+	           {
+		           	if(data != "" && data != undefined)
+		           	{
+		                $('.alert-modal-text').text(data);
+		   				$('#alert-modal').animate({opacity: 'show'}, 350);  
+		           	}
+	           }
+			});
+        });
 		$('#alert-thanks').on("click touch", function(){
 			$('#alert-modal').hide();
 		});
