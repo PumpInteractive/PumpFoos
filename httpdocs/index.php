@@ -285,6 +285,9 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		
 		//On the form submit, fire a nicde little modal.
 		$( "#finish-match" ).submit(function( event ) {
+          /* Sweet Audio Bro */
+          var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
+          muchRejoicing.play();
 		  event.preventDefault();
 		  $.ajax({
 		  	type: 'POST',
@@ -302,9 +305,6 @@ require_once realpath(__DIR__ . '/../').'/config.php';
     			   confetti();
 	           }
 			});
-			/* Sweet Audio Bro */
-	        var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
-            //muchRejoicing.play();
 		});
 		
 		$('#new-match').on('click touch', function() {
