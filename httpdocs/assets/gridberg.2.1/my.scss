@@ -123,6 +123,7 @@ $crimson: #c40000;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
+	transform: translate3d(0,0,0);
 	.label {
 		@include text-percent(10);
 		@include header-bold;
