@@ -73,69 +73,170 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		</div>
 		<div id="field">
 			<div id="team-1" class="team-box">
-				<h2>Black Team</h2>
+				<h2>Black Team <div class="score-value" data-team="1"></div></h2>
 				<div class="team">
 					<div class="on-field">
-    					<div class="player-tray-wrapper">
-    						<div class="player-buttons player-buttons-1 left">
-        						<div class="challenge" data-player-challenge-id="">C</div>
-    						</div>
-    						<div class="player-info">
-        						<h4 class="position">Attack</h4>
-        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
-    						    </div>
-    						</div>
+    					<div class="position-wrapper">
+	    					<div class="player-tray-wrapper clearfix">
+	        					<div class="player-buttons player-buttons-2 left">
+	        						<div class="challenge" data-player-challenge-id="">C</div>
+	    						</div>
+	        					<div class="player-info">
+	        					    <h4 class="position">Defence</h4>
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
+	        						</div>
+	        					</div>
+	    					</div>
+	    					<div class="poles poles-2">
+								<div class="pole">
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+								</div>
+								<div class="pole">
+		    						<div class="man">
+		    							<div class="score-plus" data-team="1"></div>
+		    						</div>
+		    						<div class="man">
+		    							<div class="score-plus" data-team="1"></div>
+		    						</div>
+								</div>
+							</div>
     					</div>
-    					<div class="player-tray-wrapper">
-        					<div class="player-buttons player-buttons-2 right">
-        						<div class="challenge" data-player-challenge-id="">C</div>
-    						</div>
-        					<div class="player-info">
-        					    <h4 class="position">Defence</h4>
-        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
-        						</div>
-        					</div>
+    					<div class="position-wrapper">
+	    					<div class="player-tray-wrapper clearfix">
+	    						<div class="player-buttons player-buttons-1 left">
+	        						<div class="challenge" data-player-challenge-id="">C</div>
+	    						</div>
+	    						<div class="player-info">
+	        						<h4 class="position">Attack</h4>
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
+	    						    </div>
+	    						</div>
+	    					</div>
+	    					<div class="poles poles-1">
+		    					<div class="pole">
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus" data-team="1"></div>
+									</div>
+								</div>
+								<div class="pole">
+		    						<div class="man">
+		    							<div class="score-plus" data-team="1"></div>
+		    						</div>
+		    						<div class="man">
+		    							<div class="score-plus" data-team="1"></div>
+		    						</div>
+		    						<div class="man">
+		    							<div class="score-plus" data-team="1"></div>
+		    						</div>
+								</div>
+							</div>
     					</div>
-					</div>
-					<div class="score" id="team-1-score">
-						<h4>Score</h4>
-						<div class="score-plus" data-team="1">+</div>
-						<div class="score-value" data-team="1">0</div>
-						<div class="score-minus" data-team="1">-</div>
 					</div>
 				</div>
 			</div>
 
 			<div id="team-2" class="team-box">
-				<h2>Yellow Team</h2>
+				<h2>Yellow Team <div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
-    					<div class="player-tray-wrapper">
-    						<div class="player-buttons player-buttons-3 left">
-        						<div class="challenge" data-player-challenge-id="">C</div>
-    						</div>
-    						<div class="player-info">
-        						<h4 class="position charcoal">Attack</h4>
-        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
-        						</div>
-    						</div>
+    					
+						<div class="position-wrapper">
+	    					<div class="player-tray-wrapper clearfix">
+	    						<div class="player-buttons player-buttons-3 left">
+	        						<div class="challenge" data-player-challenge-id="">C</div>
+	    						</div>
+	    						<div class="player-info">
+	        						<h4 class="position charcoal">Attack</h4>
+	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
+	        						</div>
+	    						</div>
+	    					</div>
+	    					<div class="poles poles-3">
+		    					<div class="pole">
+		    						<div class="man">
+		    							<div class="score-plus yellow" data-team="2"></div>
+		    						</div>
+		    						<div class="man">
+		    							<div class="score-plus yellow" data-team="2"></div>
+		    						</div>
+		    						<div class="man">
+		    							<div class="score-plus yellow" data-team="2"></div>
+		    						</div>
+								</div>
+								<div class="pole">
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="position-wrapper">
+	    					<div class="player-tray-wrapper clearfix">
+	    						<div class="player-buttons player-buttons-4 left">
+	        						<div class="challenge" data-player-challenge-id="">C</div>
+	    						</div>
+	    						<div class="player-info">
+	        						<h4 class="position charcoal">Defence</h4>
+	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
+	        						</div>
+	    						</div>
+	    					</div>
+	    					<div class="poles poles-4">
+		    					<div class="pole">
+		    						<div class="man">
+		    							<div class="score-plus yellow" data-team="2"></div>
+		    						</div>
+		    						<div class="man">
+		    							<div class="score-plus yellow" data-team="2"></div>
+		    						</div>
+								</div>
+								<div class="pole">
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+									<div class="man">
+										<div class="score-plus yellow" data-team="2"></div>
+									</div>
+								</div>
+							</div>
     					</div>
-    					<div class="player-tray-wrapper">
-    						<div class="player-buttons player-buttons-4 right">
-        						<div class="challenge" data-player-challenge-id="">C</div>
-    						</div>
-    						<div class="player-info">
-        						<h4 class="position charcoal">Defence</h4>
-        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
-        						</div>
-    						</div>
-    					</div>
-					</div>
-					<div class="score" id="team-2-score">
-						<h4>Score</h4>
-						<div class="score-plus" data-team="2">+</div>
-						<div class="score-value" data-team="2">0</div>
-						<div class="score-minus" data-team="2">-</div>
+
 					</div>
 				</div>
 			</div>
@@ -367,10 +468,14 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		teamTwoScore = 0;
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
-
 		//Record and Update Scores
 		$('.score-plus').on('click touch', function() {
-			//plusSound.play();
+			plusSound.currentTime = 0; 
+			plusSound.play();
+			$(this).addClass('goal');
+			setTimeout(function(){ 
+				$('.score-plus.goal').removeClass('goal');
+			}, 350);
 			if ($(this).data('team') == 1) {
 				teamOneScore++;
 				$('.score-value[data-team="1"]').text(teamOneScore);
@@ -470,6 +575,9 @@ require_once realpath(__DIR__ . '/../').'/config.php';
             $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
             $('.player-buttons-'+trayNumber).children('.challenge').attr('data-player-challenge-id', playerId);
             
+			//Activate poles for the added player
+			$('.poles-'+trayNumber).addClass('opened');
+
 			//activate the scoreboard for that team
 			var scoreTrigger = $(this).droppable().data('team');
 			$('#team-'+scoreTrigger+'-score').animate({opacity: 'show'}, 350);
