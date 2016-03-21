@@ -62,7 +62,6 @@ $crimson: #c40000;
 	min-height: 100%;
 }
 .player-tray-wrapper {
-    float: left;
     .player-info {
         float: left;
     }
@@ -169,23 +168,109 @@ $crimson: #c40000;
 	.team-box {
 		min-height: 50%;
 		width: 100%;
-		text-align: center;
 		h2 {
 			@include text-percent(26);
 			@include header-bold;
 			text-transform: uppercase;
 			padding: 20px 40px 20px 40px;
+			.score-value {
+				float: right;
+			    background: $crimson;
+			    border-radius: 3px;
+			    padding: 0px 10px 0px 10px;
+			}
 		}
 		.team {
 			text-align: center;
-			padding: 30px 20px 20px 20px;
+			padding: 0px 0px 0px 0px;
 			@include clearfix;
 			.on-field {
 				width: auto;
 				margin: 0px auto;
 				@include clearfix;
-				display: flex;
-				justify-content: center;
+			}
+			.position-wrapper {
+				width: 100%;
+    			display: flex;
+    			justify-content: center;
+    			padding: 20px 20px 10px 20px;
+    			overflow: hidden;
+    			&:first-of-type {
+    				background-color: rgba(10,10,10,0.1);
+    			}
+    			&:last-of-type {
+    				
+    			};
+			}
+			.poles {
+				flex-grow: 1;
+				padding: 0px 0px 0px 20px;
+				transition: all 0.35s;
+				-webkit-transition: all 0.35s;
+				margin-top: -140px;
+				&.opened {
+					margin-top: 0px;
+				}
+				.pole {
+	    			display: flex;
+	    			padding: 0px 15px 15px 15px;
+	    			justify-content: center;
+	    			position: relative;
+	    			transition: all 0.35s;
+	    			-webkit-transition: all 0.35s;
+	    			&:before {
+	    				content: " ";
+	    				width: 100%;
+	    				height: 16px;
+	    				/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f2f6f8+0,d3d3d3+50,f2f6f8+100&0+0,1+4,1+95,0+100 */
+						background: -moz-linear-gradient(left,  rgba(242,246,248,0) 0%, rgba(240,243,245,1) 4%, rgba(211,211,211,1) 50%, rgba(239,243,244,1) 95%, rgba(242,246,248,0) 100%); /* FF3.6-15 */
+						background: -webkit-linear-gradient(left,  rgba(242,246,248,0) 0%,rgba(240,243,245,1) 4%,rgba(211,211,211,1) 50%,rgba(239,243,244,1) 95%,rgba(242,246,248,0) 100%); /* Chrome10-25,Safari5.1-6 */
+						background: linear-gradient(to right,  rgba(242,246,248,0) 0%,rgba(240,243,245,1) 4%,rgba(211,211,211,1) 50%,rgba(239,243,244,1) 95%,rgba(242,246,248,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+						filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f2f6f8', endColorstr='#00f2f6f8',GradientType=1 ); /* IE6-9 */
+	    				position: absolute;
+	    				top: 50%;
+	    				left: 0px;
+	    				margin-top: -16px;
+	    			};
+	    			.man {
+	    				display: block;
+	    				flex-grow: 1;
+	    				position: relative;
+	    				background-size: 30px auto;
+	    				background-position: center center;
+	    				background-repeat: no-repeat;
+	    				.score-plus {
+	    					@include text-percent(41);
+							@include header-bold;
+							color: white;
+							background-color: gray;
+							height: 50px;
+							width: 50px;
+							border-radius: 50%;
+							cursor: pointer;
+							text-align: center;
+							margin: 0px auto;
+							border: 4px solid $charcoal;
+							line-height: 0.80;
+							transition: all 0.35s;
+							-webkit-transition: all 0.35s;
+							background-image: url('../../images/man-black.svg');
+							background-repeat: no-repeat;
+							background-position: center center;
+							background-size: 12px auto;
+							&.yellow {
+								background-image: url('../../images/man-yellow.svg');
+							}
+							&.goal {
+								border: 4px solid $sage-green;
+								background-color: #ddd;
+								background-repeat: no-repeat;
+								background-position: center center;
+								background-size: 18px auto;
+							}
+	    				}
+	    			}
+				}
 			}
 			.player-tray {
 				float: none;
@@ -463,14 +548,25 @@ $crimson: #c40000;
 			@include text-percent(22);
 			@include header-bold;
 			text-transform: uppercase;
-			padding: 20px 0px 20px 0px;
+			padding: 20px 20px 20px 20px;
 		}
 		.team {
 			text-align: center;
-			padding: 20px 0px 20px 0px;
+			padding: 0px 0px 0px 0px;
 			@include clearfix;
 			.on-field {
 				width: auto;
+				padding-bottom: 20px;
+			}
+			.position-wrapper {
+				display: block;
+				padding: 20px 0px 20px 0px;
+				min-height: 140px;
+			}
+			.player-tray-wrapper {
+				width: 115px;
+    			margin: 0px auto;
+    			padding-bottom: 20px;
 			}
 			.player-tray {
 				float: left;
@@ -508,10 +604,46 @@ $crimson: #c40000;
 					display: inline-block;
 				}
 			}
+			.poles {
+				margin-top: 0px;
+				margin-bottom: -150px;
+				padding: 0px;
+				&.opened {
+					margin-bottom: 0px;
+				}
+				.pole {
+					.man {
+	    				display: block;
+	    				flex-grow: 1;
+	    				position: relative;
+	    				background-size: 30px auto;
+	    				background-position: center center;
+	    				background-repeat: no-repeat;
+	    				.score-plus {
+							height: 40px;
+							width: 40px;
+							background-image: url('../../images/man-black.svg');
+							background-repeat: no-repeat;
+							background-position: center center;
+							background-size: 8px auto;
+							&.yellow {
+								background-image: url('../../images/man-yellow.svg');
+							}
+							&.goal {
+								border: 4px solid $sage-green;
+								background-color: #ddd;
+								background-repeat: no-repeat;
+								background-position: center center;
+								background-size: 12px auto;
+							}
+	    				}
+	    			}
+				}
+			}
 		}
 	}
 	#team-2 {
-		padding-bottom: 87px;
+		padding-bottom: 50px;
 	}
 }
 #finish-match {
