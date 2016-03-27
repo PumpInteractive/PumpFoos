@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="assets/gridberg.2.1/CSS/gridberg.css">
 	<link rel="stylesheet" href="assets/js/dragdealer/dragdealer.css">
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-	
+
 	<!-- Icon -->
 	<link rel="apple-touch-icon" href="/assets/images/foosball-icon.png">
 
@@ -27,10 +27,11 @@
 
 </head>
 <body>
-<?php 
+<?php
 require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
 
 require_once realpath(__DIR__ . '/../').'/config.php';
+
 ?>
 	<div id="wrapper">
 		<div id="bench">
@@ -49,8 +50,24 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 					    exit();
 					}
 					else {
+						// Get all men and their position and id
+						$men = [];
+						$result = $mysqli->query("SELECT id, team, rod, position FROM men ORDER BY position ASC");
+						while($row = $result->fetch_assoc()){
+							$men[$row['team']][$row['rod']][$row['position']] = $row['id'];
+						}
+						$result->close();
+
+						// Get all men scoring shortcut codes
+						$scoring_codes = [];
+						$result = $mysqli->query("SELECT id, scoring_key_code FROM men");
+						while($row = $result->fetch_assoc()){
+							$scoring_codes[$row['id']] = $row['scoring_key_code'];
+						}
+						$result->close();
+
 						/* Select queries return a resultset */
-						$result = $mysqli->query("SELECT * FROM user_stats ORDER BY slack_user_name");
+						$result = $mysqli->query("SELECT * FROM players ORDER BY slack_user_name");
 						while($row = $result->fetch_assoc()){
 						?>
 						    <div class="player-tray" data-tray-id="<?php echo $row['slack_user_id']; ?>">
@@ -60,7 +77,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 								</div>
 							</div>
 
-						<?php }    
+						<?php }
 						/* free result set */
 						    $result->close();
 						}
@@ -89,23 +106,18 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	    					</div>
 	    					<div class="poles poles-2">
 								<div class="pole">
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
+									<?php foreach($men['black']['3-bar-goalie'] as $position => $man_id): ?>
+										<div class="man">
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+										</div>
+									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-		    						<div class="man">
-		    							<div class="score-plus" data-team="1"></div>
-		    						</div>
-		    						<div class="man">
-		    							<div class="score-plus" data-team="1"></div>
-		    						</div>
+		    						<?php foreach($men['black']['2-bar'] as $position => $man_id): ?>
+		    							<div class="man">
+		    								<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+		    							</div>
+		    						<?php endforeach; ?>
 								</div>
 							</div>
     					</div>
@@ -122,32 +134,18 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	    					</div>
 	    					<div class="poles poles-1">
 		    					<div class="pole">
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus" data-team="1"></div>
-									</div>
+									<?php foreach($men['black']['5-bar'] as $position => $man_id): ?>
+										<div class="man">
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+										</div>
+									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-		    						<div class="man">
-		    							<div class="score-plus" data-team="1"></div>
-		    						</div>
-		    						<div class="man">
-		    							<div class="score-plus" data-team="1"></div>
-		    						</div>
-		    						<div class="man">
-		    							<div class="score-plus" data-team="1"></div>
-		    						</div>
+		    						<?php foreach($men['black']['3-bar-attack'] as $position => $man_id): ?>
+		    							<div class="man">
+		    								<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+		    							</div>
+		    						<?php endforeach; ?>
 								</div>
 							</div>
     					</div>
@@ -159,7 +157,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 				<h2>Yellow Team <div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
-    					
+
 						<div class="position-wrapper">
 	    					<div class="player-tray-wrapper clearfix">
 	    						<div class="player-buttons player-buttons-3 left">
@@ -173,32 +171,18 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	    					</div>
 	    					<div class="poles poles-3">
 		    					<div class="pole">
-		    						<div class="man">
-		    							<div class="score-plus yellow" data-team="2"></div>
-		    						</div>
-		    						<div class="man">
-		    							<div class="score-plus yellow" data-team="2"></div>
-		    						</div>
-		    						<div class="man">
-		    							<div class="score-plus yellow" data-team="2"></div>
-		    						</div>
+		    						<?php foreach($men['yellow']['3-bar-attack'] as $position => $man_id): ?>
+										<div class="man">
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+										</div>
+									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
+									<?php foreach($men['yellow']['5-bar'] as $position => $man_id): ?>
+										<div class="man">
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+										</div>
+									<?php endforeach; ?>
 								</div>
 							</div>
 						</div>
@@ -216,23 +200,18 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	    					</div>
 	    					<div class="poles poles-4">
 		    					<div class="pole">
-		    						<div class="man">
-		    							<div class="score-plus yellow" data-team="2"></div>
-		    						</div>
-		    						<div class="man">
-		    							<div class="score-plus yellow" data-team="2"></div>
-		    						</div>
+		    						<?php foreach($men['yellow']['2-bar'] as $position => $man_id): ?>
+										<div class="man">
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+										</div>
+									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
-									<div class="man">
-										<div class="score-plus yellow" data-team="2"></div>
-									</div>
+									<?php foreach($men['yellow']['3-bar-goalie'] as $position => $man_id): ?>
+										<div class="man">
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+										</div>
+									<?php endforeach; ?>
 								</div>
 							</div>
     					</div>
@@ -262,7 +241,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		<input type="submit" value="End Match"/>
 
 	</form>
-	
+
 	<canvas id="confetti"></canvas>
 	<div id="match-modal">
     	<div class="match-modal-inner">
@@ -279,18 +258,29 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	</div>
 
 	<script type="text/javascript">
+		// Shortcut key listeners
+		var scoring_codes = {
+			<?php foreach ($scoring_codes as $man_id => $scoring_code): ?>
+				<?php echo $scoring_code . ':"man-' . $man_id . '",'; ?>
+			<?php endforeach; ?>
+		};
+		$(document).keydown(function(e){
+			if (e.keyCode in scoring_codes)
+		    	$('#'+scoring_codes[e.keyCode]).click();
+		});
+
     	//Confetti
         function confetti() {
             //canvas init
             var canvas = document.getElementById("confetti");
             var ctx = canvas.getContext("2d");
-        
+
             //canvas dimensions
             var W = window.innerWidth;
             var H = window.innerHeight;
             canvas.width = W;
             canvas.height = H;
-        
+
             //snowflake particles
             var mp = 200; //max particles
             var particles = [];
@@ -304,13 +294,13 @@ require_once realpath(__DIR__ . '/../').'/config.php';
                     tilt: Math.floor(Math.random() * 5) - 5
                 });
             }
-        
+
             //Lets draw the flakes
             function draw() {
                 ctx.clearRect(0, 0, W, H);
-        
-        
-        
+
+
+
                 for (var i = 0; i < mp; i++) {
                     var p = particles[i];
                     ctx.beginPath();
@@ -320,14 +310,14 @@ require_once realpath(__DIR__ . '/../').'/config.php';
                     ctx.lineTo(p.x + p.tilt + p.r / 2, p.y + p.tilt);
                     ctx.stroke(); // Draw it
                 }
-        
+
                 update();
             }
-        
+
             //Function to move the snowflakes
             //angle will be an ongoing incremental flag. Sin and Cos functions will be applied to it to create vertical and horizontal movements of the flakes
             var angle = 0;
-        
+
             function update() {
                 angle += 0.01;
                 for (var i = 0; i < mp; i++) {
@@ -338,7 +328,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
                     //Lets make it more random by adding in the radius
                     p.y += Math.cos(angle + p.d) + 1 + p.r / 2;
                     p.x += Math.sin(angle) * 2;
-        
+
                     //Sending flakes back from the top when it exits
                     //Lets make it a bit more organic and let flakes enter from the left and right also.
                     if (p.x > W + 5 || p.x < -5 || p.y > H) {
@@ -379,11 +369,11 @@ require_once realpath(__DIR__ . '/../').'/config.php';
                     }
                 }
             }
-        
+
             //animation loop
             setInterval(draw, 20);
         }
-		
+
 		//On the form submit, fire a nicde little modal.
 		$( "#finish-match" ).submit(function( event ) {
           /* Sweet Audio Bro */
@@ -399,7 +389,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	               obj = JSON.parse(data);
     			   text = replaceIDs(obj.text);
     			   leaderboard = obj.leaderboard;
-	               
+
     			   $('.match-modal-text').text(text);
     			   $('#match-modal').animate({opacity: 'show'}, 350);
     			   $('#confetti').animate({opacity: 'show'}, 350);
@@ -407,7 +397,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 	           }
 			});
 		});
-		
+
 		$('#new-match').on('click touch', function() {
     		location.reload();
 		});
@@ -470,10 +460,10 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		minusSound = new Audio('assets/sounds/minus.mp3');
 		//Record and Update Scores
 		$('.score-plus').on('click touch', function() {
-			plusSound.currentTime = 0; 
+			plusSound.currentTime = 0;
 			plusSound.play();
 			$(this).addClass('goal');
-			setTimeout(function(){ 
+			setTimeout(function(){
 				$('.score-plus.goal').removeClass('goal');
 			}, 350);
 			if ($(this).data('team') == 1) {
@@ -535,7 +525,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			dragDealer.options.vertical = false;
 			$('.players-dummy').css('transform', 'translateY(' + vertPx + 'px)');
 			$('.players').css('transform', 'translateY(0px)');
-			
+
 		}
 
 		function enableDragDealer() {
@@ -543,7 +533,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			$('.players-dummy').css('transform', 'translateY(0px)');
 			dragDealer.options.vertical = true;
 			$('.players').css('transform', 'translateY(' + vertPx + 'px)');
-			
+
 		}
 
 		//set the drop zones
@@ -570,11 +560,11 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			//Add the player to the matching form input
 			var trayNumber = $(this).droppable().data('active-tray-id');
 			$('input[name=player'+trayNumber+']').attr('value', playerId);
-            
+
             //Activate the player buttons for the added player
             $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
             $('.player-buttons-'+trayNumber).children('.challenge').attr('data-player-challenge-id', playerId);
-            
+
 			//Activate poles for the added player
 			$('.poles-'+trayNumber).addClass('opened');
 
@@ -583,7 +573,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			$('#team-'+scoreTrigger+'-score').animate({opacity: 'show'}, 350);
 
 			}
-            
+
         //Challenge
         $('.challenge').on('click touch', function() {
             var challengeId = $(this).data('player-challenge-id');
@@ -597,7 +587,7 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		           	if(data != "" && data != undefined)
 		           	{
 		                $('.alert-modal-text').text(data);
-		   				$('#alert-modal').animate({opacity: 'show'}, 350);  
+		   				$('#alert-modal').animate({opacity: 'show'}, 350);
 		           	}
 	           }
 			});
