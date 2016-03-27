@@ -1,4 +1,57 @@
-<!DOCTYPE html>
+<?php
+// ** MOVE OUT OF VIEW SOON :)
+require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
+
+require_once realpath(__DIR__ . '/../').'/config.php';
+
+// Get all data for the view
+$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
+
+if ($mysqli->connect_errno) {
+    printf("Database Connect Failed: %s\n", $mysqli->connect_error);
+    exit();
+}
+
+// Get all men and their position and id
+$men = [];
+$result = $mysqli->query("SELECT id, team, rod, position FROM men ORDER BY position ASC");
+while($row = $result->fetch_assoc()){
+	$men[$row['team']][$row['rod']][$row['position']] = $row['id'];
+}
+$result->close();
+
+// Get all men scoring shortcut codes
+$scoring_codes = [];
+$result = $mysqli->query("SELECT id, scoring_key_code FROM men");
+while($row = $result->fetch_assoc()){
+	$scoring_codes[$row['id']] = $row['scoring_key_code'];
+}
+$result->close();
+
+// Get all game types
+$game_types = [];
+$result = $mysqli->query("SELECT id, name, number_of_players FROM game_types ORDER BY `default` DESC");
+while($row = $result->fetch_assoc()){
+	$game_types[] = [
+		'id' => $row['id'],
+		'name' => $row['name'],
+		'number_of_players' => $row['number_of_players']
+	];
+}
+$result->close();
+
+// Get all players
+// Use Slack to Generate Players, ID, Name, Pictures (update img/bg)?
+$players = [];
+$result = $mysqli->query("SELECT * FROM players ORDER BY slack_user_name");
+while($row = $result->fetch_assoc()){
+	$players[] = $row;
+}
+$result->close();
+
+$mysqli->close();
+
+?><!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -27,12 +80,6 @@
 
 </head>
 <body>
-<?php
-require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
-
-require_once realpath(__DIR__ . '/../').'/config.php';
-
-?>
 	<div id="wrapper">
 		<div id="bench">
 			<div class="players-dummy">
@@ -41,49 +88,17 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 					<div id="updatePlayers">Refresh Players</div><br /><br />
 					<div class="players-inner">
 
-					<!-- Use Slack to Generate Players, ID, Name, Pictures (update img/bg)? -->
+					<!--  -->
 					<!-- data-tray-id should match player-id (used by js) -->
-					<?php $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
 
-					if ($mysqli->connect_errno) {
-					    printf("Connect failed: %s\n", $mysqli->connect_error);
-					    exit();
-					}
-					else {
-						// Get all men and their position and id
-						$men = [];
-						$result = $mysqli->query("SELECT id, team, rod, position FROM men ORDER BY position ASC");
-						while($row = $result->fetch_assoc()){
-							$men[$row['team']][$row['rod']][$row['position']] = $row['id'];
-						}
-						$result->close();
-
-						// Get all men scoring shortcut codes
-						$scoring_codes = [];
-						$result = $mysqli->query("SELECT id, scoring_key_code FROM men");
-						while($row = $result->fetch_assoc()){
-							$scoring_codes[$row['id']] = $row['scoring_key_code'];
-						}
-						$result->close();
-
-						/* Select queries return a resultset */
-						$result = $mysqli->query("SELECT * FROM players ORDER BY slack_user_name");
-						while($row = $result->fetch_assoc()){
-						?>
-						    <div class="player-tray" data-tray-id="<?php echo $row['slack_user_id']; ?>">
-								<div class="player" data-player-id="<?php echo $row['slack_user_id']; ?>" data-player-name="<?php echo $row['slack_user_name']; ?>"
-									style='background-image: url("<?php echo $row['slack_profile_pic_url']; ?>")'>
-								<div class="label"><?php echo $row['slack_user_name']; ?></div>
+						<?php foreach ($players as $player): ?>
+						    <div class="player-tray" data-tray-id="<?= $player['slack_user_id']; ?>">
+								<div class="player" data-player-id="<?= $player['slack_user_id']; ?>" data-player-name="<?= $player['slack_user_name']; ?>"
+									style='background-image: url("<?= $player['slack_profile_pic_url']; ?>")'>
+								<div class="label"><?= $player['slack_user_name']; ?></div>
 								</div>
 							</div>
-
-						<?php }
-						/* free result set */
-						    $result->close();
-						}
-
-						$mysqli->close();
-					?>
+						<?php endforeach; ?>
 					</div>
 				</div>
 			</div>
@@ -152,7 +167,13 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 					</div>
 				</div>
 			</div>
-
+			<h5 style="background-color: white;">Game Type</h5>
+			<select name="game_type_id" id="game_type_id">
+				<?php foreach ($game_types as $game_type): ?>
+					<option value="<?= $game_type['id']; ?>" data-number_of_players="<?= $game_type['number_of_players']; ?>"><?= $game_type['name']; ?></option>
+				<?php endforeach; ?>
+			</select>
+			<div id="start_game" style="background-color: red;">START GAME</div>
 			<div id="team-2" class="team-box">
 				<h2>Yellow Team <div class="score-value" data-team="2"></div></h2>
 				<div class="team">
@@ -173,14 +194,14 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		    					<div class="pole">
 		    						<?php foreach($men['yellow']['3-bar-attack'] as $position => $man_id): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 									<?php foreach($men['yellow']['5-bar'] as $position => $man_id): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -202,14 +223,14 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		    					<div class="pole">
 		    						<?php foreach($men['yellow']['2-bar'] as $position => $man_id): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 									<?php foreach($men['yellow']['3-bar-goalie'] as $position => $man_id): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -227,12 +248,12 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 		<input type="hidden" name="frontend" value="1"/>
 		<input type="hidden" name="logMatch" value="end_match"/>
 		<!-- Team 1 -->
-		<input type="hidden" name="player1" value=""/>
-		<input type="hidden" name="player2" value=""/>
+		<input type="hidden" class="player_hidden_input" name="player1" value=""/>
+		<input type="hidden" class="player_hidden_input" name="player2" value=""/>
 
 		<!-- Team 2 -->
-		<input type="hidden" name="player3" value=""/>
-		<input type="hidden" name="player4" value=""/>
+		<input type="hidden" class="player_hidden_input" name="player3" value=""/>
+		<input type="hidden" class="player_hidden_input" name="player4" value=""/>
 
 		<!-- Team Scores -->
 		<input type="hidden" name="teamScore1" value="0"/>
@@ -541,6 +562,22 @@ require_once realpath(__DIR__ . '/../').'/config.php';
     		drop: handleDropEvent
   		});
 
+  		function checkStartGame() {
+  			// get number of players required for currently selected game
+  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
+
+  			// get number of players chosen
+  			var chosen_number_of_players = 0;
+  			$('.player_hidden_input').each(function(index){
+  				if(this.value != '')
+  					chosen_number_of_players++;
+  			});
+
+  			if(number_of_players == chosen_number_of_players) {
+  				$('#start_game').css('background-color', 'green');
+  			}
+  		}
+
 		//listen for a drop event
   		function handleDropEvent( event, ui ) {
 			var draggable = ui.draggable;
@@ -572,7 +609,8 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 			var scoreTrigger = $(this).droppable().data('team');
 			$('#team-'+scoreTrigger+'-score').animate({opacity: 'show'}, 350);
 
-			}
+			checkStartGame();
+		}
 
         //Challenge
         $('.challenge').on('click touch', function() {
