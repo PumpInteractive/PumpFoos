@@ -290,6 +290,15 @@ $mysqli->close();
 		    	$('#'+scoring_codes[e.keyCode]).click();
 		});
 
+		var game = {
+			on: false,
+			id: null,
+			start: function(game_id){
+				this.on = true;
+				this.id = game_id
+			}
+		};
+
     	//Confetti
         function confetti() {
             //canvas init
@@ -481,22 +490,24 @@ $mysqli->close();
 		minusSound = new Audio('assets/sounds/minus.mp3');
 		//Record and Update Scores
 		$('.score-plus').on('click touch', function() {
-			plusSound.currentTime = 0;
-			plusSound.play();
-			$(this).addClass('goal');
-			setTimeout(function(){
-				$('.score-plus.goal').removeClass('goal');
-			}, 350);
-			if ($(this).data('team') == 1) {
-				teamOneScore++;
-				$('.score-value[data-team="1"]').text(teamOneScore);
-				$('input[name=teamScore1]').attr('value', teamOneScore);
-			} else {
-				teamTwoScore++;
-				$('.score-value[data-team="2"]').text(teamTwoScore);
-				$('input[name=teamScore2]').attr('value', teamTwoScore);
+			if (game.on) {
+				plusSound.currentTime = 0;
+				plusSound.play();
+				$(this).addClass('goal');
+				setTimeout(function(){
+					$('.score-plus.goal').removeClass('goal');
+				}, 350);
+				if ($(this).data('team') == 1) {
+					teamOneScore++;
+					$('.score-value[data-team="1"]').text(teamOneScore);
+					$('input[name=teamScore1]').attr('value', teamOneScore);
+				} else {
+					teamTwoScore++;
+					$('.score-value[data-team="2"]').text(teamTwoScore);
+					$('input[name=teamScore2]').attr('value', teamTwoScore);
+				}
+				scoreChecker();
 			}
-			scoreChecker();
 		});
 
 		$('.score-minus').on('click touch', function() {
@@ -579,7 +590,40 @@ $mysqli->close();
   		}
 
   		function startGame() {
+  			// get player ids
+  			var player_ids = [];
+			$('.player_hidden_input').each(function(index){
+				if(this.value != '')
+					player_ids.push(this.value);
+			});
 
+			// get number of players required for currently selected game
+  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
+
+  			if(player_ids.length == number_of_players) {
+  				var game_type_id = $('#game_type_id option:selected').val();
+
+  				$.ajax({
+					type: "POST",
+					url: "/start-game.php",
+					data: {
+						'game_type_id': game_type_id,
+						'player_ids[]': player_ids
+					},
+					dataType: 'json',
+					success: function(response){
+						if (response.status == 'success') {
+							game.start(response.data.game_id);
+						} else if (response.status == 'fail') {
+
+						} else if (response.status == 'error') {
+							alert(response.message);
+						}
+					}
+  				});
+  			} else {
+  				alert("Pick "+number_of_players+" Players!");
+  			}
   		}
 
 		//listen for a drop event
@@ -637,6 +681,8 @@ $mysqli->close();
 		$('#alert-thanks').on("click touch", function(){
 			$('#alert-modal').hide();
 		});
+
+		$('#start_game').click(startGame);
 	</script>
 </body>
 </html>
