@@ -92,8 +92,8 @@ $mysqli->close();
 					<!-- data-tray-id should match player-id (used by js) -->
 
 						<?php foreach ($players as $player): ?>
-						    <div class="player-tray" data-tray-id="<?= $player['slack_user_id']; ?>">
-								<div class="player" data-player-id="<?= $player['slack_user_id']; ?>" data-player-name="<?= $player['slack_user_name']; ?>"
+						    <div class="player-tray" data-tray-id="<?= $player['id']; ?>">
+								<div class="player" data-player-id="<?= $player['id']; ?>" data-player-name="<?= $player['slack_user_name']; ?>"
 									style='background-image: url("<?= $player['slack_profile_pic_url']; ?>")'>
 								<div class="label"><?= $player['slack_user_name']; ?></div>
 								</div>
@@ -293,9 +293,12 @@ $mysqli->close();
 		var game = {
 			on: false,
 			id: null,
-			start: function(game_id){
+            number_of_players: null,
+            goals: [],
+			start: function(game_id, number_of_players){
 				this.on = true;
-				this.id = game_id
+				this.id = game_id;
+                this.number_of_players = number_of_players;
 			}
 		};
 
@@ -491,7 +494,9 @@ $mysqli->close();
 		//Record and Update Scores
 		$('.score-plus').on('click touch', function() {
 			if (game.on) {
-				plusSound.currentTime = 0;
+                var defending_player_id = null;
+
+                plusSound.currentTime = 0;
 				plusSound.play();
 				$(this).addClass('goal');
 				setTimeout(function(){
@@ -501,32 +506,75 @@ $mysqli->close();
 					teamOneScore++;
 					$('.score-value[data-team="1"]').text(teamOneScore);
 					$('input[name=teamScore1]').attr('value', teamOneScore);
+
+                    // get scored on goalie id
+                    if (game.number_of_players == 4) {
+                        defending_player_id = $('input[name=player4]').val();
+                    } else {
+                        defending_player_id = $('input[name=player3]').val();
+                    }
+
 				} else {
 					teamTwoScore++;
 					$('.score-value[data-team="2"]').text(teamTwoScore);
 					$('input[name=teamScore2]').attr('value', teamTwoScore);
+
+                    // get scored on goalie id
+                    if (game.number_of_players == 4) {
+                        defending_player_id = $('input[name=player2]').val();
+                    } else {
+                        defending_player_id = $('input[name=player1]').val();
+                    }
 				}
 				scoreChecker();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/score.php",
+                    data: {
+                        'game_id': game.id,
+                        'scoring_player_id': $(this).data('player_id'),
+                        'scoring_man_id': $(this).attr('id').replace('man-', ''),
+                        'defending_player_id': defending_player_id
+                    },
+                    dataType: 'json',
+                    success: function(response){
+                        console.log(response);
+
+                        if (response.status == 'success') {
+                            // do nothing visually as we've already made the UI updates
+                            // push the goal onto the goal stack for easy undo
+                            game.goals.push(response.data.goal_id);
+
+                        } else if (response.status == 'fail') {
+                            // Retry?
+                        } else if (response.status == 'error') {
+                            // Retry?
+                        }
+                    }
+                });
 			}
 		});
 
 		$('.score-minus').on('click touch', function() {
-			if ($(this).data('team') == 1) {
-				if(teamOneScore != 0) {
-					teamOneScore--;
-					$('.score-value[data-team="1"]').text(teamOneScore);
-					$('input[name=teamScore1]').attr('value', teamOneScore);
-					//minusSound.play();
-				}
-			} else {
-				if(teamTwoScore != 0) {
-					teamTwoScore--;
-					$('.score-value[data-team="2"]').text(teamTwoScore);
-					$('input[name=teamScore2]').attr('value', teamTwoScore);
-					//minusSound.play();
-				}
-			}
-			scoreChecker();
+            if (game.on) {
+    			if ($(this).data('team') == 1) {
+    				if(teamOneScore != 0) {
+    					teamOneScore--;
+    					$('.score-value[data-team="1"]').text(teamOneScore);
+    					$('input[name=teamScore1]').attr('value', teamOneScore);
+    					//minusSound.play();
+    				}
+    			} else {
+    				if(teamTwoScore != 0) {
+    					teamTwoScore--;
+    					$('.score-value[data-team="2"]').text(teamTwoScore);
+    					$('input[name=teamScore2]').attr('value', teamTwoScore);
+    					//minusSound.play();
+    				}
+    			}
+    			scoreChecker();
+            }
 		});
 
 		function scoreChecker() {
@@ -613,7 +661,7 @@ $mysqli->close();
 					dataType: 'json',
 					success: function(response){
 						if (response.status == 'success') {
-							game.start(response.data.game_id);
+							game.start(response.data.game_id, number_of_players);
 						} else if (response.status == 'fail') {
 
 						} else if (response.status == 'error') {
@@ -652,6 +700,9 @@ $mysqli->close();
 
 			//Activate poles for the added player
 			$('.poles-'+trayNumber).addClass('opened');
+
+            //Add playerId to men
+            $('.poles-'+trayNumber+' .score-plus').data('player_id', playerId);
 
 			//activate the scoreboard for that team
 			var scoreTrigger = $(this).droppable().data('team');

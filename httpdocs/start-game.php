@@ -38,7 +38,7 @@ $game_id = $mysqli->insert_id;
 foreach ($player_ids as $player_id) {
 	// Get player id
 
-	$mysqli->query("INSERT INTO games_players (game_id, player_id, position) SELECT '$game_id', players.id, 'front' FROM players WHERE slack_user_id = '$player_id'");
+	$mysqli->query("INSERT INTO games_players (game_id, player_id, position) VALUES ('$game_id', '$player_id', 'front')");
 }
 
 $response['status'] = 'success';
