@@ -63,6 +63,7 @@ $mysqli->close();
 	<!-- Fonts -->
 	<link href='http://fonts.googleapis.com/css?family=Titillium+Web:300,300italic,400,400italic,900,700,700italic' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Dosis:400,500,600,700' rel='stylesheet' type='text/css'>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	<!-- Styles -->
 	<link rel="stylesheet" href="assets/gridberg.2.1/CSS/gridberg.css">
@@ -167,13 +168,24 @@ $mysqli->close();
 					</div>
 				</div>
 			</div>
-			<h5 style="background-color: white;">Game Type</h5>
-			<select name="game_type_id" id="game_type_id">
-				<?php foreach ($game_types as $game_type): ?>
-					<option value="<?= $game_type['id']; ?>" data-number_of_players="<?= $game_type['number_of_players']; ?>"><?= $game_type['name']; ?></option>
-				<?php endforeach; ?>
-			</select>
-			<div id="start_game" style="background-color: red;">START GAME</div>
+
+			<div id="game-config">
+				
+				<div class="game-type">
+					<h5>Game Type</h5>
+					<div class="styled-select">
+						<select name="game_type_id" id="game_type_id">
+							<?php foreach ($game_types as $game_type): ?>
+								<option class="option" value="<?= $game_type['id']; ?>" data-number_of_players="<?= $game_type['number_of_players']; ?>"><?= $game_type['name']; ?></option>
+							<?php endforeach; ?>
+						</select>
+						<i class="material-icons">keyboard_arrow_down</i>
+					</div>
+				</div>
+
+				<div id="start_game"><span>Start Game</span></div>
+			</div>
+
 			<div id="team-2" class="team-box">
 				<h2>Yellow Team <div class="score-value" data-team="2"></div></h2>
 				<div class="team">
@@ -277,6 +289,14 @@ $mysqli->close();
         	<div id="alert-thanks">Are you not entertained?</div>
     	</div>
 	</div>
+
+	<div id="player-error-modal">
+    	<div class="player-error-modal-inner">
+        	<div class="player-error-modal-text"></div>
+        	<div id="player-error-thanks">Okay!</div>
+    	</div>
+	</div>
+
 
 	<script type="text/javascript">
 		// Shortcut key listeners
@@ -478,12 +498,18 @@ $mysqli->close();
 		}
 
 		//Force the Team Boxes to be at least half the screen height, just looks nice. Could remove.
-		var minHalf = $(window).outerHeight() / 2;
-		$('.team-box').css('minHeight', minHalf);
+		gameConfigHeight = $('#game-config').outerHeight() / 2;
+		
+		function setFieldHeight() {
+			var minHalfWindow = $(window).outerHeight() / 2;
+			var minHalf = minHalfWindow - gameConfigHeight;
+			$('.team-box').css('minHeight', minHalf);
+		}
+
+		setFieldHeight();
 
 		$( window ).resize(function() {
-			var minHalf = $(window).outerHeight() / 2;
-			$('.team-box').css('minHeight', minHalf);
+			setFieldHeight();
 		});
 
 		//set the scores to start
@@ -495,9 +521,9 @@ $mysqli->close();
 		$('.score-plus').on('click touch', function() {
 			if (game.on) {
                 var defending_player_id = null;
-
                 plusSound.currentTime = 0;
 				plusSound.play();
+
 				$(this).addClass('goal');
 				setTimeout(function(){
 					$('.score-plus.goal').removeClass('goal');
@@ -633,7 +659,7 @@ $mysqli->close();
   			});
 
   			if(number_of_players == chosen_number_of_players) {
-  				$('#start_game').css('background-color', 'green');
+  				$('#start_game').addClass('active');
   			}
   		}
 
@@ -649,6 +675,16 @@ $mysqli->close();
   			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
 
   			if(player_ids.length == number_of_players) {
+
+  				//collapse the #game-config
+  				gameConfigHeight = 0;
+  				setFieldHeight();
+  				$('#game-config').addClass('closed');
+  				$('html').addClass('disable-scrolling');
+  				setTimeout(function(){
+					$('html').removeClass('disable-scrolling');
+				}, 350);
+
   				var game_type_id = $('#game_type_id option:selected').val();
 
   				$.ajax({
@@ -670,7 +706,8 @@ $mysqli->close();
 					}
   				});
   			} else {
-  				alert("Pick "+number_of_players+" Players!");
+  				$('.player-error-modal-text').text("Pick "+number_of_players+" Players!");
+		   		$('#player-error-modal').animate({opacity: 'show'}, 350);
   			}
   		}
 
@@ -731,6 +768,10 @@ $mysqli->close();
         });
 		$('#alert-thanks').on("click touch", function(){
 			$('#alert-modal').hide();
+		});
+
+		$('#player-error-thanks').on("click touch", function(){
+			$('#player-error-modal').hide();
 		});
 
 		$('#start_game').click(startGame);
