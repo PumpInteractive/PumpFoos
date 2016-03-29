@@ -170,7 +170,7 @@ $mysqli->close();
 			</div>
 
 			<div id="game-config">
-				
+
 				<div class="game-type">
 					<h5>Game Type</h5>
 					<div class="styled-select">
@@ -499,7 +499,7 @@ $mysqli->close();
 
 		//Force the Team Boxes to be at least half the screen height, just looks nice. Could remove.
 		gameConfigHeight = $('#game-config').outerHeight() / 2;
-		
+
 		function setFieldHeight() {
 			var minHalfWindow = $(window).outerHeight() / 2;
 			var minHalf = minHalfWindow - gameConfigHeight;
@@ -561,7 +561,8 @@ $mysqli->close();
                         'game_id': game.id,
                         'scoring_player_id': $(this).data('player_id'),
                         'scoring_man_id': $(this).attr('id').replace('man-', ''),
-                        'defending_player_id': defending_player_id
+                        'defending_player_id': defending_player_id,
+                        'team': $(this).data('team')
                     },
                     dataType: 'json',
                     success: function(response){

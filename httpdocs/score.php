@@ -13,6 +13,7 @@ $game_id = isset($_POST['game_id']) ? $_POST['game_id'] : null;
 $scoring_player_id = isset($_POST['scoring_player_id']) ? $_POST['scoring_player_id'] : null;
 $scoring_man_id = isset($_POST['scoring_man_id']) ? $_POST['scoring_man_id'] : null;
 $defending_player_id = isset($_POST['defending_player_id']) ? $_POST['defending_player_id'] : null;
+$team = isset($_POST['team']) ? $_POST['team'] : null;
 
 $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
 
@@ -26,7 +27,7 @@ if ($mysqli->connect_errno) {
 }
 
 // Save the goal
-$mysqli->query("INSERT INTO goals (game_id, scoring_player_id, scoring_man_id, defending_player_id, created) VALUES ('$game_id', '$scoring_player_id', '$scoring_man_id', '$defending_player_id', NOW())");
+$mysqli->query("INSERT INTO goals (game_id, scoring_player_id, scoring_man_id, defending_player_id, team, created) VALUES ('$game_id', '$scoring_player_id', '$scoring_man_id', '$defending_player_id', '$team', NOW())");
 $goal_id = $mysqli->insert_id;
 
 $response['status'] = 'success';
