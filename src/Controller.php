@@ -3,11 +3,11 @@
 namespace PumpFoos;
 require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
 // Accept incoming post from Slack
-class Controller 
+class Controller
 {
 
     public function __construct(
-    ) 
+    )
     {
         $this->match_messages = [
             "Congrats %s! Sorry about your luck %s.",
@@ -48,7 +48,7 @@ class Controller
 
             foreach($losing_team_players[0] as $key => $player){
                 // Update stats
-                $query = 'INSERT INTO user_stats (slack_user_id, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, losses=losses + 1';
+                $query = 'INSERT INTO players (slack_user_id, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, losses=losses + 1';
                 $mysqli->query($query);
 
                 if ($mysqli->affected_rows <1) {
@@ -59,9 +59,9 @@ class Controller
 
             foreach($winning_team_players[0] as $key => $player){
                 // Update stats
-                $query = 'INSERT INTO user_stats (slack_user_id, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, wins=wins + 1';
+                $query = 'INSERT INTO players (slack_user_id, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, wins=wins + 1';
                 $mysqli->query($query);
-                
+
                 if ($mysqli->affected_rows <1) {
                     return json_encode(['text' => 'Hmm... there seems to be a database error. Sorry, the stats couldn\'t be saved.']);
                 }
@@ -78,9 +78,9 @@ class Controller
     public function getLeaderboard()
     {
         $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
-        
+
         // Get All Records
-        $query = 'SELECT * FROM user_stats ORDER BY wins ASC';
+        $query = 'SELECT * FROM players ORDER BY wins ASC';
         $result = $mysqli->query($query);
 
         $returnString = '';
@@ -88,7 +88,7 @@ class Controller
         while ($row = $result->fetch_array()) {
                 $returnString .= '<@' . $row["slack_user_id"] . '> has ' . $row['wins'] . ' wins and ' . $row['losses'] . ' losses in ' . $row['games_played'] . " games played.\n";
             }
-            
+
         $response = [
             "text" => $returnString
         ];
@@ -111,10 +111,10 @@ class Controller
                 $profile = $user->getProfile();
                 $urlString = $profile->getImage192();
                 $fixedString = str_replace(' ','/',$urlString);
-                $query = 'INSERT INTO user_stats (slack_user_id, slack_user_name, slack_profile_pic_url) 
-                VALUES (\''.$user->getID(). '\' ,\'' .$user->getName(). '\',\'' .$fixedString. '\') 
-                ON DUPLICATE KEY UPDATE slack_user_name=\''.$user->getName(). '\', slack_profile_pic_url="'.$fixedString.'"';   
-                $mysqli->query($query);                
+                $query = 'INSERT INTO players (slack_user_id, slack_user_name, slack_profile_pic_url)
+                VALUES (\''.$user->getID(). '\' ,\'' .$user->getName(). '\',\'' .$fixedString. '\')
+                ON DUPLICATE KEY UPDATE slack_user_name=\''.$user->getName(). '\', slack_profile_pic_url="'.$fixedString.'"';
+                $mysqli->query($query);
                     if ($mysqli->affected_rows >1) {
                         $value = true;
                     }

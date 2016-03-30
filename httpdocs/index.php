@@ -30,12 +30,13 @@ $result->close();
 
 // Get all game types
 $game_types = [];
-$result = $mysqli->query("SELECT id, name, number_of_players FROM game_types ORDER BY `default` DESC");
+$result = $mysqli->query("SELECT id, name, number_of_players, score_to_win FROM game_types ORDER BY `default` DESC");
 while($row = $result->fetch_assoc()){
 	$game_types[] = [
 		'id' => $row['id'],
 		'name' => $row['name'],
-		'number_of_players' => $row['number_of_players']
+		'number_of_players' => $row['number_of_players'],
+		'score_to_win' => $row['score_to_win']
 	];
 }
 $result->close();
@@ -176,12 +177,14 @@ $mysqli->close();
 					<div class="styled-select">
 						<select name="game_type_id" id="game_type_id">
 							<?php foreach ($game_types as $game_type): ?>
-								<option class="option" value="<?= $game_type['id']; ?>" data-number_of_players="<?= $game_type['number_of_players']; ?>"><?= $game_type['name']; ?></option>
+								<option class="option" value="<?= $game_type['id']; ?>" data-number_of_players="<?= $game_type['number_of_players']; ?>" data-score_to_win="<?= $game_type['score_to_win']; ?>"><?= $game_type['name']; ?></option>
 							<?php endforeach; ?>
 						</select>
 						<i class="material-icons">keyboard_arrow_down</i>
 					</div>
 				</div>
+
+				<input type="number" name="score_to_win" id="score_to_win" value="" />
 
 				<div id="start_game"><span>Start Game</span></div>
 			</div>
@@ -310,15 +313,147 @@ $mysqli->close();
 		    	$('#'+scoring_codes[e.keyCode]).click();
 		});
 
+		// Get selected game type score to win
+		$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
+		$('#game_type_id').change(function(){
+			$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
+		})
+
+		plusSound = new Audio('assets/sounds/plus.mp3');
+		minusSound = new Audio('assets/sounds/minus.mp3');
+
 		var game = {
 			on: false,
 			id: null,
+			type_id: null,
+			start_time: null,
             number_of_players: null,
+            score_to_win: null,
+            team_1_score: 0,
+            team_2_score: 0,
             goals: [],
-			start: function(game_id, number_of_players){
-				this.on = true;
-				this.id = game_id;
-                this.number_of_players = number_of_players;
+			start: function(){
+				if(!game.on){
+		  			// get player ids
+		  			var player_ids = [];
+					$('.player_hidden_input').each(function(index){
+						if(this.value != '')
+							player_ids.push(this.value);
+					});
+
+					// get number of players required for currently selected game
+		  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
+
+		  			if(player_ids.length == number_of_players) {
+
+		  				//collapse the #game-config
+		  				gameConfigHeight = 0;
+		  				setFieldHeight();
+		  				$('#game-config').addClass('closed');
+		  				$('html').addClass('disable-scrolling');
+		  				setTimeout(function(){
+							$('html').removeClass('disable-scrolling');
+						}, 350);
+
+		  				var game_type_id = $('#game_type_id option:selected').val();
+
+		  				$.ajax({
+							type: "POST",
+							url: "/start-game.php",
+							data: {
+								'game_type_id': game_type_id,
+								'player_ids[]': player_ids
+							},
+							dataType: 'json',
+							success: function(response){
+								if (response.status == 'success') {
+									game.on = true;
+									game.id = response.data.game_id;
+									game.start_time = Math.round(new Date().getTime() / 1000); // time in seconds for easy time_of_goal calculations
+					                game.number_of_players = number_of_players;
+					                game.score_to_win = $('#score_to_win').val();
+
+					                console.log(game);
+								} else if (response.status == 'fail') {
+
+								} else if (response.status == 'error') {
+									alert(response.message);
+								}
+							}
+		  				});
+		  			} else {
+		  				$('.player-error-modal-text').text("Pick "+number_of_players+" Players!");
+				   		$('#player-error-modal').animate({opacity: 'show'}, 350);
+		  			}
+		  		}
+			},
+			score: function(){
+				if (game.on) {
+					var time_of_goal = Math.round(new Date().getTime() / 1000) - game.start_time
+
+	                var defending_player_id = null;
+	                plusSound.currentTime = 0;
+					plusSound.play();
+
+					$(this).addClass('goal');
+					setTimeout(function(){
+						$('.score-plus.goal').removeClass('goal');
+					}, 350);
+					if ($(this).data('team') == 1) {
+						game.team_1_score++;
+						$('.score-value[data-team="1"]').text(game.team_1_score);
+						$('input[name=teamScore1]').attr('value', game.team_1_score);
+
+	                    // get scored on goalie id
+	                    if (game.number_of_players == 4) {
+	                        defending_player_id = $('input[name=player4]').val();
+	                    } else {
+	                        defending_player_id = $('input[name=player3]').val();
+	                    }
+
+					} else {
+						game.team_2_score++;
+						$('.score-value[data-team="2"]').text(game.team_2_score);
+						$('input[name=teamScore2]').attr('value', game.team_2_score);
+
+	                    // get scored on goalie id
+	                    if (game.number_of_players == 4) {
+	                        defending_player_id = $('input[name=player2]').val();
+	                    } else {
+	                        defending_player_id = $('input[name=player1]').val();
+	                    }
+					}
+					scoreChecker();
+
+	                $.ajax({
+	                    type: "POST",
+	                    url: "/score.php",
+	                    data: {
+	                        'game_id': game.id,
+	                        'scoring_player_id': $(this).data('player_id'),
+	                        'scoring_man_id': $(this).attr('id').replace('man-', ''),
+	                        'defending_player_id': defending_player_id,
+	                        'team': $(this).data('team'),
+	                        'time_of_goal': time_of_goal
+	                    },
+	                    dataType: 'json',
+	                    success: function(response){
+	                        console.log(response);
+
+	                        if (response.status == 'success') {
+	                            // do nothing visually as we've already made the UI updates
+	                            // push the goal onto the goal stack for easy undo
+	                            game.goals.push(response.data.goal_id);
+
+
+	                        } else if (response.status == 'fail') {
+	                            // Retry?
+	                        } else if (response.status == 'error') {
+	                            // Retry?
+	                        }
+	                    }
+	                });
+				}
 			}
 		};
 
@@ -429,26 +564,7 @@ $mysqli->close();
 
 		//On the form submit, fire a nicde little modal.
 		$( "#finish-match" ).submit(function( event ) {
-          /* Sweet Audio Bro */
-          var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
-          muchRejoicing.play();
-		  event.preventDefault();
-		  $.ajax({
-		  	type: 'POST',
-			url: 'webhook.php',
-           data: $( this ).serialize(), // serializes the form's elements.
-	           success: function(data)
-	           {
-	               obj = JSON.parse(data);
-    			   text = replaceIDs(obj.text);
-    			   leaderboard = obj.leaderboard;
 
-    			   $('.match-modal-text').text(text);
-    			   $('#match-modal').animate({opacity: 'show'}, 350);
-    			   $('#confetti').animate({opacity: 'show'}, 350);
-    			   confetti();
-	           }
-			});
 		});
 
 		$('#new-match').on('click touch', function() {
@@ -512,76 +628,9 @@ $mysqli->close();
 			setFieldHeight();
 		});
 
-		//set the scores to start
-		teamOneScore = 0;
-		teamTwoScore = 0;
-		plusSound = new Audio('assets/sounds/plus.mp3');
-		minusSound = new Audio('assets/sounds/minus.mp3');
+
 		//Record and Update Scores
-		$('.score-plus').on('click touch', function() {
-			if (game.on) {
-                var defending_player_id = null;
-                plusSound.currentTime = 0;
-				plusSound.play();
-
-				$(this).addClass('goal');
-				setTimeout(function(){
-					$('.score-plus.goal').removeClass('goal');
-				}, 350);
-				if ($(this).data('team') == 1) {
-					teamOneScore++;
-					$('.score-value[data-team="1"]').text(teamOneScore);
-					$('input[name=teamScore1]').attr('value', teamOneScore);
-
-                    // get scored on goalie id
-                    if (game.number_of_players == 4) {
-                        defending_player_id = $('input[name=player4]').val();
-                    } else {
-                        defending_player_id = $('input[name=player3]').val();
-                    }
-
-				} else {
-					teamTwoScore++;
-					$('.score-value[data-team="2"]').text(teamTwoScore);
-					$('input[name=teamScore2]').attr('value', teamTwoScore);
-
-                    // get scored on goalie id
-                    if (game.number_of_players == 4) {
-                        defending_player_id = $('input[name=player2]').val();
-                    } else {
-                        defending_player_id = $('input[name=player1]').val();
-                    }
-				}
-				scoreChecker();
-
-                $.ajax({
-                    type: "POST",
-                    url: "/score.php",
-                    data: {
-                        'game_id': game.id,
-                        'scoring_player_id': $(this).data('player_id'),
-                        'scoring_man_id': $(this).attr('id').replace('man-', ''),
-                        'defending_player_id': defending_player_id,
-                        'team': $(this).data('team')
-                    },
-                    dataType: 'json',
-                    success: function(response){
-                        console.log(response);
-
-                        if (response.status == 'success') {
-                            // do nothing visually as we've already made the UI updates
-                            // push the goal onto the goal stack for easy undo
-                            game.goals.push(response.data.goal_id);
-
-                        } else if (response.status == 'fail') {
-                            // Retry?
-                        } else if (response.status == 'error') {
-                            // Retry?
-                        }
-                    }
-                });
-			}
-		});
+		$('.score-plus').on('click touch', game.score);
 
 		$('.score-minus').on('click touch', function() {
             if (game.on) {
@@ -606,10 +655,45 @@ $mysqli->close();
 
 		function scoreChecker() {
 			//check if the scores are the same, if they aren't show the submit
-			if(teamOneScore == teamTwoScore) {
+			if(game.team_1_score == game.team_2_score) {
 				$('#finish-match').removeClass('active');
 			} else {
 				$('#finish-match').addClass('active');
+			}
+
+			if(game.team_1_score >= game.score_to_win || game.team_2_score >= game.score_to_win) {
+				var time_of_win = Math.round(new Date().getTime() / 1000) - game.start_time
+
+				/* Sweet Audio Bro */
+				var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
+				muchRejoicing.play();
+				event.preventDefault();
+				$.ajax({
+				type: 'POST',
+				url: 'win-game.php',
+				data: {
+					'game_id': game.id,
+					'duration': time_of_win,
+					'team_1_final_score': game.team_1_score,
+					'team_2_final_score': game.team_2_score,
+					'winning_team': game.team_1_score > game.team_2_score ? 1 : 2,
+					'losing_team': game.team_1_score < game.team_2_score ? 1 : 2,
+				},
+				dataType: 'json',
+				success: function(response) {
+					if (response.status == 'success') {
+					    $('.match-modal-text').text(response.data.message);
+					    $('#match-modal').animate({opacity: 'show'}, 350);
+					    $('#confetti').animate({opacity: 'show'}, 350);
+					    confetti();
+					} else if (response.status == 'fail') {
+					    // Retry?
+					} else if (response.status == 'error') {
+					    // Retry?
+					}
+
+				   }
+				});
 			}
 		}
 
@@ -661,54 +745,6 @@ $mysqli->close();
 
   			if(number_of_players == chosen_number_of_players) {
   				$('#start_game').addClass('active');
-  			}
-  		}
-
-  		function startGame() {
-  			// get player ids
-  			var player_ids = [];
-			$('.player_hidden_input').each(function(index){
-				if(this.value != '')
-					player_ids.push(this.value);
-			});
-
-			// get number of players required for currently selected game
-  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
-
-  			if(player_ids.length == number_of_players) {
-
-  				//collapse the #game-config
-  				gameConfigHeight = 0;
-  				setFieldHeight();
-  				$('#game-config').addClass('closed');
-  				$('html').addClass('disable-scrolling');
-  				setTimeout(function(){
-					$('html').removeClass('disable-scrolling');
-				}, 350);
-
-  				var game_type_id = $('#game_type_id option:selected').val();
-
-  				$.ajax({
-					type: "POST",
-					url: "/start-game.php",
-					data: {
-						'game_type_id': game_type_id,
-						'player_ids[]': player_ids
-					},
-					dataType: 'json',
-					success: function(response){
-						if (response.status == 'success') {
-							game.start(response.data.game_id, number_of_players);
-						} else if (response.status == 'fail') {
-
-						} else if (response.status == 'error') {
-							alert(response.message);
-						}
-					}
-  				});
-  			} else {
-  				$('.player-error-modal-text').text("Pick "+number_of_players+" Players!");
-		   		$('#player-error-modal').animate({opacity: 'show'}, 350);
   			}
   		}
 
@@ -775,7 +811,7 @@ $mysqli->close();
 			$('#player-error-modal').hide();
 		});
 
-		$('#start_game').click(startGame);
+		$('#start_game').click(game.start);
 	</script>
 </body>
 </html>

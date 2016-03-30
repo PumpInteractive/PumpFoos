@@ -3,7 +3,7 @@
 namespace PumpFoos;
 
 // Accept incoming post from Slack
-class OutgoingWebhook 
+class OutgoingWebhook
 {
 
     public $token;
@@ -18,17 +18,17 @@ class OutgoingWebhook
     public $trigger_word;
 
     public function __construct(
-        $token, 
-        $team_id, 
-        $team_domain, 
-        $channel_id, 
-        $channel_name, 
-        $timestamp, 
-        $user_id, 
-        $user_name, 
-        $text, 
+        $token,
+        $team_id,
+        $team_domain,
+        $channel_id,
+        $channel_name,
+        $timestamp,
+        $user_id,
+        $user_name,
+        $text,
         $trigger_word
-    ) 
+    )
     {
         $this->token = $token;
         $this->team_id = $team_id;
@@ -57,7 +57,7 @@ class OutgoingWebhook
         ];
     }
 
-    public function logMatch () 
+    public function logMatch ()
     {
         // match: @troy and @liz win v @scott and @andrew
         // match: @scott win v @troy
@@ -81,7 +81,7 @@ class OutgoingWebhook
 
             foreach($losing_team_players[0] as $key => $player){
                 // Update stats
-                $query = 'INSERT INTO user_stats (slack_user_id, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, losses=losses + 1';
+                $query = 'INSERT INTO players (slack_user_id, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, losses=losses + 1';
                 $mysqli->query($query);
 
                 if ($mysqli->affected_rows <1) {
@@ -92,9 +92,9 @@ class OutgoingWebhook
 
             foreach($winning_team_players[0] as $key => $player){
                 // Update stats
-                $query = 'INSERT INTO user_stats (slack_user_id, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, wins=wins + 1';
+                $query = 'INSERT INTO players (slack_user_id, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, wins=wins + 1';
                 $mysqli->query($query);
-                
+
                 if ($mysqli->affected_rows <1) {
                     return json_encode(['text' => 'Hmm... there seems to be a database error. Sorry, the stats couldn\'t be saved.']);
                 }
@@ -111,9 +111,9 @@ class OutgoingWebhook
     public function getLeaderboard()
     {
         $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
-        
+
         // Get All Records
-        $query = 'SELECT * FROM user_stats ORDER BY wins ASC';
+        $query = 'SELECT * FROM players ORDER BY wins ASC';
         $result = $mysqli->query($query);
 
         $returnString = '';
@@ -121,7 +121,7 @@ class OutgoingWebhook
         while ($row = $result->fetch_array()) {
                 $returnString .= '<@' . $row["slack_user_id"] . '> has ' . $row['wins'] . ' wins and ' . $row['losses'] . ' losses in ' . $row['games_played'] . " games played.\n";
             }
-            
+
         $response = [
             "text" => $returnString
         ];
