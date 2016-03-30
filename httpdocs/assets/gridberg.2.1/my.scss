@@ -52,6 +52,9 @@ $gray: #ccc;
 $charcoal: #333;
 $sage-green: #50aa00;
 $crimson: #c40000;
+.disable-scrolling {
+	overflow-y: hidden;
+}
 #wrapper {
 	width: 100%;
 	overflow: hidden;
@@ -168,6 +171,7 @@ $crimson: #c40000;
 	.team-box {
 		min-height: 50%;
 		width: 100%;
+		transition: height 0.35s;
 		h2 {
 			@include text-percent(26);
 			@include header-bold;
@@ -213,7 +217,7 @@ $crimson: #c40000;
 				}
 				.pole {
 	    			display: flex;
-	    			padding: 0px 15px 15px 15px;
+	    			padding: 0px 15px 14px 15px;
 	    			justify-content: center;
 	    			position: relative;
 	    			transition: all 0.35s;
@@ -352,6 +356,87 @@ $crimson: #c40000;
 		}
 	}
 }
+#game-config {
+	width: 100%;
+	background: $light-white;
+	@include clearfix;
+	display: flex;
+	height: 120px;
+	transition: all 0.35s;
+	overflow: hidden;
+	&.closed {
+		height: 0px;
+	}
+	.game-type {
+		width: 50%;
+		padding: 20px 40px 20px 40px;
+		h5 {
+			@include header-bold;
+			text-transform: uppercase;
+			@include text-percent(20);
+			margin-bottom: 20px;
+			text-align: center;
+		}
+		.styled-select {
+			position: relative;
+			cursor: pointer;
+			i {
+				position: absolute;
+				top: 0px;
+				right: 0px;
+				@include text-percent(42);
+				color: $gray;
+				pointer-events: none;
+			}
+		}
+		select {
+			line-height: 1;
+			cursor: pointer;
+			-webkit-appearance: none;
+			width: 100%;
+			padding: 8px 35px 8px 8px;
+			outline: none;
+			border: 3px solid $gray;
+			color: $charcoal;
+			border-radius: 3px;
+			background: white;
+			@include header-bold;
+			text-transform: uppercase;
+			@include text-percent(18);
+			.option {
+				line-height: 1;
+				width: 100%;
+				padding: 8px;
+				color: $charcoal;
+				@include header-bold;
+				text-transform: uppercase;
+				@include text-percent(18);
+			}
+		}
+	}
+	#start_game {
+		@include header-bold;
+		text-transform: uppercase;
+		@include text-percent(20);
+		width: 50%;
+		padding: 20px 40px 20px 40px;
+		background-color: $crimson;
+		color: white;
+		text-align: center;
+		cursor: pointer;
+		display: flex;
+		transition: background 0.35s;
+		span {
+			align-self: center;
+    		display: block;
+    		text-align: center;
+    		width: 100%;
+		}
+		&.active {
+			background: $sage-green;
+		}
+	}
+}
 #finish-match {
     transition: all 0.35s;
     position: fixed;
@@ -465,6 +550,51 @@ $crimson: #c40000;
     }
 }
 #alert-modal.display {
+    display: block;
+}
+#player-error-modal {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.35);
+    top: 0px;
+    left: 0px;
+    display: none;
+    padding: 0px 40px 0px 40px;
+    .player-error-modal-inner {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        border-radius: 10px;
+        padding: 40px;
+        @include header-bold;
+        @include text-percent(22);
+        color: $charcoal;
+        text-align: center;
+        height: auto;
+        line-height: 1.3;
+        margin: 40px auto 40px auto;
+        .player-error-modal-text {
+            margin-bottom: 30px;
+        }
+        #player-error-thanks {
+            margin-top: 30px;
+            background: $sage-green;
+    	    width: 100%;;
+    	    border: 0px;
+    	    @include header-bold;
+    	    @include text-percent(15);
+    	    padding: 10px;
+    	    text-align: center;
+    	    color: white;
+    	    text-transform: uppercase;
+    	    cursor: pointer;
+    	    outline: none;
+    	    border-radius: 6px;
+        }
+    }
+}
+#player-error-modal.display {
     display: block;
 }
 #confetti {
@@ -644,6 +774,34 @@ $crimson: #c40000;
 	}
 	#team-2 {
 		padding-bottom: 50px;
+	}
+}
+#game-config {
+	display: block;
+	height: 164px;
+	.game-type {
+		width: 100%;
+		padding: 20px;
+		h5 {
+			margin-bottom: 10px;
+			@include text-percent(18);
+		}
+		.styled-select {
+			i {
+				@include text-percent(40);
+			}
+		}
+		select {
+			@include text-percent(16);
+			.option {
+				@include text-percent(16);
+			}
+		}
+	}
+	#start_game {
+		width: 100%;
+		padding: 20px;
+		@include text-percent(18);
 	}
 }
 #finish-match {
