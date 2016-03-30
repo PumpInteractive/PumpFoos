@@ -117,7 +117,7 @@ $mysqli->close();
 	    						</div>
 	        					<div class="player-info">
 	        					    <h4 class="position">Defence</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1" data-position="back">
 	        						</div>
 	        					</div>
 	    					</div>
@@ -145,7 +145,7 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position">Attack</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1" data-position="front">
 	    						    </div>
 	    						</div>
 	    					</div>
@@ -201,7 +201,7 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Attack</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
+	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="front">
 	        						</div>
 	    						</div>
 	    					</div>
@@ -230,7 +230,7 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Defence</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
+	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="back">
 	        						</div>
 	    						</div>
 	    					</div>
@@ -332,19 +332,13 @@ $mysqli->close();
             team_1_score: 0,
             team_2_score: 0,
             goals: [],
+            players: [],
 			start: function(){
 				if(!game.on){
-		  			// get player ids
-		  			var player_ids = [];
-					$('.player_hidden_input').each(function(index){
-						if(this.value != '')
-							player_ids.push(this.value);
-					});
-
 					// get number of players required for currently selected game
 		  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
 
-		  			if(player_ids.length == number_of_players) {
+		  			if(game.players.length == number_of_players) {
 
 		  				//collapse the #game-config
 		  				gameConfigHeight = 0;
@@ -362,7 +356,7 @@ $mysqli->close();
 							url: "/start-game.php",
 							data: {
 								'game_type_id': game_type_id,
-								'player_ids[]': player_ids
+								'players': JSON.stringify(game.players)
 							},
 							dataType: 'json',
 							success: function(response){
@@ -736,14 +730,7 @@ $mysqli->close();
   			// get number of players required for currently selected game
   			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
 
-  			// get number of players chosen
-  			var chosen_number_of_players = 0;
-  			$('.player_hidden_input').each(function(index){
-  				if(this.value != '')
-  					chosen_number_of_players++;
-  			});
-
-  			if(number_of_players == chosen_number_of_players) {
+  			if(number_of_players == game.players.length) {
   				$('#start_game').addClass('active');
   			}
   		}
@@ -764,9 +751,18 @@ $mysqli->close();
 			$(this).append(element);
 			$(this).droppable().addClass('active');
 
-			//Add the player to the matching form input
+			//Add the player to the game
 			var trayNumber = $(this).droppable().data('active-tray-id');
-			$('input[name=player'+trayNumber+']').attr('value', playerId);
+			var trayTeam = $(this).droppable().data('team');
+			var trayPosition = $(this).droppable().data('position');
+
+			var trayPlayer = {
+				'id': playerId,
+				'team': trayTeam,
+				'position': trayPosition
+			};
+
+			game.players.push(trayPlayer);
 
             //Activate the player buttons for the added player
             $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
