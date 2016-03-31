@@ -73,6 +73,7 @@ $mysqli->close();
 
 	<!-- Icon -->
 	<link rel="apple-touch-icon" href="/assets/images/foosball-icon.png">
+	<link rel="icon" type="image/png" href="/assets/images/foosball-icon.png">
 
 	<!-- Scripts -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -106,12 +107,32 @@ $mysqli->close();
 			</div>
 		</div>
 		<div id="field">
+			<div id="game-config">
+				<div class="game-type">
+					<h5>Game Type</h5>
+					<div class="styled-select">
+						<select name="game_type_id" id="game_type_id">
+							<?php foreach ($game_types as $game_type): ?>
+								<option class="option" value="<?= $game_type['id']; ?>" data-number_of_players="<?= $game_type['number_of_players']; ?>" data-score_to_win="<?= $game_type['score_to_win']; ?>"><?= $game_type['name']; ?></option>
+							<?php endforeach; ?>
+						</select>
+						<i class="material-icons">keyboard_arrow_down</i>
+					</div>
+				</div>
+
+				<div class="game-score-set">
+					<h5>Max Score</h5>
+					<input type="number" name="score_to_win" id="score_to_win" value="" />
+				</div>
+
+				<div id="start_game"><span>Start Game</span></div>
+			</div>
 			<div id="team-1" class="team-box">
 				<h2>Black Team <div class="score-value" data-team="1"></div></h2>
 				<div class="team">
 					<div class="on-field">
     					<div class="position-wrapper">
-	    					<div class="player-tray-wrapper clearfix">
+	    					<div class="player-tray-wrapper clearfix 4-player">
 	        					<div class="player-buttons player-buttons-2 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
@@ -139,7 +160,7 @@ $mysqli->close();
 							</div>
     					</div>
     					<div class="position-wrapper">
-	    					<div class="player-tray-wrapper clearfix">
+	    					<div class="player-tray-wrapper clearfix 2-player 4-player">
 	    						<div class="player-buttons player-buttons-1 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
@@ -170,32 +191,13 @@ $mysqli->close();
 				</div>
 			</div>
 
-			<div id="game-config">
-
-				<div class="game-type">
-					<h5>Game Type</h5>
-					<div class="styled-select">
-						<select name="game_type_id" id="game_type_id">
-							<?php foreach ($game_types as $game_type): ?>
-								<option class="option" value="<?= $game_type['id']; ?>" data-number_of_players="<?= $game_type['number_of_players']; ?>" data-score_to_win="<?= $game_type['score_to_win']; ?>"><?= $game_type['name']; ?></option>
-							<?php endforeach; ?>
-						</select>
-						<i class="material-icons">keyboard_arrow_down</i>
-					</div>
-				</div>
-
-				<input type="number" name="score_to_win" id="score_to_win" value="" />
-
-				<div id="start_game"><span>Start Game</span></div>
-			</div>
-
 			<div id="team-2" class="team-box">
 				<h2>Yellow Team <div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
 
 						<div class="position-wrapper">
-	    					<div class="player-tray-wrapper clearfix">
+	    					<div class="player-tray-wrapper clearfix 2-player 4-player">
 	    						<div class="player-buttons player-buttons-3 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
@@ -224,7 +226,7 @@ $mysqli->close();
 						</div>
 
 						<div class="position-wrapper">
-	    					<div class="player-tray-wrapper clearfix">
+	    					<div class="player-tray-wrapper clearfix 4-player">
 	    						<div class="player-buttons player-buttons-4 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
@@ -274,8 +276,6 @@ $mysqli->close();
 		<input type="hidden" name="teamScore1" value="0"/>
 		<input type="hidden" name="teamScore2" value="0"/>
 
-		<input type="submit" value="End Match"/>
-
 	</form>
 
 	<canvas id="confetti"></canvas>
@@ -302,6 +302,9 @@ $mysqli->close();
 
 
 	<script type="text/javascript">
+		//defaults
+		numberOfPlayers = 4;
+
 		// Shortcut key listeners
 		var scoring_codes = {
 			<?php foreach ($scoring_codes as $man_id => $scoring_code): ?>
@@ -315,8 +318,19 @@ $mysqli->close();
 
 		// Get selected game type score to win
 		$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
+		
 		$('#game_type_id').change(function(){
 			$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
+
+			//set visible positions
+			numberOfPlayers = $('#game_type_id option:selected').data('number_of_players');
+			$('.player-tray-wrapper').each(function() {
+				if($(this).hasClass(numberOfPlayers+'-player')) {
+					$(this).animate({height: 'show'}, 350);
+				} else {
+					$(this).animate({height: 'hide'}, 350);
+				}
+			});
 		})
 
 		plusSound = new Audio('assets/sounds/plus.mp3');
@@ -766,6 +780,7 @@ $mysqli->close();
 
 			//Add the player to the matching form input
 			var trayNumber = $(this).droppable().data('active-tray-id');
+			var teamNumber = $(this).droppable().data('team');
 			$('input[name=player'+trayNumber+']').attr('value', playerId);
 
             //Activate the player buttons for the added player
@@ -773,7 +788,17 @@ $mysqli->close();
             $('.player-buttons-'+trayNumber).children('.challenge').attr('data-player-challenge-id', playerId);
 
 			//Activate poles for the added player
-			$('.poles-'+trayNumber).addClass('opened');
+			if (numberOfPlayers == 4) {
+				$('.poles-'+trayNumber).animate({opacity: 'show'}, 350);
+			} else if(numberOfPlayers == 2) {
+				if(teamNumber == 1) {
+					$('.poles-1').animate({opacity: 'show'}, 350);
+					$('.poles-2').animate({opacity: 'show'}, 350);
+				} else {
+					$('.poles-3').animate({opacity: 'show'}, 350);
+					$('.poles-4').animate({opacity: 'show'}, 350);
+				}
+			}
 
             //Add playerId to men
             $('.poles-'+trayNumber+' .score-plus').data('player_id', playerId);
