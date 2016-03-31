@@ -31,7 +31,7 @@ $game_id = $mysqli->insert_id;
 // Save the player link tables
 foreach ($players as $player) {
 
-	$mysqli->query("INSERT INTO games_players (game_id, player_id, position, team) VALUES ('$game_id', '{$player['id']}', '{$player['position']}', '{$player['team']}')");
+	$mysqli->query("INSERT INTO games_players (game_id, player_id, team) VALUES ('$game_id', '{$player['id']}', '{$player['team']}')");
 }
 
 $response['status'] = 'success';
