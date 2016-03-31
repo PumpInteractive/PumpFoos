@@ -331,6 +331,7 @@ $mysqli->close();
             score_to_win: null,
             team_1_score: 0,
             team_2_score: 0,
+            can_trigger_score: true, // flag to prevent double tracking a goal
             goals: [],
             players: [],
 			start: function(){
@@ -381,7 +382,7 @@ $mysqli->close();
 		  			}
 		  		}
 			},
-			score: function(){
+			score: function(man){
 				if (game.on) {
 					var time_of_goal = Math.round(new Date().getTime() / 1000) - game.start_time
 
@@ -389,11 +390,12 @@ $mysqli->close();
 	                plusSound.currentTime = 0;
 					plusSound.play();
 
-					$(this).addClass('goal');
+					$(man).addClass('goal');
 					setTimeout(function(){
 						$('.score-plus.goal').removeClass('goal');
 					}, 350);
-					if ($(this).data('team') == 1) {
+
+					if ($(man).data('team') == 1) {
 						game.team_1_score++;
 						$('.score-value[data-team="1"]').text(game.team_1_score);
 						$('input[name=teamScore1]').attr('value', game.team_1_score);
@@ -424,10 +426,10 @@ $mysqli->close();
 	                    url: "/score.php",
 	                    data: {
 	                        'game_id': game.id,
-	                        'scoring_player_id': $(this).data('player_id'),
-	                        'scoring_man_id': $(this).attr('id').replace('man-', ''),
+	                        'scoring_player_id': $(man).data('player_id'),
+	                        'scoring_man_id': $(man).attr('id').replace('man-', ''),
 	                        'defending_player_id': defending_player_id,
-	                        'team': $(this).data('team'),
+	                        'team': $(man).data('team'),
 	                        'time_of_goal': time_of_goal
 	                    },
 	                    dataType: 'json',
@@ -556,11 +558,6 @@ $mysqli->close();
             setInterval(draw, 20);
         }
 
-		//On the form submit, fire a nicde little modal.
-		$( "#finish-match" ).submit(function( event ) {
-
-		});
-
 		$('#new-match').on('click touch', function() {
     		location.reload();
 		});
@@ -624,7 +621,13 @@ $mysqli->close();
 
 
 		//Record and Update Scores
-		$('.score-plus').on('click touch', game.score);
+		$('.score-plus').on('click touch', function(){
+			if(game.can_trigger_score) {
+				game.can_trigger_score = false;
+				game.score(this);
+				setTimeout(function(){game.can_trigger_score = true}, 3000); // Can only trigger a goal every 3 seconds
+			}
+		});
 
 		$('.score-minus').on('click touch', function() {
             if (game.on) {
