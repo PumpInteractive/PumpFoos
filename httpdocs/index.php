@@ -14,9 +14,14 @@ if ($mysqli->connect_errno) {
 
 // Get all men and their position and id
 $men = [];
-$result = $mysqli->query("SELECT id, team, rod, position FROM men ORDER BY position ASC");
+$result = $mysqli->query("SELECT id, team, bar, position, table_position FROM men ORDER BY id ASC");
 while($row = $result->fetch_assoc()){
-	$men[$row['team']][$row['rod']][$row['position']] = $row['id'];
+	$men[$row['team']][$row['bar']][] = [
+		'id' => $row['id'],
+		'bar' => $row['bar'],
+		'position' => $row['position'],
+		'table_position' => $row['table_position']
+	];
 }
 $result->close();
 
@@ -138,22 +143,22 @@ $mysqli->close();
 	    						</div>
 	        					<div class="player-info">
 	        					    <h4 class="position">Defence</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1" data-position="back">
 	        						</div>
 	        					</div>
 	    					</div>
 	    					<div class="poles poles-2">
 								<div class="pole">
-									<?php foreach($men['1']['3-bar-goalie'] as $position => $man_id): ?>
+									<?php foreach($men['1']['3-bar-goalie'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-		    						<?php foreach($men['1']['2-bar'] as $position => $man_id): ?>
+		    						<?php foreach($men['1']['2-bar'] as $man): ?>
 		    							<div class="man">
-		    								<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 		    							</div>
 		    						<?php endforeach; ?>
 								</div>
@@ -166,22 +171,22 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position">Attack</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1" data-position="front">
 	    						    </div>
 	    						</div>
 	    					</div>
 	    					<div class="poles poles-1">
 		    					<div class="pole">
-									<?php foreach($men['1']['5-bar'] as $position => $man_id): ?>
+									<?php foreach($men['1']['5-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-		    						<?php foreach($men['1']['3-bar-attack'] as $position => $man_id): ?>
+		    						<?php foreach($men['1']['3-bar-attack'] as $man): ?>
 		    							<div class="man">
-		    								<div id="man-<?= $man_id; ?>" class="score-plus" data-team="1" data-position="<?= $position; ?>"></div>
+		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 		    							</div>
 		    						<?php endforeach; ?>
 								</div>
@@ -203,22 +208,22 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Attack</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2">
+	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="front">
 	        						</div>
 	    						</div>
 	    					</div>
 	    					<div class="poles poles-3">
 		    					<div class="pole">
-		    						<?php foreach($men['2']['3-bar-attack'] as $position => $man_id): ?>
+		    						<?php foreach($men['2']['3-bar-attack'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-									<?php foreach($men['2']['5-bar'] as $position => $man_id): ?>
+									<?php foreach($men['2']['5-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -232,22 +237,22 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Defence</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2">
+	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="back">
 	        						</div>
 	    						</div>
 	    					</div>
 	    					<div class="poles poles-4">
 		    					<div class="pole">
-		    						<?php foreach($men['2']['2-bar'] as $position => $man_id): ?>
+		    						<?php foreach($men['2']['2-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
-									<?php foreach($men['2']['3-bar-goalie'] as $position => $man_id): ?>
+									<?php foreach($men['2']['3-bar-goalie'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man_id; ?>" class="score-plus" data-team="2" data-position="<?= $position; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -259,24 +264,6 @@ $mysqli->close();
 			</div>
 		</div>
 	</div>
-
-	<form id="finish-match">
-		<!-- Players -->
-		<input type="hidden" name="frontend" value="1"/>
-		<input type="hidden" name="logMatch" value="end_match"/>
-		<!-- Team 1 -->
-		<input type="hidden" class="player_hidden_input" name="player1" value=""/>
-		<input type="hidden" class="player_hidden_input" name="player2" value=""/>
-
-		<!-- Team 2 -->
-		<input type="hidden" class="player_hidden_input" name="player3" value=""/>
-		<input type="hidden" class="player_hidden_input" name="player4" value=""/>
-
-		<!-- Team Scores -->
-		<input type="hidden" name="teamScore1" value="0"/>
-		<input type="hidden" name="teamScore2" value="0"/>
-
-	</form>
 
 	<canvas id="confetti"></canvas>
 	<div id="match-modal">
@@ -318,7 +305,7 @@ $mysqli->close();
 
 		// Get selected game type score to win
 		$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
-		
+
 		$('#game_type_id').change(function(){
 			$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
 
@@ -345,20 +332,15 @@ $mysqli->close();
             score_to_win: null,
             team_1_score: 0,
             team_2_score: 0,
+            can_trigger_score: true, // flag to prevent double tracking a goal
             goals: [],
+            players: [],
 			start: function(){
 				if(!game.on){
-		  			// get player ids
-		  			var player_ids = [];
-					$('.player_hidden_input').each(function(index){
-						if(this.value != '')
-							player_ids.push(this.value);
-					});
-
 					// get number of players required for currently selected game
 		  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
 
-		  			if(player_ids.length == number_of_players) {
+		  			if(game.players.length == number_of_players) {
 
 		  				//collapse the #game-config
 		  				gameConfigHeight = 0;
@@ -376,7 +358,7 @@ $mysqli->close();
 							url: "/start-game.php",
 							data: {
 								'game_type_id': game_type_id,
-								'player_ids[]': player_ids
+								'players': JSON.stringify(game.players)
 							},
 							dataType: 'json',
 							success: function(response){
@@ -401,7 +383,7 @@ $mysqli->close();
 		  			}
 		  		}
 			},
-			score: function(){
+			score: function(man){
 				if (game.on) {
 					var time_of_goal = Math.round(new Date().getTime() / 1000) - game.start_time
 
@@ -409,32 +391,35 @@ $mysqli->close();
 	                plusSound.currentTime = 0;
 					plusSound.play();
 
-					$(this).addClass('goal');
+					$(man).addClass('goal');
 					setTimeout(function(){
 						$('.score-plus.goal').removeClass('goal');
 					}, 350);
-					if ($(this).data('team') == 1) {
+
+					if ($(man).data('team') == 1) {
 						game.team_1_score++;
 						$('.score-value[data-team="1"]').text(game.team_1_score);
-						$('input[name=teamScore1]').attr('value', game.team_1_score);
 
 	                    // get scored on goalie id
 	                    if (game.number_of_players == 4) {
-	                        defending_player_id = $('input[name=player4]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2' && e.position == 'back'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    } else {
-	                        defending_player_id = $('input[name=player3]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    }
 
 					} else {
 						game.team_2_score++;
 						$('.score-value[data-team="2"]').text(game.team_2_score);
-						$('input[name=teamScore2]').attr('value', game.team_2_score);
 
 	                    // get scored on goalie id
 	                    if (game.number_of_players == 4) {
-	                        defending_player_id = $('input[name=player2]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1' && e.position == 'back'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    } else {
-	                        defending_player_id = $('input[name=player1]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    }
 					}
 					scoreChecker();
@@ -444,10 +429,13 @@ $mysqli->close();
 	                    url: "/score.php",
 	                    data: {
 	                        'game_id': game.id,
-	                        'scoring_player_id': $(this).data('player_id'),
-	                        'scoring_man_id': $(this).attr('id').replace('man-', ''),
+	                        'scoring_player_id': $(man).data('player_id'),
+	                        'scoring_man_id': $(man).attr('id').replace('man-', ''),
 	                        'defending_player_id': defending_player_id,
-	                        'team': $(this).data('team'),
+	                        'bar': $(man).data('bar'),
+	                        'position': $(man).data('position'),
+	                        'table_position': $(man).data('table_position'),
+	                        'team': $(man).data('team'),
 	                        'time_of_goal': time_of_goal
 	                    },
 	                    dataType: 'json',
@@ -576,11 +564,6 @@ $mysqli->close();
             setInterval(draw, 20);
         }
 
-		//On the form submit, fire a nicde little modal.
-		$( "#finish-match" ).submit(function( event ) {
-
-		});
-
 		$('#new-match').on('click touch', function() {
     		location.reload();
 		});
@@ -644,7 +627,13 @@ $mysqli->close();
 
 
 		//Record and Update Scores
-		$('.score-plus').on('click touch', game.score);
+		$('.score-plus').on('click touch', function(){
+			if(game.can_trigger_score) {
+				game.can_trigger_score = false;
+				game.score(this);
+				setTimeout(function(){game.can_trigger_score = true}, 3000); // Can only trigger a goal every 3 seconds
+			}
+		});
 
 		$('.score-minus').on('click touch', function() {
             if (game.on) {
@@ -750,14 +739,7 @@ $mysqli->close();
   			// get number of players required for currently selected game
   			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
 
-  			// get number of players chosen
-  			var chosen_number_of_players = 0;
-  			$('.player_hidden_input').each(function(index){
-  				if(this.value != '')
-  					chosen_number_of_players++;
-  			});
-
-  			if(number_of_players == chosen_number_of_players) {
+  			if(number_of_players == game.players.length) {
   				$('#start_game').addClass('active');
   			}
   		}
@@ -778,10 +760,18 @@ $mysqli->close();
 			$(this).append(element);
 			$(this).droppable().addClass('active');
 
-			//Add the player to the matching form input
+			//Add the player to the game
 			var trayNumber = $(this).droppable().data('active-tray-id');
-			var teamNumber = $(this).droppable().data('team');
-			$('input[name=player'+trayNumber+']').attr('value', playerId);
+			var trayTeam = $(this).droppable().data('team');
+			var trayPosition = $(this).droppable().data('position');
+
+			var trayPlayer = {
+				'id': playerId,
+				'team': trayTeam,
+				'position': trayPosition
+			};
+
+			game.players.push(trayPlayer);
 
             //Activate the player buttons for the added player
             $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
@@ -790,18 +780,22 @@ $mysqli->close();
 			//Activate poles for the added player
 			if (numberOfPlayers == 4) {
 				$('.poles-'+trayNumber).animate({opacity: 'show'}, 350);
+				$('.poles-'+trayNumber+' .score-plus').data('player_id', playerId);
 			} else if(numberOfPlayers == 2) {
-				if(teamNumber == 1) {
+				if(trayTeam == 1) {
 					$('.poles-1').animate({opacity: 'show'}, 350);
 					$('.poles-2').animate({opacity: 'show'}, 350);
+
+					$('.poles-1 .score-plus').data('player_id', playerId);
+					$('.poles-2 .score-plus').data('player_id', playerId);
 				} else {
 					$('.poles-3').animate({opacity: 'show'}, 350);
 					$('.poles-4').animate({opacity: 'show'}, 350);
+
+					$('.poles-3 .score-plus').data('player_id', playerId);
+					$('.poles-4 .score-plus').data('player_id', playerId);
 				}
 			}
-
-            //Add playerId to men
-            $('.poles-'+trayNumber+' .score-plus').data('player_id', playerId);
 
 			//activate the scoreboard for that team
 			var scoreTrigger = $(this).droppable().data('team');

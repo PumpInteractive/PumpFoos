@@ -11,13 +11,7 @@ $response = [];
 // Get all data to start game
 $game_type_id = isset($_POST['game_type_id']) ? $_POST['game_type_id'] : null;
 
-$player_ids = [];
-
-if(is_array($_POST['player_ids'])) {
-	foreach ($_POST['player_ids'] as $player_id) {
-		$player_ids[] = $player_id;
-	}
-}
+$players = json_decode($_POST['players'], true);
 
 $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
 
@@ -35,10 +29,9 @@ $mysqli->query("INSERT INTO games (game_type_id, start) VALUES ('$game_type_id',
 $game_id = $mysqli->insert_id;
 
 // Save the player link tables
-foreach ($player_ids as $player_id) {
-	// Get player id
+foreach ($players as $player) {
 
-	$mysqli->query("INSERT INTO games_players (game_id, player_id, position) VALUES ('$game_id', '$player_id', 'front')");
+	$mysqli->query("INSERT INTO games_players (game_id, player_id, team) VALUES ('$game_id', '{$player['id']}', '{$player['team']}')");
 }
 
 $response['status'] = 'success';
