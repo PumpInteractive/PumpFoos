@@ -196,9 +196,9 @@ $crimson: #c40000;
 			.position-wrapper {
 				width: 100%;
     			display: flex;
-    			justify-content: center;
     			padding: 20px 20px 10px 20px;
     			overflow: hidden;
+    			min-height: 158px;
     			&:first-of-type {
     				background-color: rgba(10,10,10,0.1);
     			}
@@ -209,12 +209,7 @@ $crimson: #c40000;
 			.poles {
 				flex-grow: 1;
 				padding: 0px 0px 0px 20px;
-				transition: all 0.35s;
-				-webkit-transition: all 0.35s;
-				margin-top: -140px;
-				&.opened {
-					margin-top: 0px;
-				}
+				display: none;
 				.pole {
 	    			display: flex;
 	    			padding: 0px 15px 14px 15px;
@@ -368,8 +363,8 @@ $crimson: #c40000;
 		height: 0px;
 	}
 	.game-type {
-		width: 50%;
-		padding: 20px 40px 20px 40px;
+		width: 25%;
+		padding: 20px 20px 20px 40px;
 		h5 {
 			@include header-bold;
 			text-transform: uppercase;
@@ -412,6 +407,31 @@ $crimson: #c40000;
 				text-transform: uppercase;
 				@include text-percent(18);
 			}
+		}
+	}
+	.game-score-set {
+		width: 25%;
+		padding: 20px 40px 20px 20px;
+		h5 {
+			@include header-bold;
+			text-transform: uppercase;
+			@include text-percent(20);
+			margin-bottom: 20px;
+			text-align: center;
+		}
+		input {
+			line-height: 1;
+			cursor: pointer;
+			width: 100%;
+			padding: 4px 8px 3px 8px;
+			outline: none;
+			border: 3px solid $gray;
+			color: $charcoal;
+			border-radius: 3px;
+			background: white;
+			@include header-bold;
+			text-transform: uppercase;
+			@include text-percent(18);
 		}
 	}
 	#start_game {
@@ -620,6 +640,17 @@ $crimson: #c40000;
     border-radius: 6px;
 }
 @media handheld, only screen and (max-width: $col-f-breakpoint) {
+#game-config {
+	.game-type {
+		width: 33.333%;
+	}
+	.game-score-set {
+		width: 33.333%;
+	}
+	#start_game {
+		width: 33.333%;
+	}
+}
 }
 @media handheld, only screen and (max-width: $col-t-breakpoint) {
 .players {
@@ -736,11 +767,7 @@ $crimson: #c40000;
 			}
 			.poles {
 				margin-top: 0px;
-				margin-bottom: -150px;
 				padding: 0px;
-				&.opened {
-					margin-bottom: 0px;
-				}
 				.pole {
 					.man {
 	    				display: block;
@@ -778,10 +805,10 @@ $crimson: #c40000;
 }
 #game-config {
 	display: block;
-	height: 164px;
+	height: 252px;
 	.game-type {
 		width: 100%;
-		padding: 20px;
+		padding: 20px 20px 0px 20px;
 		h5 {
 			margin-bottom: 10px;
 			@include text-percent(18);
@@ -796,6 +823,14 @@ $crimson: #c40000;
 			.option {
 				@include text-percent(16);
 			}
+		}
+	}
+	.game-score-set {
+		width: 100%;
+		padding: 20px;
+		h5 {
+			margin-bottom: 10px;
+			@include text-percent(18);
 		}
 	}
 	#start_game {
