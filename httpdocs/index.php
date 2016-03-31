@@ -258,26 +258,6 @@ $mysqli->close();
 		</div>
 	</div>
 
-	<form id="finish-match">
-		<!-- Players -->
-		<input type="hidden" name="frontend" value="1"/>
-		<input type="hidden" name="logMatch" value="end_match"/>
-		<!-- Team 1 -->
-		<input type="hidden" class="player_hidden_input" name="player1" value=""/>
-		<input type="hidden" class="player_hidden_input" name="player2" value=""/>
-
-		<!-- Team 2 -->
-		<input type="hidden" class="player_hidden_input" name="player3" value=""/>
-		<input type="hidden" class="player_hidden_input" name="player4" value=""/>
-
-		<!-- Team Scores -->
-		<input type="hidden" name="teamScore1" value="0"/>
-		<input type="hidden" name="teamScore2" value="0"/>
-
-		<input type="submit" value="End Match"/>
-
-	</form>
-
 	<canvas id="confetti"></canvas>
 	<div id="match-modal">
     	<div class="match-modal-inner">
@@ -398,25 +378,27 @@ $mysqli->close();
 					if ($(man).data('team') == 1) {
 						game.team_1_score++;
 						$('.score-value[data-team="1"]').text(game.team_1_score);
-						$('input[name=teamScore1]').attr('value', game.team_1_score);
 
 	                    // get scored on goalie id
 	                    if (game.number_of_players == 4) {
-	                        defending_player_id = $('input[name=player4]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2' && e.position == 'back'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    } else {
-	                        defending_player_id = $('input[name=player3]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    }
 
 					} else {
 						game.team_2_score++;
 						$('.score-value[data-team="2"]').text(game.team_2_score);
-						$('input[name=teamScore2]').attr('value', game.team_2_score);
 
 	                    // get scored on goalie id
 	                    if (game.number_of_players == 4) {
-	                        defending_player_id = $('input[name=player2]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1' && e.position == 'back'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    } else {
-	                        defending_player_id = $('input[name=player1]').val();
+	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1'); });
+	                        defending_player_id = find_goalie[0].id;
 	                    }
 					}
 					scoreChecker();
