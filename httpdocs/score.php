@@ -15,7 +15,7 @@ $scoring_man_id = isset($_POST['scoring_man_id']) ? $_POST['scoring_man_id'] : n
 $defending_player_id = isset($_POST['defending_player_id']) ? $_POST['defending_player_id'] : null;
 $bar = isset($_POST['bar']) ? $_POST['bar'] : null;
 $position = isset($_POST['position']) ? $_POST['position'] : null;
-$table_position = isset($_POST['table_position']) ? $_POST['table_position'] : null;
+$player_position = isset($_POST['player_position']) ? $_POST['player_position'] : null;
 $team = isset($_POST['team']) ? $_POST['team'] : null;
 $time_of_goal = isset($_POST['time_of_goal']) ? $_POST['time_of_goal'] : null;
 
@@ -31,7 +31,7 @@ if ($mysqli->connect_errno) {
 }
 
 // Save the goal
-$mysqli->query("INSERT INTO goals (game_id, scoring_player_id, scoring_man_id, defending_player_id, bar, position, table_position, team, time_of_goal, created) VALUES ('$game_id', '$scoring_player_id', '$scoring_man_id', '$defending_player_id', '$bar', '$position', '$table_position', '$team', '$time_of_goal', NOW())");
+$mysqli->query("INSERT INTO goals (game_id, scoring_player_id, scoring_man_id, defending_player_id, bar, position, player_position, team, time_of_goal, created) VALUES ('$game_id', '$scoring_player_id', '$scoring_man_id', '$defending_player_id', '$bar', '$position', '$player_position', '$team', '$time_of_goal', NOW())");
 $goal_id = $mysqli->insert_id;
 
 $response['status'] = 'success';

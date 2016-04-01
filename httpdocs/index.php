@@ -14,13 +14,13 @@ if ($mysqli->connect_errno) {
 
 // Get all men and their position and id
 $men = [];
-$result = $mysqli->query("SELECT id, team, bar, position, table_position FROM men ORDER BY id ASC");
+$result = $mysqli->query("SELECT id, team, bar, position, player_position FROM men ORDER BY display_order ASC");
 while($row = $result->fetch_assoc()){
 	$men[$row['team']][$row['bar']][] = [
 		'id' => $row['id'],
 		'bar' => $row['bar'],
 		'position' => $row['position'],
-		'table_position' => $row['table_position']
+		'player_position' => $row['player_position']
 	];
 }
 $result->close();
@@ -151,14 +151,14 @@ $mysqli->close();
 								<div class="pole">
 									<?php foreach($men['1']['3-bar-goalie'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 		    						<?php foreach($men['1']['2-bar'] as $man): ?>
 		    							<div class="man">
-		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 		    							</div>
 		    						<?php endforeach; ?>
 								</div>
@@ -179,14 +179,14 @@ $mysqli->close();
 		    					<div class="pole">
 									<?php foreach($men['1']['5-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 		    						<?php foreach($men['1']['3-bar-attack'] as $man): ?>
 		    							<div class="man">
-		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 		    							</div>
 		    						<?php endforeach; ?>
 								</div>
@@ -216,14 +216,14 @@ $mysqli->close();
 		    					<div class="pole">
 		    						<?php foreach($men['2']['3-bar-attack'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 									<?php foreach($men['2']['5-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -245,14 +245,14 @@ $mysqli->close();
 		    					<div class="pole">
 		    						<?php foreach($men['2']['2-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 									<?php foreach($men['2']['3-bar-goalie'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-table_position="<?= $man['table_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -434,7 +434,7 @@ $mysqli->close();
 	                        'defending_player_id': defending_player_id,
 	                        'bar': $(man).data('bar'),
 	                        'position': $(man).data('position'),
-	                        'table_position': $(man).data('table_position'),
+	                        'player_position': $(man).data('player_position'),
 	                        'team': $(man).data('team'),
 	                        'time_of_goal': time_of_goal
 	                    },
