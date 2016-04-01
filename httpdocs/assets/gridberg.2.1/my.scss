@@ -44,7 +44,7 @@
 }
 
 /* Variables */
-$blackteam: rgba(34,34,34,0.90);
+$blackteam: rgba(34,34,34,1);
 $yellowteam: rgba(255,189,11,1);
 $yellowteamf: rgba(255,189,11,1);
 $blackteamf: rgba(34,34,34,1);
@@ -240,9 +240,6 @@ $crimson: #c40000;
 	width: 100%;
 	height: 100%;
 	padding-left: 124px;
-	background-image: url('../../images/foosgrass.jpg');
-	background-repeat: repeat;
-	background-position: center;
 	.team-box {
 		min-height: 50%;
 		width: 100%;
