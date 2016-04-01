@@ -88,6 +88,16 @@ $mysqli->close();
 
 </head>
 <body>
+	
+	<div class="coin-floater">
+		<div class="coin-container">
+			<div id="coin">
+				<figure class="heads">Yellow Team</figure>
+				<figure class="tails">Black Team</figure>
+			</div>
+		</div>
+	</div>
+
 	<div id="wrapper">
 		<div id="bench">
 			<div class="players-dummy">
@@ -133,7 +143,7 @@ $mysqli->close();
 				<div id="start_game"><span>Start Game</span></div>
 			</div>
 			<div id="team-1" class="team-box">
-				<h2>Black Team <span class="serving_team" data-team="1" style="display: none;">&lt;&gt;</span><div class="score-value" data-team="1"></div></h2>
+				<h2>Black Team <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
 				<div class="team">
 					<div class="on-field">
     					<div class="position-wrapper">
@@ -197,21 +207,11 @@ $mysqli->close();
 			</div>
 
 			<div id="team-2" class="team-box">
-				<h2>Yellow Team <span class="serving_team" data-team="2" style="display: none;">&lt;&gt;</span><div class="score-value" data-team="2"></div></h2>
+				<h2>Yellow Team <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
 
 						<div class="position-wrapper">
-	    					<div class="player-tray-wrapper clearfix 2-player 4-player">
-	    						<div class="player-buttons player-buttons-3 left">
-	        						<div class="challenge" data-player-challenge-id="">C</div>
-	    						</div>
-	    						<div class="player-info">
-	        						<h4 class="position charcoal">Attack</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="front">
-	        						</div>
-	    						</div>
-	    					</div>
 	    					<div class="poles poles-3">
 		    					<div class="pole">
 		    						<?php foreach($men['2']['3-bar-attack'] as $man): ?>
@@ -228,19 +228,19 @@ $mysqli->close();
 									<?php endforeach; ?>
 								</div>
 							</div>
-						</div>
-
-						<div class="position-wrapper">
-	    					<div class="player-tray-wrapper clearfix 4-player">
-	    						<div class="player-buttons player-buttons-4 left">
+							<div class="player-tray-wrapper right clearfix 2-player 4-player">
+	    						<div class="player-buttons player-buttons-3 right">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
 	    						<div class="player-info">
-	        						<h4 class="position charcoal">Defence</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="back">
+	        						<h4 class="position charcoal">Attack</h4>
+	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="front">
 	        						</div>
 	    						</div>
 	    					</div>
+						</div>
+
+						<div class="position-wrapper">
 	    					<div class="poles poles-4">
 		    					<div class="pole">
 		    						<?php foreach($men['2']['2-bar'] as $man): ?>
@@ -257,6 +257,16 @@ $mysqli->close();
 									<?php endforeach; ?>
 								</div>
 							</div>
+							<div class="player-tray-wrapper right clearfix 4-player">
+	    						<div class="player-buttons player-buttons-4 right">
+	        						<div class="challenge" data-player-challenge-id="">C</div>
+	    						</div>
+	    						<div class="player-info">
+	        						<h4 class="position charcoal">Defence</h4>
+	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="back">
+	        						</div>
+	    						</div>
+	    					</div>
     					</div>
 
 					</div>
@@ -358,22 +368,35 @@ $mysqli->close();
 
 						// Randomly choose starting team, will generate a 1 or a 2
 						game.serving_team = Math.floor(Math.random() * (2)) + 1;
+						
+						$('.coin-floater').fadeIn();
+
 						if(game.serving_team == 1) {
-							$('.serving_team[data-team="1"]').show();
-							$('.serving_team[data-team="2"]').hide();
 
-							$('.player-error-modal-text').text("Black Team Serves!");
+							setTimeout(function(){
+								$('.serving_team[data-team="1"]').fadeIn();
+								$('.serving_team[data-team="2"]').fadeOut();
+							}, 3000);
+
+							$('#coin').addClass('black-serves');
+
+							setTimeout(function(){
+								$('.coin-floater').fadeOut();
+							}, 4000);
+
 						} else {
-							$('.serving_team[data-team="1"]').hide();
-							$('.serving_team[data-team="2"]').show();
 
-							$('.player-error-modal-text').text("Yellow Team Serves!");
+							setTimeout(function(){
+								$('.serving_team[data-team="1"]').fadeOut();
+								$('.serving_team[data-team="2"]').fadeIn();
+							}, 3000);
+							
+							$('#coin').addClass('yellow-serves');
+
+							setTimeout(function(){
+								$('.coin-floater').fadeOut();
+							}, 4000);
 						}
-
-						$('#player-error-modal').animate({opacity: 'show'}, 350);
-						setTimeout(function(){
-							$('#player-error-modal').animate({opacity: 'hide'}, 350);
-						}, 3000);
 
 		  				var game_type_id = $('#game_type_id option:selected').val();
 
