@@ -291,6 +291,9 @@ $crimson: #c40000;
 				flex-grow: 1;
 				padding: 0px 0px 0px 20px;
 				display: none;
+				&.poles-3, &.poles-4 {
+					padding: 0px 20px 0px 0px;
+				}
 				.pole {
 	    			display: flex;
 	    			padding: 0px 15px 14px 15px;
@@ -849,6 +852,9 @@ $crimson: #c40000;
 			.poles {
 				margin-top: 0px;
 				padding: 0px;
+				&.poles-3, &.poles-4 {
+					padding: 0px 0px 0px 0px;
+				}
 				.pole {
 					.man {
 	    				display: block;
