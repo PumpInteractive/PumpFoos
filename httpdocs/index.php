@@ -133,7 +133,7 @@ $mysqli->close();
 				<div id="start_game"><span>Start Game</span></div>
 			</div>
 			<div id="team-1" class="team-box">
-				<h2>Black Team <div class="score-value" data-team="1"></div></h2>
+				<h2>Black Team <span class="serving_team" data-team="1" style="display: none;">&lt;&gt;</span><div class="score-value" data-team="1"></div></h2>
 				<div class="team">
 					<div class="on-field">
     					<div class="position-wrapper">
@@ -197,7 +197,7 @@ $mysqli->close();
 			</div>
 
 			<div id="team-2" class="team-box">
-				<h2>Yellow Team <div class="score-value" data-team="2"></div></h2>
+				<h2>Yellow Team <span class="serving_team" data-team="2" style="display: none;">&lt;&gt;</span><div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
 
@@ -330,6 +330,7 @@ $mysqli->close();
 			start_time: null,
             number_of_players: null,
             score_to_win: null,
+            serving_team: null,
             team_1_score: 0,
             team_2_score: 0,
             can_trigger_score: true, // flag to prevent double tracking a goal
@@ -350,6 +351,29 @@ $mysqli->close();
 		  				setTimeout(function(){
 							$('html').removeClass('disable-scrolling');
 						}, 350);
+
+						// Show Scoreboards
+						$('.score-value[data-team="1"]').text(game.team_1_score);
+						$('.score-value[data-team="2"]').text(game.team_2_score);
+
+						// Randomly choose starting team, will generate a 1 or a 2
+						game.serving_team = Math.floor(Math.random() * (2)) + 1;
+						if(game.serving_team == 1) {
+							$('.serving_team[data-team="1"]').show();
+							$('.serving_team[data-team="2"]').hide();
+
+							$('.player-error-modal-text').text("Black Team Serves!");
+						} else {
+							$('.serving_team[data-team="1"]').hide();
+							$('.serving_team[data-team="2"]').show();
+
+							$('.player-error-modal-text').text("Yellow Team Serves!");
+						}
+
+						$('#player-error-modal').animate({opacity: 'show'}, 350);
+						setTimeout(function(){
+							$('#player-error-modal').animate({opacity: 'hide'}, 350);
+						}, 3000);
 
 		  				var game_type_id = $('#game_type_id option:selected').val();
 
@@ -409,6 +433,10 @@ $mysqli->close();
 	                        defending_player_id = find_goalie[0].id;
 	                    }
 
+	                    // Scored on team serves
+	                    $('.serving_team[data-team="1"]').hide();
+	                    $('.serving_team[data-team="2"]').show();
+
 					} else {
 						game.team_2_score++;
 						$('.score-value[data-team="2"]').text(game.team_2_score);
@@ -421,6 +449,11 @@ $mysqli->close();
 	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1'); });
 	                        defending_player_id = find_goalie[0].id;
 	                    }
+
+	                    // Scored on team serves
+	                    $('.serving_team[data-team="1"]').show();
+	                    $('.serving_team[data-team="2"]').hide();
+
 					}
 					scoreChecker();
 
@@ -635,27 +668,6 @@ $mysqli->close();
 			}
 		});
 
-		$('.score-minus').on('click touch', function() {
-            if (game.on) {
-    			if ($(this).data('team') == 1) {
-    				if(teamOneScore != 0) {
-    					teamOneScore--;
-    					$('.score-value[data-team="1"]').text(teamOneScore);
-    					$('input[name=teamScore1]').attr('value', teamOneScore);
-    					//minusSound.play();
-    				}
-    			} else {
-    				if(teamTwoScore != 0) {
-    					teamTwoScore--;
-    					$('.score-value[data-team="2"]').text(teamTwoScore);
-    					$('input[name=teamScore2]').attr('value', teamTwoScore);
-    					//minusSound.play();
-    				}
-    			}
-    			scoreChecker();
-            }
-		});
-
 		function scoreChecker() {
 			//check if the scores are the same, if they aren't show the submit
 			if(game.team_1_score == game.team_2_score) {
@@ -685,7 +697,7 @@ $mysqli->close();
 				dataType: 'json',
 				success: function(response) {
 					if (response.status == 'success') {
-					    $('.match-modal-text').text(response.data.message);
+					    $('.match-modal-text').html(response.data.message);
 					    $('#match-modal').animate({opacity: 'show'}, 350);
 					    $('#confetti').animate({opacity: 'show'}, 350);
 					    confetti();
