@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `pumpfoos`.`men` (
   `team` ENUM('1', '2') NOT NULL,
   `bar` ENUM('3-bar-goalie', '2-bar', '5-bar', '3-bar-attack') NOT NULL,
   `position` ENUM('near', 'near-middle', 'middle', 'far-middle', 'far') NOT NULL,
-  `table_position` ENUM('attack', 'defence') NOT NULL,
+  `player_position` ENUM('attack', 'defence') NOT NULL,
   `scoring_shortcut_key` CHAR(1) NOT NULL,
   `scoring_key_code` TINYINT NOT NULL,
   PRIMARY KEY (`id`))
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `pumpfoos`.`goals` (
   `defending_player_id` INT UNSIGNED NOT NULL,
   `bar` ENUM('3-bar-goalie', '2-bar', '5-bar', '3-bar-attack') NOT NULL,
   `position` ENUM('near', 'near-middle', 'middle', 'far-middle', 'far') NOT NULL,
-  `table_position` ENUM('attack', 'defence') NOT NULL,
+  `player_position` ENUM('attack', 'defence') NOT NULL,
   `team` ENUM('1', '2') NOT NULL,
   `time_of_goal` INT UNSIGNED NOT NULL,
   `created` DATETIME NOT NULL,
@@ -196,32 +196,32 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `pumpfoos`;
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (1, '1', '3-bar-goalie', 'near', 'defence', 'q', 81);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (2, '1', '3-bar-goalie', 'middle', 'defence', 'w', 87);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (3, '1', '3-bar-goalie', 'far', 'defence', 'e', 69);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (4, '1', '2-bar', 'near', 'defence', 'r', 82);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (5, '1', '2-bar', 'far', 'defence', 't', 84);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (6, '1', '5-bar', 'near', 'attack', 'y', 89);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (7, '1', '5-bar', 'near-middle', 'attack', 'u', 85);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (8, '1', '5-bar', 'middle', 'attack', 'i', 73);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (9, '1', '5-bar', 'far-middle', 'attack', 'o', 79);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (10, '1', '5-bar', 'far', 'attack', 'p', 80);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (11, '1', '3-bar-attack', 'near', 'attack', 'a', 65);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (12, '1', '3-bar-attack', 'middle', 'attack', 's', 83);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (13, '1', '3-bar-attack', 'far', 'attack', 'd', 68);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (14, '2', '3-bar-goalie', 'near', 'defence', 'f', 70);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (15, '2', '3-bar-goalie', 'middle', 'defence', 'g', 71);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (16, '2', '3-bar-goalie', 'far', 'defence', 'h', 72);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (17, '2', '2-bar', 'near', 'defence', 'j', 74);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (18, '2', '2-bar', 'far', 'defence', 'k', 75);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (19, '2', '5-bar', 'near', 'attack', 'l', 76);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (20, '2', '5-bar', 'near-middle', 'attack', 'z', 90);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (21, '2', '5-bar', 'middle', 'attack', 'x', 88);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (22, '2', '5-bar', 'far-middle', 'attack', 'c', 67);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (23, '2', '5-bar', 'far', 'attack', 'v', 86);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (24, '2', '3-bar-attack', 'near', 'attack', 'b', 66);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (25, '2', '3-bar-attack', 'middle', 'attack', 'n', 78);
-INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `table_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (26, '2', '3-bar-attack', 'far', 'attack', 'm', 77);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (1, '1', '3-bar-goalie', 'near', 'defence', 'q', 81);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (2, '1', '3-bar-goalie', 'middle', 'defence', 'w', 87);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (3, '1', '3-bar-goalie', 'far', 'defence', 'e', 69);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (4, '1', '2-bar', 'near', 'defence', 'r', 82);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (5, '1', '2-bar', 'far', 'defence', 't', 84);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (6, '1', '5-bar', 'near', 'attack', 'y', 89);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (7, '1', '5-bar', 'near-middle', 'attack', 'u', 85);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (8, '1', '5-bar', 'middle', 'attack', 'i', 73);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (9, '1', '5-bar', 'far-middle', 'attack', 'o', 79);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (10, '1', '5-bar', 'far', 'attack', 'p', 80);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (11, '1', '3-bar-attack', 'near', 'attack', 'a', 65);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (12, '1', '3-bar-attack', 'middle', 'attack', 's', 83);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (13, '1', '3-bar-attack', 'far', 'attack', 'd', 68);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (14, '2', '3-bar-goalie', 'near', 'defence', 'f', 70);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (15, '2', '3-bar-goalie', 'middle', 'defence', 'g', 71);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (16, '2', '3-bar-goalie', 'far', 'defence', 'h', 72);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (17, '2', '2-bar', 'near', 'defence', 'j', 74);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (18, '2', '2-bar', 'far', 'defence', 'k', 75);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (19, '2', '5-bar', 'near', 'attack', 'l', 76);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (20, '2', '5-bar', 'near-middle', 'attack', 'z', 90);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (21, '2', '5-bar', 'middle', 'attack', 'x', 88);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (22, '2', '5-bar', 'far-middle', 'attack', 'c', 67);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (23, '2', '5-bar', 'far', 'attack', 'v', 86);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (24, '2', '3-bar-attack', 'near', 'attack', 'b', 66);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (25, '2', '3-bar-attack', 'middle', 'attack', 'n', 78);
+INSERT INTO `pumpfoos`.`men` (`id`, `team`, `bar`, `position`, `player_position`, `scoring_shortcut_key`, `scoring_key_code`) VALUES (26, '2', '3-bar-attack', 'far', 'attack', 'm', 77);
 
 COMMIT;
 

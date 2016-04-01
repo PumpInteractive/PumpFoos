@@ -49,4 +49,24 @@ $response['status'] = 'success';
 $message_num = array_rand($match_messages);
 $response['data']['message'] = sprintf($match_messages[$message_num], $winning_team, $losing_team);
 
+$response['data']['message'] .= '<table><tr><td colspan="2"><strong>Top Scorers</strong></td></tr>';
+// Get goal leaderboard
+$players = [];
+$result = $mysqli->query("SELECT slack_user_name, COUNT(goals.id) as total_goals FROM games_players
+    LEFT JOIN players ON players.id = games_players.player_id
+    LEFT JOIN goals ON goals.game_id = games_players.game_id AND games_players.player_id = goals.scoring_player_id
+    WHERE games_players.game_id = '$game_id'
+    GROUP BY slack_user_name
+    ORDER BY total_goals DESC
+");
+
+while($row = $result->fetch_assoc()){
+    $response['data']['message'] .= '<tr><td>'.$row['slack_user_name'].'</td><td>'.$row['total_goals'].'</td></tr>';
+}
+$result->close();
+
+$response['data']['message'] .= '</table>';
+
+
+
 echo json_encode($response);
