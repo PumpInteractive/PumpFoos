@@ -89,6 +89,9 @@ $crimson: #c40000;
 			transform-style: preserve-3d;
 			border-radius: 50%;
 			box-shadow: 0px 2px 40px 0px rgba(0, 0, 0, 0.5);
+			-webkit-backface-visibility: hidden;
+			-moz-backface-visibility:    hidden;
+			-ms-backface-visibility:     hidden;
 			&.black-serves {
 				transform: rotateY( 1440deg );
 			}
@@ -106,6 +109,9 @@ $crimson: #c40000;
 				font-size: 14px;
 				position: absolute;
 				border-radius: 50%;
+				-webkit-backface-visibility: hidden;
+				-moz-backface-visibility:    hidden;
+				-ms-backface-visibility:     hidden;
 				backface-visibility: hidden;
 				border: 4px dashed white;
 				font-family: 'Titillium Web', sans-serif;
