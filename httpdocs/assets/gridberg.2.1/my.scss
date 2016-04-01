@@ -45,7 +45,9 @@
 
 /* Variables */
 $blackteam: rgba(34,34,34,0.90);
-$yellowteam: rgba(255,189,11,0.90);
+$yellowteam: rgba(255,189,11,1);
+$yellowteamf: rgba(255,189,11,1);
+$blackteamf: rgba(34,34,34,1);
 $light-white: #eee;
 $medium-white: #ddd;
 $gray: #ccc;
@@ -60,11 +62,78 @@ $crimson: #c40000;
 	overflow: hidden;
 	@include clearfix;
 }
+.coin-floater{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99999;
+	pointer-events: none;
+	display: none;
+	background: rgba(255,255,255,0.6);
+	.coin-container {
+		width: 200px;
+		height: 200px;
+		position: relative;
+		margin: 0 auto 0px;
+		perspective: 600px;
+		top: 50%;
+    	margin-top: -100px;
+		left: 0px;
+		#coin {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			transition: transform 3s;
+			transform-style: preserve-3d;
+			border-radius: 50%;
+			box-shadow: 0px 2px 40px 0px rgba(0, 0, 0, 0.5);
+			&.black-serves {
+				transform: rotateY( 1440deg );
+			}
+			&.yellow-serves {
+				transform: rotateY( 1620deg );
+			}
+			figure {
+				cursor: pointer;
+				display: block;
+				height: 100%;
+				width: 100%;
+				color: white;
+				text-align: center;
+				font-weight: bold;
+				font-size: 14px;
+				position: absolute;
+				border-radius: 50%;
+				backface-visibility: hidden;
+				border: 4px dashed white;
+				font-family: 'Titillium Web', sans-serif;
+				font-weight: 700;
+				letter-spacing: 3px;
+				font-size: 200%;
+				text-transform: uppercase;
+				padding: 63px 10px 10px 10px;
+				&.tails {
+					background: $blackteamf;
+				}
+				&.heads {
+					background: $yellowteamf;
+					transform: rotateY( 180deg );
+				}
+			}
+		}
+	}
+}
+
 .players {
 	padding: 26px 10px 25px 10px;
 	min-height: 100%;
 }
 .player-tray-wrapper {
+	&.right {
+		margin-left: auto;
+	}
     .player-info {
         float: left;
     }
@@ -182,6 +251,15 @@ $crimson: #c40000;
 			    background: $crimson;
 			    border-radius: 3px;
 			    padding: 0px 10px 0px 10px;
+			}
+			span.serving_team {
+				i {
+					    height: 1px;
+					    vertical-align: top;
+					    margin-top: 0px;
+					    margin-left: 6px;
+					    color: crimson;
+				}
 			}
 		}
 		.team {
