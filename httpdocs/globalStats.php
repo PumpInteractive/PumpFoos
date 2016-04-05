@@ -114,6 +114,31 @@
 							<p><b>Time Well Spent:</b> <br /><br /><span class="label label-danger" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo gmdate("H:i:s", $total_time) ?></span></p>
 							</div>
 						</div>
+						<hr class="simple">
+						<div class="row">
+							<div class="col-sm-12 col-md-12 col-lg-12">
+								<p><span style="font-weight: bold;">Black</span> vs. <span style="color: #e6b800;font-weight:bold;">Yellow</span></p>
+								<div class="progress progress-lg progress-striped active">
+									<div class="progress-bar bg-color-darken" style="width: 80%">80%</div>
+									<div class="progress-bar bg-color-yellow" style="width: 20%">20%</div>
+								</div>
+							</div>
+							<hr class="simple">
+							<div class="col-sm-12 col-md-12 col-lg-12">
+<div class="progress">
+    <div class="progress-bar progress-bar-success" style="width: 40%">
+        <span class="sr-only">Program Files (40%)</span>
+    </div>
+    <div class="progress-bar progress-bar-warning" style="width: 25%">
+        <span class="sr-only">Residual Files (25%)</span>
+    </div>
+    <div class="progress-bar progress-bar-danger" style="width: 15%">
+        <span class="sr-only">Junk Files (15%)</span>
+    </div>
+</div>
+							</div>
+						</div>
+
 					</div>
 					<!-- end widget content -->
 					
@@ -169,7 +194,10 @@
 									<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> Wins</th>
 									<th data-class="expand"><i class="fa fa-fw fa-times text-muted hidden-md hidden-sm hidden-xs"></i> Losses</th>
 									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> Goals For</th>
-									<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> Goals Against</th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> Goals Against</th>
+									<th data-class="expand"><i class="fa fa-fw fa-line-chart text-muted hidden-md hidden-sm hidden-xs"></i> +/- </th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> Goals/Game</th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GAA </th>
 								</tr>
 							</thead>
 							<tbody>
@@ -218,6 +246,7 @@
 										}
 									}
 
+									$difference = $sumGoalsFor - $sumGoalsAgainst;
 									?>
 									<tr>
 										<td><?php echo ucfirst($row["slack_user_name"]); ?></td>
@@ -226,6 +255,9 @@
 										<td><?php echo $row["losses"]; ?></td>
 										<td><?php echo $sumGoalsFor; ?></td>
 										<td><?php echo $sumGoalsAgainst; ?></td>
+										<td><?php echo ($difference > 0 ? "+".$difference : $difference); ?></td>
+										<td></td>
+										<td></td>
 									</tr>
 								<?php endwhile; ?>
 
@@ -270,7 +302,10 @@
 	
 	var pagefunction = function() {
 		// clears the variable if left blank
-
+				// Fill all progress bars with animation
+		$('.progress-bar').progressbar({
+			display_text : 'fill'
+		});
 		/* BASIC ;*/
 		var responsiveHelper_dt_basic = undefined;
 		var responsiveHelper_datatable_fixed_column = undefined;
