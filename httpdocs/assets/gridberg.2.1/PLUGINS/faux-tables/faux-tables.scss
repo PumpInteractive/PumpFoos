@@ -1,0 +1,16 @@
+@import '../../config.scss';
+@mixin text-percent($value) {
+  font-size: $value / 16 * 100%;
+}
+/* DO NOT EDIT ABOVE THIS LINE - Your config.scss variables are imported here.*/
+.faux-table {
+	display: table;
+	width: 100%;
+	.faux-row {
+		display: table-row;
+		width: 100%;
+		.faux-cell {
+			display: table-cell;
+		}
+	}
+}
