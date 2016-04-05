@@ -42,15 +42,45 @@ if ($mysqli->connect_errno) {
     exit();
 }
 
-// Save the goal
+// Save the completed state of the game
 $mysqli->query("UPDATE games SET `end` = NOW(), duration='$duration', team_1_final_score='$team_1_final_score', team_2_final_score='$team_2_final_score', winning_team='$winning_team', losing_team='$losing_team' WHERE id='$game_id'");
 
+// Match Message
 $response['status'] = 'success';
 $message_num = array_rand($match_messages);
 $response['data']['message'] = sprintf($match_messages[$message_num], $winning_team, $losing_team);
 
-$response['data']['message'] .= '<table><tr><td colspan="2"><strong>Top Scorers</strong></td></tr>';
+// Final Score and Time
+$response['data']['message'] .= '<div class="faux-table teams-table"><div class="faux-row"><div class="faux-cell team-1"><p>'.$team_1_final_score.'</p></div><div class="faux-cell time"><p>Time: '.gmdate("i:s", $duration).'</p></div><div class="faux-cell team-2"><p>'.$team_2_final_score.'</p></div></div></div>';
+
+// Get the game box score
+$response['data']['message'] .= '<strong class="table-heading">Box Score</strong><div class="faux-table box-score">';
+$goals = [];
+$result = $mysqli->query("SELECT
+    scoring_player.slack_user_name as scoring_player_name,
+    scoring_player.slack_profile_pic_url as scoring_profile_pic_url,
+    defending_player.slack_user_name as defending_player_name,
+    defending_player.slack_profile_pic_url as defending_profile_pic_url,
+    bar,
+    position,
+    team,
+    time_of_goal
+    FROM goals
+    LEFT JOIN players as scoring_player ON scoring_player.id = goals.scoring_player_id
+    LEFT JOIN players as defending_player ON defending_player.id = goals.defending_player_id
+    WHERE goals.game_id = '$game_id'
+    ORDER BY time_of_goal
+");
+
+while($row = $result->fetch_assoc()){
+    $response['data']['message'] .= '<div class="faux-row"><div class="faux-cell"><img class="team-'.$row['team'].'" src="'.$row['scoring_profile_pic_url'].'" /><br />'.$row['scoring_player_name'].'</div><div class="faux-cell">'.gmdate("i:s", $row['time_of_goal']) .'</div><div class="faux-cell">'.$row['bar'].' '.$row['position'].'</div><div class="faux-cell"><img src="'.$row['defending_profile_pic_url'].'" /><br />'.$row['defending_player_name'].'</div></div>';
+}
+$result->close();
+
+$response['data']['message'] .= '</div>';
+
 // Get goal leaderboard
+$response['data']['message'] .= '<strong class="table-heading">Top Scorers</strong><div class="faux-table top-scorers">';
 $players = [];
 $result = $mysqli->query("SELECT slack_user_name, COUNT(goals.id) as total_goals FROM games_players
     LEFT JOIN players ON players.id = games_players.player_id
@@ -61,11 +91,11 @@ $result = $mysqli->query("SELECT slack_user_name, COUNT(goals.id) as total_goals
 ");
 
 while($row = $result->fetch_assoc()){
-    $response['data']['message'] .= '<tr><td>'.$row['slack_user_name'].'</td><td>'.$row['total_goals'].'</td></tr>';
+    $response['data']['message'] .= '<div class="faux-row"><div class="faux-cell">'.$row['slack_user_name'].'</div><div class="faux-cell">'.$row['total_goals'].'</div></div>';
 }
 $result->close();
 
-$response['data']['message'] .= '</table>';
+$response['data']['message'] .= '</div>';
 
 
 
