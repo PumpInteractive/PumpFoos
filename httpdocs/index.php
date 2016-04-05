@@ -76,23 +76,6 @@ $mysqli->close();
 	<link rel="stylesheet" href="assets/js/dragdealer/dragdealer.css">
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
-	<style>
-		#match-modal .match-modal-inner {
-			max-width: 750px;
-		}
-
-		#match-modal .match-modal-inner table {
-			width: 100%;
-		}
-
-		#game_clock {
-			display: block;
-			background-color: black;
-			border: 5px solid red;
-			color: #fff;
-		}
-	</style>
-
 	<!-- Icon -->
 	<link rel="apple-touch-icon" href="/assets/images/foosball-icon.png">
 	<link rel="icon" type="image/png" href="/assets/images/foosball-icon.png">
@@ -116,6 +99,28 @@ $mysqli->close();
 	</div>
 
 	<div id="wrapper">
+		<div id="game-info">
+			<div class="game-info-inner">
+				<div class="game-clock-wrapper">
+					<h5>Game Clock:</h5>
+					<div id="game_clock">00:00</div>
+				</div>
+				<div class="score-tracks">
+					<div class="score-track">
+						<div class="score-track-inner">
+							<h4>Black Team</h4>
+							<div class="score-value" data-team="1">0</div>
+						</div>
+					</div>
+					<div class="score-track">
+						<div class="score-track-inner yellow">
+							<h4>Yellow Team</h4>
+							<div class="score-value" data-team="2">0</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div id="bench">
 			<div class="players-dummy">
 				<div class="players handle">
@@ -222,8 +227,6 @@ $mysqli->close();
 					</div>
 				</div>
 			</div>
-
-			<h1 id="game_clock">0:00</h1>
 
 			<div id="team-2" class="team-box">
 				<h2>Yellow Team <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
@@ -400,8 +403,9 @@ $mysqli->close();
 		  				//collapse the #game-config
 		  				gameConfigHeight = 0;
 		  				setFieldHeight();
-		  				$('#game-config').addClass('closed');
 		  				$('html').addClass('disable-scrolling');
+		  				$('#game-info').addClass('open');
+		  				$('#game-config').addClass('closed');
 		  				setTimeout(function(){
 							$('html').removeClass('disable-scrolling');
 						}, 350);
