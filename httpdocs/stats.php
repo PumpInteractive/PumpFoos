@@ -2,7 +2,7 @@
 <html lang="en-us">	
 	<head>
 		<meta charset="utf-8">
-		<title> SmartAdmin (AJAX)</title>
+		<title> Foosball Statistics</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		
@@ -33,8 +33,8 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="assets/css/demo.min.css">
 
 		<!-- #FAVICONS -->
-		<link rel="shortcut icon" href="assets/img/favicon/favicon.ico" type="image/x-icon">
-		<link rel="icon" href="assets/img/favicon/favicon.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="assets/images/foosball-icon.png" type="image/x-icon">
+		<link rel="icon" href="assets/images/foosball-icon.png" type="image/x-icon">
 
 		<!-- #GOOGLE FONT -->
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
@@ -224,10 +224,10 @@
 
 				<ul>
 					<li class="">
-						<a href="statsPages/blank_.php" title="Global Stats" ><i class="fa fa-lg fa-fw fa-pencil-square-o"></i> <span class="menu-item-parent">Statistics</span></a>
+						<a href="#globalStats.php" title="Global Stats" ><i class="fa fa-lg fa-fw fa-pencil-square-o"></i> <span class="menu-item-parent">Statistics</span></a>
 					</li>
 					<li class="">
-						<a href="statsPages/players.php" title="Player-Stats"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Players</span></a>
+						<a href="#players.php" title="Player-Stats"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Players</span></a>
 					</li>
 				</ul>
 			</nav>
@@ -282,54 +282,6 @@
 				<div class="col-xs-12 col-sm-6">
 					<span class="txt-color-white">Foosball Statistics App <span class="hidden-xs"> - Pump Interactive</span> © 2016</span>
 				</div>
-
-				<div class="col-xs-6 col-sm-6 text-right hidden-xs">
-					<div class="txt-color-white inline-block">
-						<i class="txt-color-blueLight hidden-mobile">Last account activity <i class="fa fa-clock-o"></i> <strong>52 mins ago &nbsp;</strong> </i>
-						<div class="btn-group dropup">
-							<button class="btn btn-xs dropdown-toggle bg-color-blue txt-color-white" data-toggle="dropdown">
-								<i class="fa fa-link"></i> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu pull-right text-left">
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Download Progress</p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-success" style="width: 50%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Server Load</p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-success" style="width: 20%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li >
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Memory Load <span class="text-danger">*critical*</span></p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-danger" style="width: 70%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<button class="btn btn-block btn-default">refresh</button>
-									</div>
-								</li>
-							</ul>
-						</div>
-						<!-- end btn-group-->
-					</div>
-					<!-- end div-->
-				</div>
-				<!-- end col -->
 			</div>
 			<!-- end row -->
 		</div>
