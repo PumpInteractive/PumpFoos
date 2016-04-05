@@ -76,6 +76,23 @@ $mysqli->close();
 	<link rel="stylesheet" href="assets/js/dragdealer/dragdealer.css">
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
+	<style>
+		#match-modal .match-modal-inner {
+			max-width: 750px;
+		}
+
+		#match-modal .match-modal-inner table {
+			width: 100%;
+		}
+
+		#game_clock {
+			display: block;
+			background-color: black;
+			border: 5px solid red;
+			color: #fff;
+		}
+	</style>
+
 	<!-- Icon -->
 	<link rel="apple-touch-icon" href="/assets/images/foosball-icon.png">
 	<link rel="icon" type="image/png" href="/assets/images/foosball-icon.png">
@@ -88,7 +105,7 @@ $mysqli->close();
 
 </head>
 <body>
-	
+
 	<div class="coin-floater">
 		<div class="coin-container">
 			<div id="coin">
@@ -205,6 +222,8 @@ $mysqli->close();
 					</div>
 				</div>
 			</div>
+
+			<h1 id="game_clock">0:00</h1>
 
 			<div id="team-2" class="team-box">
 				<h2>Yellow Team <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
@@ -333,6 +352,10 @@ $mysqli->close();
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
 
+		function str_pad_left(string, pad, length) {
+			return (new Array(length+1).join(pad)+string).slice(-length);
+		}
+
 		var game = {
 			on: false,
 			id: null,
@@ -346,6 +369,27 @@ $mysqli->close();
             can_trigger_score: true, // flag to prevent double tracking a goal
             goals: [],
             players: [],
+            clock: {
+            	on: false,
+            	time: 0,
+            	start: function() {
+            		game.clock.on = true;
+            		setTimeout(game.clock.tick, 500);
+            	},
+            	stop: function() {
+            		game.clock.on = false;
+            	},
+            	tick: function() {
+            		game.clock.time = Math.round(new Date().getTime() / 1000) - game.start_time;
+            		var minutes = Math.floor(game.clock.time / 60);
+            		var seconds = game.clock.time - minutes * 60;
+
+            		$('#game_clock').text(str_pad_left(minutes,'0',2)+':'+str_pad_left(seconds,'0',2));
+
+            		if(game.clock.on)
+            			setTimeout(game.clock.tick, 500);
+            	}
+            },
 			start: function(){
 				if(!game.on){
 					// get number of players required for currently selected game
@@ -368,7 +412,7 @@ $mysqli->close();
 
 						// Randomly choose starting team, will generate a 1 or a 2
 						game.serving_team = Math.floor(Math.random() * (2)) + 1;
-						
+
 						$('.coin-floater').fadeIn();
 
 						if(game.serving_team == 1) {
@@ -390,7 +434,7 @@ $mysqli->close();
 								$('.serving_team[data-team="1"]').fadeOut();
 								$('.serving_team[data-team="2"]').fadeIn();
 							}, 3000);
-							
+
 							$('#coin').addClass('yellow-serves');
 
 							setTimeout(function(){
@@ -413,6 +457,7 @@ $mysqli->close();
 									game.on = true;
 									game.id = response.data.game_id;
 									game.start_time = Math.round(new Date().getTime() / 1000); // time in seconds for easy time_of_goal calculations
+									game.clock.start();
 					                game.number_of_players = number_of_players;
 					                game.score_to_win = $('#score_to_win').val();
 
@@ -478,7 +523,6 @@ $mysqli->close();
 	                    $('.serving_team[data-team="2"]').hide();
 
 					}
-					scoreChecker();
 
 	                $.ajax({
 	                    type: "POST",
@@ -502,6 +546,9 @@ $mysqli->close();
 	                            // do nothing visually as we've already made the UI updates
 	                            // push the goal onto the goal stack for easy undo
 	                            game.goals.push(response.data.goal_id);
+
+	                            // Check the score to see if anyone won after the goal is saved
+	                            scoreChecker();
 
 
 	                        } else if (response.status == 'fail') {
@@ -701,6 +748,10 @@ $mysqli->close();
 
 			if(game.team_1_score >= game.score_to_win || game.team_2_score >= game.score_to_win) {
 				var time_of_win = Math.round(new Date().getTime() / 1000) - game.start_time
+
+				// end the game
+				game.on = false;
+				game.clock.stop();
 
 				/* Sweet Audio Bro */
 				var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
