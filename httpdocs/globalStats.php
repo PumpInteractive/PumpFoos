@@ -28,6 +28,91 @@
 <!-- widget grid -->
 <section id="widget-grid" class="">
 
+<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			
+			<!-- Widget ID (each widget will need unique ID)-->
+			<div class="jarviswidget" id="wid-id-2">
+				<!-- widget options:
+					usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+					
+					data-widget-colorbutton="false"	
+					data-widget-editbutton="false"
+					data-widget-togglebutton="false"
+					data-widget-deletebutton="false"
+					data-widget-fullscreenbutton="false"
+					data-widget-custombutton="false"
+					data-widget-collapsed="true" 
+					data-widget-sortable="false"
+					
+				-->
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bolt"></i> </span>
+					<h2>Live Preview</h2>				
+					
+				</header>
+
+				<!-- widget div-->
+				<div>
+					
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox">
+						<!-- This area used as dropdown edit box -->
+						<input class="form-control" type="text">	
+					</div>
+					<!-- end widget edit box -->
+					
+					<!-- widget content -->
+					<div class="widget-body">
+					<h2>Live Game Preview</h2>
+					<?php
+						require_once realpath(__DIR__ . '/../').'/config.php';
+
+						$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
+
+						if ($mysqli->connect_errno) {
+							$response['status'] = 'error';
+							$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
+
+							echo json_encode($response);
+
+							exit();
+						}
+
+
+						$sql = "SELECT * FROM games WHERE start IS NOT NULL AND end IS NULL";
+
+						if (!$result = $mysqli->query($sql)) {
+							die ('There was an error running query[' . $mysqli->error . ']');
+						}
+
+						if($result->num_rows > 0)
+						{
+							echo '<p>Game ON!</p>';
+							while($row = $result->fetch_assoc())
+							{
+								print_r($row);
+							}
+						}
+						else{
+							echo '<p>No Game being played</p>';
+						}
+
+						?>
+					
+					</div>
+					<!-- end widget content -->
+					
+				</div>
+				<!-- end widget div -->
+				
+			</div>
+			<!-- end widget -->
+
+		</article>
+
+</div>
+
 	<!-- row -->
 	<div class="row">
 		<!-- NEW WIDGET START -->
@@ -66,52 +151,52 @@
 					
 					<!-- widget content -->
 					<div class="widget-body">
-													<?php
-								require_once realpath(__DIR__ . '/../').'/config.php';
+						<?php
+						require_once realpath(__DIR__ . '/../').'/config.php';
 
-								$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
+						$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
 
-								if ($mysqli->connect_errno) {
-									$response['status'] = 'error';
-									$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
+						if ($mysqli->connect_errno) {
+							$response['status'] = 'error';
+							$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
 
-									echo json_encode($response);
+							echo json_encode($response);
 
-									exit();
-								}
+							exit();
+						}
 
 
-								$sql = "SELECT * FROM games;";
+						$sql = "SELECT * FROM games;";
 
-								if (!$result = $mysqli->query($sql)) {
-									die ('There was an error running query[' . $mysqli->error . ']');
-								}
+						if (!$result = $mysqli->query($sql)) {
+							die ('There was an error running query[' . $mysqli->error . ']');
+						}
 
-								$num_games = $result->num_rows;
+						$num_games = $result->num_rows;
 
-								$total_time = 0;
-								while($row = $result->fetch_assoc()){
-									$total_time += intval($row['duration']);
-								}
+						$total_time = 0;
+						while($row = $result->fetch_assoc()){
+							$total_time += intval($row['duration']);
+						}
 
-								$sql1 = "SELECT * FROM goals;";
+						$sql1 = "SELECT * FROM goals;";
 
-								if (!$result1 = $mysqli->query($sql1)) {
-									die ('There was an error running query[' . $mysqli->error . ']');
-								}
+						if (!$result1 = $mysqli->query($sql1)) {
+							die ('There was an error running query[' . $mysqli->error . ']');
+						}
 
-								$num_goals = $result1->num_rows;
+						$num_goals = $result1->num_rows;
 
-								?>
+						?>
 						<div class="row">
 							<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
-							<p><b>Games Played:</b> <br /><br /><span class="label label-primary" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $num_games; ?></span></p>
+								<p><b>Games Played:</b> <br /><br /><span class="label label-primary" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $num_games; ?></span></p>
 							</div>
 							<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
-							<p><b>Goals Scored:</b> <br /><br /><span class="label label-success" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $num_goals; ?></span></p>
+								<p><b>Goals Scored:</b> <br /><br /><span class="label label-success" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $num_goals; ?></span></p>
 							</div>
 							<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
-							<p><b>Time Well Spent:</b> <br /><br /><span class="label label-danger" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo gmdate("H:i:s", $total_time) ?></span></p>
+								<p><b>Time Well Spent:</b> <br /><br /><span class="label label-danger" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo gmdate("H:i:s", $total_time) ?></span></p>
 							</div>
 						</div>
 						<hr class="simple">
@@ -125,17 +210,17 @@
 							</div>
 							<hr class="simple">
 							<div class="col-sm-12 col-md-12 col-lg-12">
-<div class="progress">
-    <div class="progress-bar progress-bar-success" style="width: 40%">
-        <span class="sr-only">Program Files (40%)</span>
-    </div>
-    <div class="progress-bar progress-bar-warning" style="width: 25%">
-        <span class="sr-only">Residual Files (25%)</span>
-    </div>
-    <div class="progress-bar progress-bar-danger" style="width: 15%">
-        <span class="sr-only">Junk Files (15%)</span>
-    </div>
-</div>
+								<div class="progress">
+									<div class="progress-bar progress-bar-success" style="width: 40%">
+										<span class="sr-only">Program Files (40%)</span>
+									</div>
+									<div class="progress-bar progress-bar-warning" style="width: 25%">
+										<span class="sr-only">Residual Files (25%)</span>
+									</div>
+									<div class="progress-bar progress-bar-danger" style="width: 15%">
+										<span class="sr-only">Junk Files (15%)</span>
+									</div>
+								</div>
 							</div>
 						</div>
 
@@ -189,15 +274,18 @@
 						<table id="leaderboard_dt" class="table table-striped table-bordered table-hover" width="100%">
 							<thead>			                
 								<tr>
-									<th data-hide="phone"> <i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i>Name</th>
-									<th data-class="expand"><i class="fa fa-fw fa-gamepad text-muted hidden-md hidden-sm hidden-xs"></i> Games Played</th>
-									<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> Wins</th>
-									<th data-class="expand"><i class="fa fa-fw fa-times text-muted hidden-md hidden-sm hidden-xs"></i> Losses</th>
-									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> Goals For</th>
-									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> Goals Against</th>
-									<th data-class="expand"><i class="fa fa-fw fa-line-chart text-muted hidden-md hidden-sm hidden-xs"></i> +/- </th>
-									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> Goals/Game</th>
-									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GAA </th>
+								<th data-hide="phone"> <i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i>Name</th>
+								<th data-class="expand"><i class="fa fa-fw fa-gamepad text-muted hidden-md hidden-sm hidden-xs"></i> GP</th>
+								<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> W</th>
+								<th data-class="expand"><i class="fa fa-fw fa-times text-muted hidden-md hidden-sm hidden-xs"></i> L</th>
+								<th data-class="expand"><i class="fa fa-fw fa-percent text-muted hidden-md hidden-sm hidden-xs"></i> Win</th>
+								<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> GF</th>
+								<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GA</th>
+								<th data-class="expand"><i class="fa fa-fw fa-line-chart text-muted hidden-md hidden-sm hidden-xs"></i> +/- </th>
+								<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GPG</th>
+								<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GAA </th>
+								<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> AG </th>
+								<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> DG </th>
 								</tr>
 							</thead>
 							<tbody>
@@ -228,9 +316,25 @@
 									$player_id = $row["id"];
 									$getGoals = "SELECT * FROM goals WHERE scoring_player_id = {$player_id} OR defending_player_id = {$player_id}";
 
+									$getWins = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.winning_team=games_players.team AND players.id={$player_id}";
+									$getLosses = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.losing_team=games_players.team AND players.id={$player_id}";
+
 									if (!$result2 = $mysqli->query($getGoals)) {
 										die ('There was an error running query[' . $mysqli->error . ']');
 									}
+									if(!$result3 = $mysqli->query($getWins)) {
+										die ('There was an error running query[' . $mysqli->error . ']');
+									}
+									if(!$result4 = $mysqli->query($getLosses)) {
+										die ('There was an error running query[' . $mysqli->error . ']');
+									}
+
+
+									$numWins = $result3->num_rows;
+									$numLosses = $result4->num_rows;
+
+									$sumGoalsForAttack = 0;
+									$sumGoalsForDefense = 0;
 
 									$sumGoalsFor = 0;
 									$sumGoalsAgainst = 0;
@@ -238,6 +342,14 @@
 									while ($row2 = $result2->fetch_assoc()) {
 										if($row2['scoring_player_id'] == $row['id'])
 										{
+											if($row2['player_position'] == 'attack')
+											{
+												$sumGoalsForAttack++;
+											}
+											else {
+												$sumGoalsForDefense++;
+											}
+
 											$sumGoalsFor++;
 										}
 										elseif($row2['defending_player_id'] == $row['id'])
@@ -250,14 +362,17 @@
 									?>
 									<tr>
 										<td><?php echo ucfirst($row["slack_user_name"]); ?></td>
-										<td><?php echo $row["games_played"]; ?></td>
-										<td><?php echo $row["wins"]; ?></td>
-										<td><?php echo $row["losses"]; ?></td>
+										<td><?php echo $numWins+$numLosses; ?></td>
+										<td><?php echo $numWins; ?></td>
+										<td><?php echo $numLosses; ?></td>
+										<td><?php echo ($numWins+$numLosses > 0 ? round($numWins/($numWins+$numLosses),2)*100 : 0).'%'; ?></td>
 										<td><?php echo $sumGoalsFor; ?></td>
 										<td><?php echo $sumGoalsAgainst; ?></td>
 										<td><?php echo ($difference > 0 ? "+".$difference : $difference); ?></td>
-										<td></td>
-										<td></td>
+										<td><?php echo ($numWins+$numLosses > 0 ? round($sumGoalsFor/($numWins+$numLosses),2) : 0); ?></td>
+										<td><?php echo ($numWins+$numLosses > 0 ? round($sumGoalsAgainst/($numWins+$numLosses),2) : 0); ?></td>
+										<td><?php echo $sumGoalsForAttack; ?></td>
+										<td><?php echo $sumGoalsForDefense; ?></td>
 									</tr>
 								<?php endwhile; ?>
 
@@ -303,30 +418,30 @@
 	var pagefunction = function() {
 		// clears the variable if left blank
 				// Fill all progress bars with animation
-		$('.progress-bar').progressbar({
-			display_text : 'fill'
-		});
-		/* BASIC ;*/
-		var responsiveHelper_dt_basic = undefined;
-		var responsiveHelper_datatable_fixed_column = undefined;
-		var responsiveHelper_datatable_col_reorder = undefined;
-		var responsiveHelper_datatable_tabletools = undefined;
+				$('.progress-bar').progressbar({
+					display_text : 'fill'
+				});
+				/* BASIC ;*/
+				var responsiveHelper_dt_basic = undefined;
+				var responsiveHelper_datatable_fixed_column = undefined;
+				var responsiveHelper_datatable_col_reorder = undefined;
+				var responsiveHelper_datatable_tabletools = undefined;
 
-		var breakpointDefinition = {
-			tablet : 1024,
-			phone : 480
-		};
+				var breakpointDefinition = {
+					tablet : 1024,
+					phone : 480
+				};
 
-		$('#leaderboard_dt').dataTable({
-			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-			"t"+
-			"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-			"oLanguage": {
-				"sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>'
-			},
-			"order": [[ 2, "desc" ]],
-			"autoWidth" : true,
-			"preDrawCallback" : function() {
+				$('#leaderboard_dt').dataTable({
+					"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+					"t"+
+					"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+					"oLanguage": {
+						"sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>'
+					},
+					"order": [[ 2, "desc" ]],
+					"autoWidth" : true,
+					"preDrawCallback" : function() {
 					// Initialize the responsive datatables helper once.
 					if (!responsiveHelper_dt_basic) {
 						responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#leaderboard_dt'), breakpointDefinition);
@@ -340,10 +455,10 @@
 				}
 			});
 
-		/* END BASIC */
+				/* END BASIC */
 
-	}
-	
+			}
+
 	// end pagefunction
 
 	// destroy generated instances 
