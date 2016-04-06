@@ -428,10 +428,6 @@ $mysqli->close();
 
 							$('#coin').addClass('black-serves');
 
-							setTimeout(function(){
-								$('.coin-floater').fadeOut();
-							}, 4000);
-
 						} else {
 
 							setTimeout(function(){
@@ -441,10 +437,15 @@ $mysqli->close();
 
 							$('#coin').addClass('yellow-serves');
 
-							setTimeout(function(){
-								$('.coin-floater').fadeOut();
-							}, 4000);
 						}
+
+						setTimeout(function(){
+							$('.coin-floater').fadeOut(400, function() {
+								// Start clock
+								game.start_time = Math.round(new Date().getTime() / 1000); // time in seconds for easy time_of_goal calculations
+								game.clock.start();
+							});
+						}, 4000);
 
 		  				var game_type_id = $('#game_type_id option:selected').val();
 
@@ -460,8 +461,6 @@ $mysqli->close();
 								if (response.status == 'success') {
 									game.on = true;
 									game.id = response.data.game_id;
-									game.start_time = Math.round(new Date().getTime() / 1000); // time in seconds for easy time_of_goal calculations
-									game.clock.start();
 					                game.number_of_players = number_of_players;
 					                game.score_to_win = $('#score_to_win').val();
 
