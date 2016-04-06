@@ -85,9 +85,45 @@ $mysqli->close();
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="assets/js/dragdealer/dragdealer.js"></script>
+	<script src="assets/js/confetti.js"></script>
 
 </head>
 <body>
+
+	<div class="shake" style="display: none; width: 100px; height: 100px; background: blue;  margin: 0px auto; position: relative;"></div>
+	<div id="momentum">
+		<h5>Momentum:</h5>
+		<div class="momentum-inner">
+			<div class="momentum-team-1">
+				<div class="momentum-team-1-fill"></div>
+			</div>
+			<div class="momentum-team-2">
+				<div class="momentum-team-2-fill"></div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		function shake() {                                                                                                                                                                                            
+		    var interval = 100;                                                                                                 
+		    var distance = 10;                                                                                                  
+		    var times = 1;                                                                                                                                                                                       
+		    var shake = $('.shake');
+		    for(
+		    	var iter=0;
+		    	iter<(times+1);
+		    	iter++
+		    ){                                                                              
+		        $(shake).animate({ 
+		            left:((iter%2==0 ? distance : distance*-1))
+		        },interval);                                   
+		    }                                                                                                              
+		    $(shake).animate({ left: 0},interval);                                                                                
+		}
+		$('.shake').on('click touch', function() {
+			shake();
+		});
+	</script>
 
 	<div class="coin-floater">
 		<div class="coin-container">
@@ -127,10 +163,6 @@ $mysqli->close();
 					<h5>Bench</h5>
 					<div id="updatePlayers">Refresh Players</div><br /><br />
 					<div class="players-inner">
-
-					<!--  -->
-					<!-- data-tray-id should match player-id (used by js) -->
-
 						<?php foreach ($players as $player): ?>
 						    <div class="player-tray" data-tray-id="<?= $player['id']; ?>">
 								<div class="player" data-player-id="<?= $player['id']; ?>" data-player-name="<?= $player['slack_user_name']; ?>"
@@ -481,7 +513,7 @@ $mysqli->close();
 			score: function(man){
 				if (game.on) {
 					var time_of_goal = Math.round(new Date().getTime() / 1000) - game.start_time
-
+					var momentumStepper = 100 / game.score_to_win;
 	                var defending_player_id = null;
 	                plusSound.currentTime = 0;
 					plusSound.play();
@@ -492,8 +524,13 @@ $mysqli->close();
 					}, 350);
 
 					if ($(man).data('team') == 1) {
+
 						game.team_1_score++;
 						$('.score-value[data-team="1"]').text(game.team_1_score);
+
+						//momentum
+						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
+						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
 
 	                    // get scored on goalie id
 	                    if (game.number_of_players == 4) {
@@ -511,6 +548,10 @@ $mysqli->close();
 					} else {
 						game.team_2_score++;
 						$('.score-value[data-team="2"]').text(game.team_2_score);
+
+						//momentum
+						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
+						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
 
 	                    // get scored on goalie id
 	                    if (game.number_of_players == 4) {
@@ -564,112 +605,6 @@ $mysqli->close();
 				}
 			}
 		};
-
-    	//Confetti
-        function confetti() {
-            //canvas init
-            var canvas = document.getElementById("confetti");
-            var ctx = canvas.getContext("2d");
-
-            //canvas dimensions
-            var W = window.innerWidth;
-            var H = window.innerHeight;
-            canvas.width = W;
-            canvas.height = H;
-
-            //snowflake particles
-            var mp = 200; //max particles
-            var particles = [];
-            for (var i = 0; i < mp; i++) {
-                particles.push({
-                    x: Math.random() * W, //x-coordinate
-                    y: Math.random() * H, //y-coordinate
-                    r: Math.random() * 15 + 1, //radius
-                    d: Math.random() * mp, //density
-                    color: "rgba(" + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ", 1)",
-                    tilt: Math.floor(Math.random() * 5) - 5
-                });
-            }
-
-            //Lets draw the flakes
-            function draw() {
-                ctx.clearRect(0, 0, W, H);
-
-
-
-                for (var i = 0; i < mp; i++) {
-                    var p = particles[i];
-                    ctx.beginPath();
-                    ctx.lineWidth = p.r;
-                    ctx.strokeStyle = p.color; // Green path
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p.x + p.tilt + p.r / 2, p.y + p.tilt);
-                    ctx.stroke(); // Draw it
-                }
-
-                update();
-            }
-
-            //Function to move the snowflakes
-            //angle will be an ongoing incremental flag. Sin and Cos functions will be applied to it to create vertical and horizontal movements of the flakes
-            var angle = 0;
-
-            function update() {
-                angle += 0.01;
-                for (var i = 0; i < mp; i++) {
-                    var p = particles[i];
-                    //Updating X and Y coordinates
-                    //We will add 1 to the cos function to prevent negative values which will lead flakes to move upwards
-                    //Every particle has its own density which can be used to make the downward movement different for each flake
-                    //Lets make it more random by adding in the radius
-                    p.y += Math.cos(angle + p.d) + 1 + p.r / 2;
-                    p.x += Math.sin(angle) * 2;
-
-                    //Sending flakes back from the top when it exits
-                    //Lets make it a bit more organic and let flakes enter from the left and right also.
-                    if (p.x > W + 5 || p.x < -5 || p.y > H) {
-                        if (i % 3 > 0) //66.67% of the flakes
-                        {
-                            particles[i] = {
-                                x: Math.random() * W,
-                                y: -10,
-                                r: p.r,
-                                d: p.d,
-                                color: p.color,
-                                tilt: p.tilt
-                            };
-                        } else {
-                            //If the flake is exitting from the right
-                            if (Math.sin(angle) > 0) {
-                                //Enter from the left
-                                particles[i] = {
-                                    x: -5,
-                                    y: Math.random() * H,
-                                    r: p.r,
-                                    d: p.d,
-                                    color: p.color,
-                                    tilt: p.tilt
-                                };
-                            } else {
-                                //Enter from the right
-                                particles[i] = {
-                                    x: W + 5,
-                                    y: Math.random() * H,
-                                    r: p.r,
-                                    d: p.d,
-                                    color: p.color,
-                                    tilt: p.tilt
-                                };
-                            }
-                        }
-                    }
-                }
-            }
-
-            //animation loop
-            setInterval(draw, 20);
-        }
-
 		$('#new-match').on('click touch', function() {
     		location.reload();
 		});
@@ -742,12 +677,6 @@ $mysqli->close();
 		});
 
 		function scoreChecker() {
-			//check if the scores are the same, if they aren't show the submit
-			if(game.team_1_score == game.team_2_score) {
-				$('#finish-match').removeClass('active');
-			} else {
-				$('#finish-match').addClass('active');
-			}
 
 			if(game.team_1_score >= game.score_to_win || game.team_2_score >= game.score_to_win) {
 				var time_of_win = Math.round(new Date().getTime() / 1000) - game.start_time

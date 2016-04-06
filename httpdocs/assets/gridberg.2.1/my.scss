@@ -3,6 +3,7 @@
 
 /* Plugins */
 @import 'PLUGINS/faux-tables/faux-tables.scss';
+@import 'PLUGINS/csshake/csshake.scss';
 
 /* Mixins */
 @mixin clearfix {
@@ -52,6 +53,7 @@ $blackteamf: rgba(34,34,34,1);
 $light-white: #eee;
 $medium-white: #ddd;
 $gray: #ccc;
+$darkgray: #aaa;
 $charcoal: #333;
 $sage-green: #50aa00;
 $crimson: #c40000;
@@ -293,6 +295,80 @@ $crimson: #c40000;
 				}
 			}
 			
+		}
+	}
+}
+#momentum {
+	width: 100%;
+	padding: 20px 0px 0px 124px;
+	background: $gray;
+	h5 {
+		@include text-percent(14);
+		@include header-bold;
+		text-transform: uppercase;
+		color: $charcoal;
+		margin-bottom: 0px;
+		text-align: center;
+		padding-bottom: 20px;
+	}
+	.momentum-inner {
+		width: 100%;
+		height: 66px;
+		position: relative;
+		background: $darkgray;
+		.momentum-team-1 {
+			position: absolute;
+			top: 10px;
+			left: 0%;
+			width: 50%;
+			height: 46px;
+			.momentum-team-1-fill {
+				float: right;
+				width: 0%;
+				height: 100%;
+				background: $blackteamf;
+				transition: width 0.35s;
+				border-radius: 23px 0px 0px 23px;
+				position: relative;
+							overflow: hidden;
+				&:before {
+					content: " ";
+					position: absolute;
+					top: 4px;
+					left: 4px;
+					height: 38px;
+					width: 38px;
+					border-radius: 50%;
+					background: $crimson;
+				};
+			}
+		}
+		.momentum-team-2 {
+			position: absolute;
+			top: 10px;
+			left: 50%;
+			width: 50%;
+			height: 46px;
+			.momentum-team-2-fill {
+				float: left;
+				width: 0%;
+				height: 100%;
+				background: $yellowteamf;
+				transition: width 0.35s;
+				border-radius: 0px 23px 23px 0px;
+				position: relative;
+				overflow: hidden;
+				&:before {
+					content: " ";
+					position: absolute;
+					top: 4px;
+					right: 4px;
+					height: 38px;
+					width: 38px;
+					border-radius: 50%;
+					background: $crimson;
+				};
+			}
 		}
 	}
 }
