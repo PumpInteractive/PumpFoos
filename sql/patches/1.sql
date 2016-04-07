@@ -1,0 +1,30 @@
+USE `pumpfoos` ;
+
+ALTER TABLE `men` ADD `display_number` TINYINT NOT NULL AFTER `display_order`;
+
+UPDATE `men` SET `display_number` = 1 WHERE id = 1;
+UPDATE `men` SET `display_number` = 2 WHERE id = 2;
+UPDATE `men` SET `display_number` = 3 WHERE id = 3;
+UPDATE `men` SET `display_number` = 4 WHERE id = 4;
+UPDATE `men` SET `display_number` = 5 WHERE id = 5;
+UPDATE `men` SET `display_number` = 6 WHERE id = 6;
+UPDATE `men` SET `display_number` = 7 WHERE id = 7;
+UPDATE `men` SET `display_number` = 8 WHERE id = 8;
+UPDATE `men` SET `display_number` = 9 WHERE id = 9;
+UPDATE `men` SET `display_number` = 10 WHERE id = 10;
+UPDATE `men` SET `display_number` = 11 WHERE id = 11;
+UPDATE `men` SET `display_number` = 12 WHERE id = 12;
+UPDATE `men` SET `display_number` = 13 WHERE id = 13;
+UPDATE `men` SET `display_number` = 1 WHERE id = 14;
+UPDATE `men` SET `display_number` = 2 WHERE id = 15;
+UPDATE `men` SET `display_number` = 3 WHERE id = 16;
+UPDATE `men` SET `display_number` = 4 WHERE id = 17;
+UPDATE `men` SET `display_number` = 5 WHERE id = 18;
+UPDATE `men` SET `display_number` = 6 WHERE id = 19;
+UPDATE `men` SET `display_number` = 7 WHERE id = 20;
+UPDATE `men` SET `display_number` = 8 WHERE id = 21;
+UPDATE `men` SET `display_number` = 9 WHERE id = 22;
+UPDATE `men` SET `display_number` = 10 WHERE id = 23;
+UPDATE `men` SET `display_number` = 11 WHERE id = 24;
+UPDATE `men` SET `display_number` = 12 WHERE id = 25;
+UPDATE `men` SET `display_number` = 13 WHERE id = 26;
