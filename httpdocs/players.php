@@ -110,7 +110,7 @@
 												echo '<b>Name:</b> '. ucfirst($row["slack_user_name"]).'<br />';
 												echo '<b>Games Played:</b> '. $row["games_played"].'<br />';
 												echo '<b>Wins:</b> '.$row["wins"].'<br />';
-												echo '<b>Losses:</b> '.$row["wins"].'<br />';
+												echo '<b>Losses:</b> '.$row["losses"].'<br />';
 												?>
 											</p>
 										</div>

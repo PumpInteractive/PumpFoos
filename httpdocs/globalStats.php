@@ -204,7 +204,7 @@
 							<div class="col-sm-12 col-md-12 col-lg-12">
 								<p><span style="font-weight: bold;">Black</span> vs. <span style="color: #e6b800;font-weight:bold;">Yellow</span></p>
 								<div class="progress progress-lg progress-striped active">
-									<div class="progress-bar bg-color-darken" style="width: 80%">80%</div>
+									<div class="progress-bar bg-color-darken" style="left: 20%;width: 80%">80%</div>
 									<div class="progress-bar bg-color-yellow" style="width: 20%">20%</div>
 								</div>
 							</div>
