@@ -91,41 +91,6 @@ $mysqli->close();
 </head>
 <body>
 
-	<div class="shake" style="display: none; width: 100px; height: 100px; background: blue;  margin: 0px auto; position: relative;"></div>
-	<div id="momentum">
-		<h5>Momentum:</h5>
-		<div class="momentum-inner">
-			<div class="momentum-team-1">
-				<div class="momentum-team-1-fill"></div>
-			</div>
-			<div class="momentum-team-2">
-				<div class="momentum-team-2-fill"></div>
-			</div>
-		</div>
-	</div>
-
-	<script type="text/javascript">
-		function shake() {                                                                                                                                                                                            
-		    var interval = 100;                                                                                                 
-		    var distance = 10;                                                                                                  
-		    var times = 1;                                                                                                                                                                                       
-		    var shake = $('.shake');
-		    for(
-		    	var iter=0;
-		    	iter<(times+1);
-		    	iter++
-		    ){                                                                              
-		        $(shake).animate({ 
-		            left:((iter%2==0 ? distance : distance*-1))
-		        },interval);                                   
-		    }                                                                                                              
-		    $(shake).animate({ left: 0},interval);                                                                                
-		}
-		$('.shake').on('click touch', function() {
-			shake();
-		});
-	</script>
-
 	<div class="coin-floater">
 		<div class="coin-container">
 			<div id="coin">
@@ -177,6 +142,19 @@ $mysqli->close();
 			</div>
 		</div>
 		<div id="field">
+    		<div id="momentum-wrapper">
+        		<div id="momentum">
+            		<h5>Momentum:</h5>
+            		<div class="momentum-inner">
+            			<div class="momentum-team-1">
+            				<div class="momentum-team-1-fill shake-constant"></div>
+            			</div>
+            			<div class="momentum-team-2">
+            				<div class="momentum-team-2-fill shake-constant"></div>
+            			</div>
+            		</div>
+            	</div>
+    		</div>
 			<div id="game-config">
 				<div class="game-type">
 					<h5>Game Type</h5>
@@ -435,10 +413,10 @@ $mysqli->close();
 
 		  				//collapse the #game-config
 		  				gameConfigHeight = 0;
-		  				setFieldHeight();
 		  				$('html').addClass('disable-scrolling');
 		  				$('#game-info').addClass('open');
 		  				$('#game-config').addClass('closed');
+		  				$('#momentum-wrapper').addClass('open');
 		  				setTimeout(function(){
 							$('html').removeClass('disable-scrolling');
 						}, 350);
@@ -528,7 +506,15 @@ $mysqli->close();
 
 						game.team_1_score++;
 						$('.score-value[data-team="1"]').text(game.team_1_score);
-
+                        
+                        //shake
+                        if ((game.team_1_score * momentumStepper) >= 50 && (game.team_1_score * momentumStepper) < 75) {
+                            $('.momentum-team-1-fill').addClass('shake-little');
+                        } else if ((game.team_1_score * momentumStepper) >= 75) {
+                            $('.momentum-team-1-fill').removeClass('shake-little');
+                            $('.momentum-team-1-fill').addClass('shake');
+                        }
+                        
 						//momentum
 						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
 						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
@@ -549,7 +535,15 @@ $mysqli->close();
 					} else {
 						game.team_2_score++;
 						$('.score-value[data-team="2"]').text(game.team_2_score);
-
+                        
+                        //shake
+                        if ((game.team_2_score * momentumStepper) >= 50 && (game.team_2_score * momentumStepper) < 75) {
+                            $('.momentum-team-2-fill').addClass('shake-little');
+                        } else if ((game.team_2_score * momentumStepper) >= 75 ) {
+                            $('.momentum-team-2-fill').removeClass('shake-little');
+                            $('.momentum-team-2-fill').addClass('shake');
+                        }
+                        
 						//momentum
 						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
 						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
