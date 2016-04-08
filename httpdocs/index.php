@@ -14,13 +14,14 @@ if ($mysqli->connect_errno) {
 
 // Get all men and their position and id
 $men = [];
-$result = $mysqli->query("SELECT id, team, bar, position, player_position FROM men ORDER BY display_order ASC");
+$result = $mysqli->query("SELECT id, team, bar, position, player_position, display_number FROM men ORDER BY display_order ASC");
 while($row = $result->fetch_assoc()){
 	$men[$row['team']][$row['bar']][] = [
 		'id' => $row['id'],
 		'bar' => $row['bar'],
 		'position' => $row['position'],
-		'player_position' => $row['player_position']
+		'player_position' => $row['player_position'],
+		'display_number' => $row['display_number']
 	];
 }
 $result->close();
@@ -215,14 +216,14 @@ $mysqli->close();
 								<div class="pole">
 									<?php foreach($men['1']['3-bar-goalie'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 		    						<?php foreach($men['1']['2-bar'] as $man): ?>
 		    							<div class="man">
-		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 		    							</div>
 		    						<?php endforeach; ?>
 								</div>
@@ -243,14 +244,14 @@ $mysqli->close();
 		    					<div class="pole">
 									<?php foreach($men['1']['5-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 		    						<?php foreach($men['1']['3-bar-attack'] as $man): ?>
 		    							<div class="man">
-		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 		    							</div>
 		    						<?php endforeach; ?>
 								</div>
@@ -270,14 +271,14 @@ $mysqli->close();
 		    					<div class="pole">
 		    						<?php foreach($men['2']['3-bar-attack'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 									<?php foreach($men['2']['5-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -299,14 +300,14 @@ $mysqli->close();
 		    					<div class="pole">
 		    						<?php foreach($men['2']['2-bar'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
 								<div class="pole">
 									<?php foreach($men['2']['3-bar-goalie'] as $man): ?>
 										<div class="man">
-											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"></div>
+											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
