@@ -28,7 +28,7 @@
 <!-- widget grid -->
 <section id="widget-grid" class="">
 
-<div class="row">
+	<div class="row">
 		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			
 			<!-- Widget ID (each widget will need unique ID)-->
@@ -64,42 +64,33 @@
 					
 					<!-- widget content -->
 					<div class="widget-body">
-					<h2>Live Game Preview</h2>
-					<?php
-						require_once realpath(__DIR__ . '/../').'/config.php';
+						<h2>Live Game Preview</h2>
+						<script>
+						checkForLive();
+						window.setInterval(function(){
+							checkForLive();
+						}, 10000);
 
-						$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
 
-						if ($mysqli->connect_errno) {
-							$response['status'] = 'error';
-							$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
-
-							echo json_encode($response);
-
-							exit();
+						function checkForLive(){
+						$.ajax({
+						    url:"liveGameTracker.php",
+						    success:function(data) {
+						      document.getElementById("gameSummary").innerHTML = JSON.parse(data);
+						    }
+						  });
 						}
-
-
-						$sql = "SELECT * FROM games WHERE start IS NOT NULL AND end IS NULL";
-
-						if (!$result = $mysqli->query($sql)) {
-							die ('There was an error running query[' . $mysqli->error . ']');
-						}
-
-						if($result->num_rows > 0)
-						{
-							echo '<p>Game ON!</p>';
-							while($row = $result->fetch_assoc())
-							{
-								print_r($row);
-							}
-						}
-						else{
-							echo '<p>No Game being played</p>';
-						}
-
-						?>
-					
+						</script>
+						<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
+						Yellow Team
+						</div>
+						<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
+						VS.
+						</div>
+						<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
+						Black Team
+						</div>
+						<pre id="gameSummary"></pre>
 					</div>
 					<!-- end widget content -->
 					
@@ -111,7 +102,7 @@
 
 		</article>
 
-</div>
+	</div>
 
 	<!-- row -->
 	<div class="row">
@@ -175,8 +166,19 @@
 						$num_games = $result->num_rows;
 
 						$total_time = 0;
+						$yellowWins = 0;
+						$blackWins = 0;
+
 						while($row = $result->fetch_assoc()){
 							$total_time += intval($row['duration']);
+							if($row['winning_team'] == 1)
+							{
+								$yellowWins++;
+							}
+							else
+							{
+								$blackWins++;
+							}
 						}
 
 						$sql1 = "SELECT * FROM goals;";
@@ -185,7 +187,28 @@
 							die ('There was an error running query[' . $mysqli->error . ']');
 						}
 
+
 						$num_goals = $result1->num_rows;
+
+						$sql2 = "SELECT count(*) AS num from games_players WHERE team=team GROUP BY game_id";
+
+						if (!$result2 = $mysqli->query($sql2)) {
+							die ('There an an error running query['.$mysqli->error . ']');
+						}
+
+						$numSingleGames = 0;
+						$numDoublesGames = 0;
+						while($row1 = $result2->fetch_assoc()){
+							$numPlayers = $row1['num'];
+							if($numPlayers == 4)
+							{
+								$numDoublesGames++;
+							}
+							elseif($numPlayers == 2)
+							{
+								$numSingleGames++;
+							}
+						}
 
 						?>
 						<div class="row">
@@ -202,24 +225,32 @@
 						<hr class="simple">
 						<div class="row">
 							<div class="col-sm-12 col-md-12 col-lg-12">
-								<p><span style="font-weight: bold;">Black</span> vs. <span style="color: #e6b800;font-weight:bold;">Yellow</span></p>
+								<p><span style="color: #e6b800;font-weight:bold;">Yellow</span> vs. <span style="font-weight: bold;">Black</span></p>
+								<?php
+								$yellowPercent = $yellowWins/$num_games;
+								$blackPercent = $blackWins/$num_games;
+								?>
 								<div class="progress progress-lg progress-striped active">
-									<div class="progress-bar bg-color-darken" style="left: 20%;width: 80%">80%</div>
-									<div class="progress-bar bg-color-yellow" style="width: 20%">20%</div>
+									<?php if($yellowPercent > $blackPercent)
+									{
+										echo '<div class="progress-bar bg-color-darken" style="left: ' . round(($blackPercent*100),0) . '%;width:'. round(($yellowPercent*100),0) . '%;">'. round(($yellowPercent*100),0) . '%</div>';
+										echo '<div class="progress-bar bg-color-yellow" style="width: ' . round(($blackPercent*100),0) . '%;">'. round(($blackPercent*100),0) . '%</div>';
+									}
+									else{
+										echo '<div class="progress-bar bg-color-yellow" style="left: ' . round(($yellowPercent*100),0) . '%;width:'. round(($blackPercent*100),0) . '%;">'. round(($blackPercent*100),0) . '%</div>';
+										echo '<div class="progress-bar bg-color-darken" style="width: '. round(($yellowPercent*100),0) . '%;">'. round(($yellowPercent*100),0) . '%</div>';
+									} ?>
+
+									
 								</div>
 							</div>
 							<hr class="simple">
 							<div class="col-sm-12 col-md-12 col-lg-12">
-								<div class="progress">
-									<div class="progress-bar progress-bar-success" style="width: 40%">
-										<span class="sr-only">Program Files (40%)</span>
-									</div>
-									<div class="progress-bar progress-bar-warning" style="width: 25%">
-										<span class="sr-only">Residual Files (25%)</span>
-									</div>
-									<div class="progress-bar progress-bar-danger" style="width: 15%">
-										<span class="sr-only">Junk Files (15%)</span>
-									</div>
+								<div class="col-sm-6 col-md-6 col-lg-6" style="text-align: center;">
+									<p><b>Avg game length:</b> <br /><br /><span class="label label-success" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo gmdate("H:i:s", $total_time/$num_games) ?></span></p>
+								</div>
+								<div class="col-sm-6 col-md-6 col-lg-6" style="text-align: center;">
+								<p><b>Singles Games vs. Doubles Games</b><br /><br /><span class="label label-primary" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $numSingleGames; ?></span> : <span class="label label-danger" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $numDoublesGames; ?></span></p>
 								</div>
 							</div>
 						</div>
@@ -274,18 +305,18 @@
 						<table id="leaderboard_dt" class="table table-striped table-bordered table-hover" width="100%">
 							<thead>			                
 								<tr>
-								<th data-hide="phone"> <i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i>Name</th>
-								<th data-class="expand"><i class="fa fa-fw fa-gamepad text-muted hidden-md hidden-sm hidden-xs"></i> GP</th>
-								<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> W</th>
-								<th data-class="expand"><i class="fa fa-fw fa-times text-muted hidden-md hidden-sm hidden-xs"></i> L</th>
-								<th data-class="expand"><i class="fa fa-fw fa-percent text-muted hidden-md hidden-sm hidden-xs"></i> Win</th>
-								<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> GF</th>
-								<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GA</th>
-								<th data-class="expand"><i class="fa fa-fw fa-line-chart text-muted hidden-md hidden-sm hidden-xs"></i> +/- </th>
-								<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GPG</th>
-								<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GAA </th>
-								<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> AG </th>
-								<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> DG </th>
+									<th data-hide="phone"> <i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i>Name</th>
+									<th data-class="expand"><i class="fa fa-fw fa-gamepad text-muted hidden-md hidden-sm hidden-xs"></i> GP</th>
+									<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> W</th>
+									<th data-class="expand"><i class="fa fa-fw fa-times text-muted hidden-md hidden-sm hidden-xs"></i> L</th>
+									<th data-class="expand"><i class="fa fa-fw fa-percent text-muted hidden-md hidden-sm hidden-xs"></i> Win</th>
+									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> GF</th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GA</th>
+									<th data-class="expand"><i class="fa fa-fw fa-line-chart text-muted hidden-md hidden-sm hidden-xs"></i> +/- </th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GPG</th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GAA </th>
+									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> AG </th>
+									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> DG </th>
 								</tr>
 							</thead>
 							<tbody>
@@ -318,6 +349,7 @@
 
 									$getWins = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.winning_team=games_players.team AND players.id={$player_id}";
 									$getLosses = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.losing_team=games_players.team AND players.id={$player_id}";
+
 
 									if (!$result2 = $mysqli->query($getGoals)) {
 										die ('There was an error running query[' . $mysqli->error . ']');
