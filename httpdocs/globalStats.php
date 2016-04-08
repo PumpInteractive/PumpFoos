@@ -304,7 +304,7 @@
 								}
 
 
-								$sql = "SELECT * from players ORDER BY wins";
+								$sql = "SELECT * from players";
 
 								if (!$result = $mysqli->query($sql)) {
 									die ('There was an error running query[' . $mysqli->error . ']');

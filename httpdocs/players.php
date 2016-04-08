@@ -82,7 +82,7 @@
 								}
 
 
-								$sql = "SELECT * from players ORDER BY wins";
+								$sql = "SELECT * from players";
 
 								if (!$result = $mysqli->query($sql)) {
 									die ('There was an error running query[' . $mysqli->error . ']');
@@ -108,9 +108,9 @@
 												<?php 
 
 												echo '<b>Name:</b> '. ucfirst($row["slack_user_name"]).'<br />';
-												echo '<b>Games Played:</b> '. $row["games_played"].'<br />';
-												echo '<b>Wins:</b> '.$row["wins"].'<br />';
-												echo '<b>Losses:</b> '.$row["losses"].'<br />';
+												echo '<b>Games Played:</b> '.'0'.'<br />';
+												echo '<b>Wins:</b> '.'0'.'<br />';
+												echo '<b>Losses:</b> '.'0'.'<br />';
 												?>
 											</p>
 										</div>
