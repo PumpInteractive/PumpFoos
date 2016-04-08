@@ -12,6 +12,24 @@ if ($mysqli->connect_errno) {
     exit();
 }
 
+// Check to see if the patch table exists
+$result = $mysqli->query("SELECT 1 FROM `db_patches` LIMIT 1");
+if ($result === false) {
+    $new_table_results = $mysqli->query("CREATE TABLE `db_patches` (
+            `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            `number` INT UNSIGNED NOT NULL,
+            `applied` DATETIME NOT NULL,
+            PRIMARY KEY (`id`)
+        )
+        ENGINE = InnoDB
+    ");
+
+    if ($new_table_results === false) {
+       echo "Error creating db_patches table.";
+       exit();
+    }
+}
+
 // Get all patches that have been run
 $db_patches = [];
 $result = $mysqli->query("SELECT `id`, `number` FROM `db_patches` ORDER BY `applied`");
@@ -20,7 +38,8 @@ while($row = $result->fetch_assoc()){
 }
 $result->close();
 
-// grab patch files, if haven't been run, run it!
+// grab patch files and order them numerically, then if haven't been run, run it!
+$file_patches = [];
 $directory = './patches/';
 
 if (file_exists($directory)) {
@@ -30,22 +49,28 @@ if (file_exists($directory)) {
 
     foreach ($files as $file) {
         if ($file != '.' && $file != '..') {
-            $patch_number = basename($file, '.sql');
+            $file_patches[(int)basename($file, '.sql')] = $file;
+        }
+    }
+    ksort($file_patches);
 
-            if(empty($db_patches[$patch_number])) {
-                // Run the patch
-                echo "Running Patch #$patch_number\n";
+    // Now that we've got all the patches compare and run them
+    foreach ($file_patches as $patch_number => $patch_file) {
+        if (empty($db_patches[$patch_number])) {
+            // Run the patch
+            echo "Running Patch #$patch_number\n";
 
-                $result = $mysqli->query(file_get_contents($directory . $file));
+            $patch_code = file_get_contents($directory . $file);
 
-                $mysqli->query("INSERT into `db_patches` (`number`, `applied`) VALUES ($patch_number, NOW())");
-
-                print_r($result);
-
-            } else {
-                echo "Patch #$patch_number has already been applied\n";
+            if (!$mysqli->query($patch_code)) {
+                echo "Error running Patch #$patch_number. Exiting\n";
+                exit();
             }
 
+            $mysqli->query("INSERT into `db_patches` (`number`, `applied`) VALUES ($patch_number, NOW())");
+
+        } else {
+            echo "Patch #$patch_number has already been applied\n";
         }
     }
 }
