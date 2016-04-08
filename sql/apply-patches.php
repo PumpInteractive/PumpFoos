@@ -62,9 +62,15 @@ if (file_exists($directory)) {
 
             $patch_code = file_get_contents($directory . $file);
 
-            if (!$mysqli->query($patch_code)) {
-                echo "Error running Patch #$patch_number. Exiting\n";
-                exit();
+            // execute mysql multi query
+            if ($mysqli->multi_query($patch_code)) {
+                do {
+                    if ($mysqli->error !== '') {
+                        printf("Error: %s\n", $mysqli->error);
+                        echo "Error running Patch #$patch_number. Exiting\n";
+                        exit();
+                    }
+                } while ($mysqli->next_result());
             }
 
             $mysqli->query("INSERT into `db_patches` (`number`, `applied`) VALUES ($patch_number, NOW())");
