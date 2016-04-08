@@ -302,6 +302,7 @@ $crimson: #c40000;
 	width: 100%;
 	padding: 20px 0px 0px 124px;
 	background: $gray;
+	display: none;
 	h5 {
 		@include text-percent(14);
 		@include header-bold;
@@ -480,9 +481,10 @@ $crimson: #c40000;
 	    				background-position: center center;
 	    				background-repeat: no-repeat;
 	    				.score-plus {
-	    					@include text-percent(41);
+	    					@include text-percent(20);
 							@include header-bold;
 							color: white;
+							line-height: 2.0;
 							background-color: gray;
 							height: 50px;
 							width: 50px;
@@ -491,7 +493,7 @@ $crimson: #c40000;
 							text-align: center;
 							margin: 0px auto;
 							border: 4px solid $charcoal;
-							line-height: 0.80;
+							
 							transition: all 0.35s;
 							-webkit-transition: all 0.35s;
 							background-image: url('../../images/man-black.svg');
@@ -1135,6 +1137,7 @@ $crimson: #c40000;
 	    				.score-plus {
 							height: 40px;
 							width: 40px;
+							line-height: 1.5;
 							background-image: url('../../images/man-black.svg');
 							background-repeat: no-repeat;
 							background-position: center center;
