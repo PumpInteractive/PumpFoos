@@ -87,6 +87,7 @@ $mysqli->close();
 	<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="assets/js/dragdealer/dragdealer.js"></script>
 	<script src="assets/js/confetti.js"></script>
+	<script src="assets/js/pump-foos/goal.js"></script>
 
 </head>
 <body>
@@ -121,6 +122,8 @@ $mysqli->close();
 						</div>
 					</div>
 				</div>
+				<button id="undo_goal">UNDO GOAL</button>
+				<div id="goal_stream"></div>
 			</div>
 		</div>
 		<div id="bench">
@@ -460,6 +463,11 @@ $mysqli->close();
 
 		  				var game_type_id = $('#game_type_id option:selected').val();
 
+		  				// Enable Goal Undo-er
+		  				$('#undo_goal').on('click touch', function(){
+		  					game.undo_goal();
+		  				});
+
 		  				$.ajax({
 							type: "POST",
 							url: "/start-game.php",
@@ -491,6 +499,7 @@ $mysqli->close();
 			},
 			score: function(man){
 				if (game.on) {
+
 					var time_of_goal = Math.round(new Date().getTime() / 1000) - game.start_time
 					var momentumStepper = 100 / game.score_to_win;
 	                var defending_player_id = null;
@@ -506,7 +515,7 @@ $mysqli->close();
 
 						game.team_1_score++;
 						$('.score-value[data-team="1"]').text(game.team_1_score);
-                        
+
                         //shake
                         if ((game.team_1_score * momentumStepper) >= 50 && (game.team_1_score * momentumStepper) < 75) {
                             $('.momentum-team-1-fill').addClass('shake-little');
@@ -514,7 +523,7 @@ $mysqli->close();
                             $('.momentum-team-1-fill').removeClass('shake-little');
                             $('.momentum-team-1-fill').addClass('shake');
                         }
-                        
+
 						//momentum
 						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
 						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
@@ -535,7 +544,7 @@ $mysqli->close();
 					} else {
 						game.team_2_score++;
 						$('.score-value[data-team="2"]').text(game.team_2_score);
-                        
+
                         //shake
                         if ((game.team_2_score * momentumStepper) >= 50 && (game.team_2_score * momentumStepper) < 75) {
                             $('.momentum-team-2-fill').addClass('shake-little');
@@ -543,7 +552,7 @@ $mysqli->close();
                             $('.momentum-team-2-fill').removeClass('shake-little');
                             $('.momentum-team-2-fill').addClass('shake');
                         }
-                        
+
 						//momentum
 						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
 						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
@@ -563,28 +572,27 @@ $mysqli->close();
 
 					}
 
+					var goal = new Goal(game.id, $(man).data('player_id'), $(man).attr('id').replace('man-', ''), defending_player_id, $(man).data('bar'), $(man).data('position'), $(man).data('player_position'), $(man).data('team'), time_of_goal);
+
+					goal.debug();
+
+
 	                $.ajax({
 	                    type: "POST",
 	                    url: "/score.php",
-	                    data: {
-	                        'game_id': game.id,
-	                        'scoring_player_id': $(man).data('player_id'),
-	                        'scoring_man_id': $(man).attr('id').replace('man-', ''),
-	                        'defending_player_id': defending_player_id,
-	                        'bar': $(man).data('bar'),
-	                        'position': $(man).data('position'),
-	                        'player_position': $(man).data('player_position'),
-	                        'team': $(man).data('team'),
-	                        'time_of_goal': time_of_goal
-	                    },
+	                    data: goal,
 	                    dataType: 'json',
 	                    success: function(response){
 	                        console.log(response);
 
 	                        if (response.status == 'success') {
+
+	                        	goal.id = response.data.goal_id;
 	                            // do nothing visually as we've already made the UI updates
 	                            // push the goal onto the goal stack for easy undo
-	                            game.goals.push(response.data.goal_id);
+	                            game.goals.push(goal);
+
+	                            $('#goal_stream').prepend('<div id="goal_id_'+response.data.goal_id+'">Goal ID: '+response.data.goal_id+'</div>');
 
 	                            // Check the score to see if anyone won after the goal is saved
 	                            scoreChecker();
@@ -598,6 +606,30 @@ $mysqli->close();
 	                    }
 	                });
 				}
+			},
+			undo_goal: function(){
+				var undo_goal = game.goals.pop();
+
+				$.ajax({
+				    type: "POST",
+				    url: "/undo_goal.php",
+				    data: {
+				        'goal_id': undo_goal.id
+				    },
+				    dataType: 'json',
+				    success: function(response){
+				        console.log(response);
+
+				        if (response.status == 'success') {
+				            $('#goal_id_'+undo_goal_id).remove();
+
+				        } else if (response.status == 'fail') {
+				            // Retry?
+				        } else if (response.status == 'error') {
+				            // Retry?
+				        }
+				    }
+				});
 			}
 		};
 		$('#new-match').on('click touch', function() {
