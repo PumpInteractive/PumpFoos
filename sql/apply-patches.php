@@ -70,7 +70,7 @@ if (file_exists($directory)) {
                         echo "Error running Patch #$patch_number. Exiting\n";
                         exit();
                     }
-                } while ($mysqli->next_result());
+                } while ($mysqli->more_results() && $mysqli->next_result());
             }
 
             $mysqli->query("INSERT into `db_patches` (`number`, `applied`) VALUES ($patch_number, NOW())");
