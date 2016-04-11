@@ -298,11 +298,19 @@ $crimson: #c40000;
 		}
 	}
 }
+#momentum-wrapper {
+    height: 0px;
+	overflow: hidden;
+	transition: all 0.35s;
+	width: 100%;
+    &.open {
+    	height: 120px;
+	}
+}
 #momentum {
 	width: 100%;
-	padding: 20px 0px 0px 124px;
+	padding: 20px 0px 0px 0px;
 	background: $gray;
-	display: none;
 	h5 {
 		@include text-percent(14);
 		@include header-bold;
