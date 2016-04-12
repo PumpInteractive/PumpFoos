@@ -248,86 +248,88 @@ Game.prototype.score = function(man) {
 
 Game.prototype.undo_goal = function()
 {
-    var self = this;
-    var undo_goal = this.goals.pop();
+    if(this.goals.length > 0) {
+        var self = this;
+        var undo_goal = this.goals.pop();
 
-    $.ajax({
-        type: "POST",
-        url: "/undo_goal.php",
-        data: {
-            'goal_id': undo_goal.id
-        },
-        dataType: 'json',
-        success: function(response){
-            console.log(response);
+        $.ajax({
+            type: "POST",
+            url: "/undo_goal.php",
+            data: {
+                'goal_id': undo_goal.id
+            },
+            dataType: 'json',
+            success: function(response){
+                console.log(response);
 
-            if (response.status == 'success') {
-                $('#goal_id_'+undo_goal.id).remove();
+                if (response.status == 'success') {
+                    $('#goal_id_'+undo_goal.id).remove();
 
-                if (undo_goal.team == 1) {
+                    if (undo_goal.team == 1) {
 
-                    self.team_1_score--;
-                    $('.score-value[data-team="1"]').text(self.team_1_score);
+                        self.team_1_score--;
+                        $('.score-value[data-team="1"]').text(self.team_1_score);
 
-                    //shake
-                    if ((self.team_1_score * self.momentum_stepper) >= 50 && (self.team_1_score * self.momentum_stepper) < 75) {
-                        $('.momentum-team-1-fill').addClass('shake-little');
-                    } else if ((self.team_1_score * self.momentum_stepper) >= 75) {
-                        $('.momentum-team-1-fill').removeClass('shake-little');
-                        $('.momentum-team-1-fill').addClass('shake');
-                    }
+                        //shake
+                        if ((self.team_1_score * self.momentum_stepper) >= 50 && (self.team_1_score * self.momentum_stepper) < 75) {
+                            $('.momentum-team-1-fill').addClass('shake-little');
+                        } else if ((self.team_1_score * self.momentum_stepper) >= 75) {
+                            $('.momentum-team-1-fill').removeClass('shake-little');
+                            $('.momentum-team-1-fill').addClass('shake');
+                        }
 
-                    //momentum
-                    $('.momentum-team-1-fill').css('width', ((self.team_1_score) * self.momentum_stepper)+'%');
-                    $('.momentum-team-2-fill').css('width', ((self.team_2_score) * self.momentum_stepper)+'%');
+                        //momentum
+                        $('.momentum-team-1-fill').css('width', ((self.team_1_score) * self.momentum_stepper)+'%');
+                        $('.momentum-team-2-fill').css('width', ((self.team_2_score) * self.momentum_stepper)+'%');
 
 
-                } else {
-
-                    self.team_2_score--;
-                    $('.score-value[data-team="2"]').text(self.team_2_score);
-
-                    //shake
-                    if ((self.team_2_score * self.momentum_stepper) >= 50 && (self.team_2_score * self.momentum_stepper) < 75) {
-                        $('.momentum-team-2-fill').addClass('shake-little');
-                    } else if ((self.team_2_score * self.momentum_stepper) >= 75 ) {
-                        $('.momentum-team-2-fill').removeClass('shake-little');
-                        $('.momentum-team-2-fill').addClass('shake');
-                    }
-
-                    //momentum
-                    $('.momentum-team-2-fill').css('width', ((self.team_2_score) * self.momentum_stepper)+'%');
-                    $('.momentum-team-1-fill').css('width', ((self.team_1_score) * self.momentum_stepper)+'%');
-
-                }
-
-                // Figure out who last served
-                if(self.goals.length > 0) {
-                    if(self.goals[self.goals.length-1].team == 1) {
-                        $('.serving_team[data-team="1"]').hide();
-                        $('.serving_team[data-team="2"]').show();
                     } else {
-                        $('.serving_team[data-team="2"]').hide();
-                        $('.serving_team[data-team="1"]').show();
+
+                        self.team_2_score--;
+                        $('.score-value[data-team="2"]').text(self.team_2_score);
+
+                        //shake
+                        if ((self.team_2_score * self.momentum_stepper) >= 50 && (self.team_2_score * self.momentum_stepper) < 75) {
+                            $('.momentum-team-2-fill').addClass('shake-little');
+                        } else if ((self.team_2_score * self.momentum_stepper) >= 75 ) {
+                            $('.momentum-team-2-fill').removeClass('shake-little');
+                            $('.momentum-team-2-fill').addClass('shake');
+                        }
+
+                        //momentum
+                        $('.momentum-team-2-fill').css('width', ((self.team_2_score) * self.momentum_stepper)+'%');
+                        $('.momentum-team-1-fill').css('width', ((self.team_1_score) * self.momentum_stepper)+'%');
+
                     }
-                } else {
-                    if(self.first_serving_team == 1) {
-                        $('.serving_team[data-team="2"]').hide();
-                        $('.serving_team[data-team="1"]').show();
+
+                    // Figure out who last served
+                    if(self.goals.length > 0) {
+                        if(self.goals[self.goals.length-1].team == 1) {
+                            $('.serving_team[data-team="1"]').hide();
+                            $('.serving_team[data-team="2"]').show();
+                        } else {
+                            $('.serving_team[data-team="2"]').hide();
+                            $('.serving_team[data-team="1"]').show();
+                        }
                     } else {
-                        $('.serving_team[data-team="1"]').hide();
-                        $('.serving_team[data-team="2"]').show();
+                        if(self.first_serving_team == 1) {
+                            $('.serving_team[data-team="2"]').hide();
+                            $('.serving_team[data-team="1"]').show();
+                        } else {
+                            $('.serving_team[data-team="1"]').hide();
+                            $('.serving_team[data-team="2"]').show();
+                        }
                     }
+
+
+
+
+                } else if (response.status == 'fail') {
+                    // Retry?
+                } else if (response.status == 'error') {
+                    // Retry?
                 }
-
-
-
-
-            } else if (response.status == 'fail') {
-                // Retry?
-            } else if (response.status == 'error') {
-                // Retry?
             }
-        }
-    });
+        });
+    }
 }
