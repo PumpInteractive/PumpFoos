@@ -88,6 +88,8 @@ $mysqli->close();
 	<script src="assets/js/dragdealer/dragdealer.js"></script>
 	<script src="assets/js/confetti.js"></script>
 	<script src="assets/js/pump-foos/goal.js"></script>
+	<script src="assets/js/pump-foos/clock.js"></script>
+	<script src="assets/js/pump-foos/game.js"></script>
 
 </head>
 <body>
@@ -364,274 +366,15 @@ $mysqli->close();
 					$(this).animate({height: 'hide'}, 350);
 				}
 			});
-		})
+		});
+		// trigger game_type_id change to check for 2 player default
+		$('#game_type_id').change();
 
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
 
-		function str_pad_left(string, pad, length) {
-			return (new Array(length+1).join(pad)+string).slice(-length);
-		}
+		var game = new Game();
 
-		var game = {
-			on: false,
-			id: null,
-			type_id: null,
-			start_time: null,
-            number_of_players: null,
-            score_to_win: null,
-            serving_team: null,
-            team_1_score: 0,
-            team_2_score: 0,
-            can_trigger_score: true, // flag to prevent double tracking a goal
-            goals: [],
-            players: [],
-            clock: {
-            	on: false,
-            	time: 0,
-            	start: function() {
-            		game.clock.on = true;
-            		setTimeout(game.clock.tick, 500);
-            	},
-            	stop: function() {
-            		game.clock.on = false;
-            	},
-            	tick: function() {
-            		game.clock.time = Math.round(new Date().getTime() / 1000) - game.start_time;
-            		var minutes = Math.floor(game.clock.time / 60);
-            		var seconds = game.clock.time - minutes * 60;
-
-            		$('#game_clock').text(str_pad_left(minutes,'0',2)+':'+str_pad_left(seconds,'0',2));
-
-            		if(game.clock.on)
-            			setTimeout(game.clock.tick, 500);
-            	}
-            },
-			start: function(){
-				if(!game.on){
-					// get number of players required for currently selected game
-		  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
-
-		  			if(game.players.length == number_of_players) {
-
-		  				//collapse the #game-config
-		  				gameConfigHeight = 0;
-		  				$('html').addClass('disable-scrolling');
-		  				$('#game-info').addClass('open');
-		  				$('#game-config').addClass('closed');
-		  				$('#momentum-wrapper').addClass('open');
-		  				setTimeout(function(){
-							$('html').removeClass('disable-scrolling');
-						}, 350);
-
-						// Show Scoreboards
-						$('.score-value[data-team="1"]').text(game.team_1_score);
-						$('.score-value[data-team="2"]').text(game.team_2_score);
-
-						// Randomly choose starting team, will generate a 1 or a 2
-						game.serving_team = Math.floor(Math.random() * (2)) + 1;
-
-						$('.coin-floater').fadeIn();
-
-						if(game.serving_team == 1) {
-
-							setTimeout(function(){
-								$('.serving_team[data-team="1"]').fadeIn();
-								$('.serving_team[data-team="2"]').fadeOut();
-							}, 3000);
-
-							$('#coin').addClass('black-serves');
-
-						} else {
-
-							setTimeout(function(){
-								$('.serving_team[data-team="1"]').fadeOut();
-								$('.serving_team[data-team="2"]').fadeIn();
-							}, 3000);
-
-							$('#coin').addClass('yellow-serves');
-
-						}
-
-						setTimeout(function(){
-							$('.coin-floater').fadeOut(400, function() {
-								// Start clock
-								game.start_time = Math.round(new Date().getTime() / 1000); // time in seconds for easy time_of_goal calculations
-								game.clock.start();
-							});
-						}, 4000);
-
-		  				var game_type_id = $('#game_type_id option:selected').val();
-
-		  				// Enable Goal Undo-er
-		  				$('#undo_goal').on('click touch', function(){
-		  					game.undo_goal();
-		  				});
-
-		  				$.ajax({
-							type: "POST",
-							url: "/start-game.php",
-							data: {
-								'game_type_id': game_type_id,
-								'players': JSON.stringify(game.players)
-							},
-							dataType: 'json',
-							success: function(response){
-								if (response.status == 'success') {
-									game.on = true;
-									game.id = response.data.game_id;
-					                game.number_of_players = number_of_players;
-					                game.score_to_win = $('#score_to_win').val();
-
-					                console.log(game);
-								} else if (response.status == 'fail') {
-
-								} else if (response.status == 'error') {
-									alert(response.message);
-								}
-							}
-		  				});
-		  			} else {
-		  				$('.player-error-modal-text').text("Pick "+number_of_players+" Players!");
-				   		$('#player-error-modal').animate({opacity: 'show'}, 350);
-		  			}
-		  		}
-			},
-			score: function(man){
-				if (game.on) {
-
-					var time_of_goal = Math.round(new Date().getTime() / 1000) - game.start_time
-					var momentumStepper = 100 / game.score_to_win;
-	                var defending_player_id = null;
-	                plusSound.currentTime = 0;
-					plusSound.play();
-
-					$(man).addClass('goal');
-					setTimeout(function(){
-						$('.score-plus.goal').removeClass('goal');
-					}, 350);
-
-					if ($(man).data('team') == 1) {
-
-						game.team_1_score++;
-						$('.score-value[data-team="1"]').text(game.team_1_score);
-
-                        //shake
-                        if ((game.team_1_score * momentumStepper) >= 50 && (game.team_1_score * momentumStepper) < 75) {
-                            $('.momentum-team-1-fill').addClass('shake-little');
-                        } else if ((game.team_1_score * momentumStepper) >= 75) {
-                            $('.momentum-team-1-fill').removeClass('shake-little');
-                            $('.momentum-team-1-fill').addClass('shake');
-                        }
-
-						//momentum
-						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
-						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
-
-	                    // get scored on goalie id
-	                    if (game.number_of_players == 4) {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2' && e.position == 'back'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    } else {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    }
-
-	                    // Scored on team serves
-	                    $('.serving_team[data-team="1"]').hide();
-	                    $('.serving_team[data-team="2"]').show();
-
-					} else {
-						game.team_2_score++;
-						$('.score-value[data-team="2"]').text(game.team_2_score);
-
-                        //shake
-                        if ((game.team_2_score * momentumStepper) >= 50 && (game.team_2_score * momentumStepper) < 75) {
-                            $('.momentum-team-2-fill').addClass('shake-little');
-                        } else if ((game.team_2_score * momentumStepper) >= 75 ) {
-                            $('.momentum-team-2-fill').removeClass('shake-little');
-                            $('.momentum-team-2-fill').addClass('shake');
-                        }
-
-						//momentum
-						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
-						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
-
-	                    // get scored on goalie id
-	                    if (game.number_of_players == 4) {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1' && e.position == 'back'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    } else {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    }
-
-	                    // Scored on team serves
-	                    $('.serving_team[data-team="1"]').show();
-	                    $('.serving_team[data-team="2"]').hide();
-
-					}
-
-					var goal = new Goal(game.id, $(man).data('player_id'), $(man).attr('id').replace('man-', ''), defending_player_id, $(man).data('bar'), $(man).data('position'), $(man).data('player_position'), $(man).data('team'), time_of_goal);
-
-					goal.debug();
-
-
-	                $.ajax({
-	                    type: "POST",
-	                    url: "/score.php",
-	                    data: goal,
-	                    dataType: 'json',
-	                    success: function(response){
-	                        console.log(response);
-
-	                        if (response.status == 'success') {
-
-	                        	goal.id = response.data.goal_id;
-	                            // do nothing visually as we've already made the UI updates
-	                            // push the goal onto the goal stack for easy undo
-	                            game.goals.push(goal);
-
-	                            $('#goal_stream').prepend('<div id="goal_id_'+response.data.goal_id+'">Goal ID: '+response.data.goal_id+'</div>');
-
-	                            // Check the score to see if anyone won after the goal is saved
-	                            scoreChecker();
-
-
-	                        } else if (response.status == 'fail') {
-	                            // Retry?
-	                        } else if (response.status == 'error') {
-	                            // Retry?
-	                        }
-	                    }
-	                });
-				}
-			},
-			undo_goal: function(){
-				var undo_goal = game.goals.pop();
-
-				$.ajax({
-				    type: "POST",
-				    url: "/undo_goal.php",
-				    data: {
-				        'goal_id': undo_goal.id
-				    },
-				    dataType: 'json',
-				    success: function(response){
-				        console.log(response);
-
-				        if (response.status == 'success') {
-				            $('#goal_id_'+undo_goal_id).remove();
-
-				        } else if (response.status == 'fail') {
-				            // Retry?
-				        } else if (response.status == 'error') {
-				            // Retry?
-				        }
-				    }
-				});
-			}
-		};
 		$('#new-match').on('click touch', function() {
     		location.reload();
 		});
@@ -691,16 +434,6 @@ $mysqli->close();
 
 		$( window ).resize(function() {
 			setFieldHeight();
-		});
-
-
-		//Record and Update Scores
-		$('.score-plus').on('click touch', function(){
-			if(game.can_trigger_score) {
-				game.can_trigger_score = false;
-				game.score(this);
-				setTimeout(function(){game.can_trigger_score = true}, 3000); // Can only trigger a goal every 3 seconds
-			}
 		});
 
 		function scoreChecker() {
@@ -875,7 +608,9 @@ $mysqli->close();
 			$('#player-error-modal').hide();
 		});
 
-		$('#start_game').click(game.start);
+		$('#start_game').click(function(){
+			game.start();
+		});
 	</script>
 </body>
 </html>
