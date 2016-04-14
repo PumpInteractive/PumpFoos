@@ -1,19 +1,19 @@
 function Game()
 {
-    this.id = null,
-    this.game_type_id = null,
-    this.on = false,
-    this.type_id = null,
-    this.number_of_players = null,
-    this.score_to_win = null,
-    this.first_serving_team = null,
-    this.serving_team = null,
-    this.team_1_score = 0,
-    this.team_2_score = 0,
+    this.id = null;
+    this.game_type_id = null;
+    this.on = false;
+    this.type_id = null;
+    this.number_of_players = null;
+    this.score_to_win = null;
+    this.first_serving_team = null;
+    this.serving_team = null;
+    this.team_1_score = 0;
+    this.team_2_score = 0;
     this.momentum_stepper = 50; // Initil value for momentum bar just to avoid division by 0
-    this.can_trigger_score = true, // flag to prevent double tracking a goal
-    this.goals = [],
-    this.players = [],
+    this.can_trigger_score = true; // flag to prevent double tracking a goal
+    this.goals = [];
+    this.players = [];
 
     this.clock = new Clock();
 }
@@ -46,7 +46,12 @@ Game.prototype.start = function()
 
             // Enable Scoring detection
             $('.score-plus').on('click touch', function(){
-                game.score(this);
+                self.score(this);
+            });
+
+            // Enable team swap
+            $('.swap_team').on('click touch', function(){
+                self.swap_players(this);
             });
 
             // Randomly choose starting team, will generate a 1 or a 2
@@ -120,7 +125,8 @@ Game.prototype.start = function()
     }
 };
 
-Game.prototype.score = function(man) {
+Game.prototype.score = function(man)
+{
     var self = this;
 
     if (this.on && this.can_trigger_score) {
@@ -232,7 +238,7 @@ Game.prototype.score = function(man) {
                     $('#goal_stream').prepend('<div id="goal_id_'+response.data.goal_id+'">Goal ID: '+response.data.goal_id+'</div>');
 
                     // Check the score to see if anyone won after the goal is saved
-                    scoreChecker();
+                    self.check_win();
 
 
                 } else if (response.status == 'fail') {
@@ -333,3 +339,83 @@ Game.prototype.undo_goal = function()
         });
     }
 }
+
+Game.prototype.swap_players = function(button) {
+    $button = $(button);
+
+    var attack;
+    var defence;
+
+    var trays;
+
+    //Activate poles for the added player
+    if ($button.data('team') == 1) {
+        attack = $('.poles-1 .score-plus').data('player_id');
+        defence = $('.poles-2 .score-plus').data('player_id');
+
+        $('.poles-1 .score-plus').data('player_id', defence);
+        $('.poles-2 .score-plus').data('player_id', attack);
+
+        var attack_tray = $('#team-1 [data-active-tray-id="1"] .player').detach();
+        var defence_tray = $('#team-1 [data-active-tray-id="2"] .player').detach();
+
+        $('[data-active-tray-id="1"]').append(defence_tray);
+        $('[data-active-tray-id="2"]').append(attack_tray);
+
+    } else {
+        attack = $('.poles-3 .score-plus').data('player_id');
+        defence = $('.poles-4 .score-plus').data('player_id');
+
+        $('.poles-3 .score-plus').data('player_id', defence);
+        $('.poles-4 .score-plus').data('player_id', attack);
+
+        var attack_tray = $('#team-2 [data-active-tray-id="3"] .player').detach();
+        var defence_tray = $('#team-2 [data-active-tray-id="4"] .player').detach();
+
+        $('[data-active-tray-id="3"]').append(defence_tray);
+        $('[data-active-tray-id="4"]').append(attack_tray);
+    }
+};
+
+Game.prototype.check_win = function()
+{
+    var self = this;
+
+    if(this.team_1_score >= this.score_to_win || this.team_2_score >= this.score_to_win) {
+        // end the game
+        this.on = false;
+        this.clock.stop();
+        var duration = this.clock.current_time;
+
+        /* Sweet Audio Bro */
+        var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
+        muchRejoicing.play();
+
+        $.ajax({
+        type: 'POST',
+        url: 'win-game.php',
+        data: {
+            'game_id': this.id,
+            'duration': duration,
+            'team_1_final_score': this.team_1_score,
+            'team_2_final_score': this.team_2_score,
+            'winning_team': this.team_1_score > this.team_2_score ? 1 : 2,
+            'losing_team': this.team_1_score < this.team_2_score ? 1 : 2,
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.status == 'success') {
+                $('.match-modal-text').html(response.data.message);
+                $('#match-modal').animate({opacity: 'show'}, 350);
+                $('#confetti').animate({opacity: 'show'}, 350);
+                confetti();
+            } else if (response.status == 'fail') {
+                // Retry?
+            } else if (response.status == 'error') {
+                // Retry?
+            }
+
+           }
+        });
+    }
+};

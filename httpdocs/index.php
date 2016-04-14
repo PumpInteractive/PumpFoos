@@ -181,7 +181,7 @@ $mysqli->close();
 				<div id="start_game"><span>Start Game</span></div>
 			</div>
 			<div id="team-1" class="team-box">
-				<h2>Black Team <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
+				<h2>Black Team <button class="swap_team" data-team="1">Swap Positions</button> <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
 				<div class="team">
 					<div class="on-field">
     					<div class="position-wrapper">
@@ -245,7 +245,7 @@ $mysqli->close();
 			</div>
 
 			<div id="team-2" class="team-box">
-				<h2>Yellow Team <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
+				<h2>Yellow Team <button class="swap_team" data-team="2">Swap Positions</button> <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
 
@@ -436,47 +436,7 @@ $mysqli->close();
 			setFieldHeight();
 		});
 
-		function scoreChecker() {
 
-			if(game.team_1_score >= game.score_to_win || game.team_2_score >= game.score_to_win) {
-				var time_of_win = Math.round(new Date().getTime() / 1000) - game.start_time
-
-				// end the game
-				game.on = false;
-				game.clock.stop();
-
-				/* Sweet Audio Bro */
-				var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
-				muchRejoicing.play();
-				event.preventDefault();
-				$.ajax({
-				type: 'POST',
-				url: 'win-game.php',
-				data: {
-					'game_id': game.id,
-					'duration': time_of_win,
-					'team_1_final_score': game.team_1_score,
-					'team_2_final_score': game.team_2_score,
-					'winning_team': game.team_1_score > game.team_2_score ? 1 : 2,
-					'losing_team': game.team_1_score < game.team_2_score ? 1 : 2,
-				},
-				dataType: 'json',
-				success: function(response) {
-					if (response.status == 'success') {
-					    $('.match-modal-text').html(response.data.message);
-					    $('#match-modal').animate({opacity: 'show'}, 350);
-					    $('#confetti').animate({opacity: 'show'}, 350);
-					    confetti();
-					} else if (response.status == 'fail') {
-					    // Retry?
-					} else if (response.status == 'error') {
-					    // Retry?
-					}
-
-				   }
-				});
-			}
-		}
 
 		//Start dragdealer
 		var dragDealer = new Dragdealer('bench', {
