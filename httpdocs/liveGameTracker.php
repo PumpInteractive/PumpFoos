@@ -13,20 +13,54 @@ if ($mysqli->connect_errno) {
 	exit();
 }
 
-
-$sql = "SELECT * FROM games JOIN games_players ON games.id=games_players.game_id JOIN players ON players.id=games_players.player_id WHERE start IS NOT NULL AND end IS NULL";
-
-if (!$result = $mysqli->query($sql)) {
-	die ('There was an error running query[' . $mysqli->error . ']');
-}
-
-if($result->num_rows > 0)
+if(isset($_GET['game_id']))
 {
-	while($row = $result->fetch_assoc())
-	{
-		echo json_encode($row);
+	$gameID = $_GET['game_id'];
+	$sql = "SELECT * FROM goals JOIN players on goals.scoring_player_id=players.id WHERE goals.game_id={$gameID}";
+
+	if (!$result = $mysqli->query($sql)) {
+		die ('There was an error running query[' . $mysqli->error . ']');
 	}
+
+	$myArray = array();
+
+	if($result->num_rows > 0)
+	{
+
+		while($row = $result->fetch_assoc())
+		{
+			$myArray[] = $row;
+		}
+
+		echo json_encode($myArray);
+
+	}
+	else {
+		echo 0;
+	}
+
 }
 else{
-	echo 0;
+	$sql = "SELECT * FROM games WHERE start IS NOT NULL AND end IS NULL";
+
+	if (!$result = $mysqli->query($sql)) {
+		die ('There was an error running query[' . $mysqli->error . ']');
+	}
+
+	$myArray = array();
+
+	if($result->num_rows > 0)
+	{
+
+		while($row = $result->fetch_assoc())
+		{
+			$myArray[] = $row;
+		}
+
+		echo json_encode($myArray);
+	}
+	else{
+		echo 0;
+	}
+
 }

@@ -71,26 +71,65 @@
 							checkForLive();
 						}, 10000);
 
-
 						function checkForLive(){
 						$.ajax({
-						    url:"liveGameTracker.php",
-						    success:function(data) {
-						      document.getElementById("gameSummary").innerHTML = JSON.parse(data);
-						    }
+						    url: 'liveGameTracker.php',
+						    contentType: "application/json",
+					        dataType: 'json',
+					        data: '{}',
+					        success: function(data, status, xhr) {
+					        	var id;
+					             $.each(data, function() {
+									  $.each(this, function(k, v) {
+									  	if(k == "id")
+									  	{
+									  		id = v;
+									  	}
+									  });
+									});
+
+					             getGoals(id);
+					        },
+					        error: function(xhr, status, error) {
+					             alert(status);
+					        }
+						  });
+						}
+
+
+						function getGoals(gameID)
+						{
+							$.ajax({
+						    url: 'liveGameTracker.php',
+						    contentType: "application/json",
+					        dataType: 'json',
+					        data: {
+								'game_id': gameID
+							},
+					        success: function(data, status, xhr) {
+					        	if(data == 0)
+					        	{
+					        		$('#gameSummary').text('No Goals');
+					        	}
+					        	else{
+					             $.each(data, function() {
+									  $.each(this, function(k, v) {
+									  	var currentList = $("#gameSummary").val();
+									    $("#gameSummary").text(currentList+" Goal!");
+									  });
+									});
+					         	}
+					        },
+					        error: function(xhr, status, error) {
+					             alert(status);
+					        }
 						  });
 						}
 						</script>
-						<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
-						Yellow Team
+						<div id="gameSummary">
+
+
 						</div>
-						<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
-						VS.
-						</div>
-						<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
-						Black Team
-						</div>
-						<pre id="gameSummary"></pre>
 					</div>
 					<!-- end widget content -->
 					

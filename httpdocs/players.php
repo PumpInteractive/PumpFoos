@@ -81,28 +81,22 @@
 									exit();
 								}
 
-
 								$sql = "SELECT * from players";
 
 								if (!$result = $mysqli->query($sql)) {
 									die ('There was an error running query[' . $mysqli->error . ']');
 								}
 
-								if($result->num_rows % 2 == 0)
-								{
-									$twoRows = true;
-								} 
+
 
 								$colsLG = 12/($result->num_rows / 2);
 								$colsMD = 12/($result->num_rows / 4);
 
 								?>
 
-								<?php if($twoRows): ?>
 									<div class="row">
-									<?php endif; ?>
 									<?php while ($row = $result->fetch_assoc()): ?>
-										<div class="col-sm-<?php echo $colsMD; ?> col-md-<?php echo $colsMD; ?> col-lg-<?php echo $colsLG; ?>" style="padding: 15px;">
+										<div class="col-sm-6 col-md-4 col-lg-3" style="padding: 15px;">
 											<img src="<?php echo $row['slack_profile_pic_url'];?>" alt="user_profile" />
 											<p>
 												<?php 
