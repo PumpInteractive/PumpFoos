@@ -87,6 +87,7 @@ $mysqli->close();
 	<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="assets/js/dragdealer/dragdealer.js"></script>
 	<script src="assets/js/confetti.js"></script>
+	<script src="assets/js/pump-foos/player.js"></script>
 	<script src="assets/js/pump-foos/goal.js"></script>
 	<script src="assets/js/pump-foos/clock.js"></script>
 	<script src="assets/js/pump-foos/game.js"></script>
@@ -136,8 +137,7 @@ $mysqli->close();
 					<div class="players-inner">
 						<?php foreach ($players as $player): ?>
 						    <div class="player-tray" data-tray-id="<?= $player['id']; ?>">
-								<div class="player" data-player-id="<?= $player['id']; ?>" data-player-name="<?= $player['slack_user_name']; ?>"
-									style='background-image: url("<?= $player['slack_profile_pic_url']; ?>")'>
+								<div class="player" data-player-id="<?= $player['id']; ?>" style='background-image: url("<?= $player['slack_profile_pic_url']; ?>")'>
 								<div class="label"><?= $player['slack_user_name']; ?></div>
 								</div>
 							</div>
@@ -351,6 +351,13 @@ $mysqli->close();
 		    	$('#'+scoring_codes[e.keyCode]).click();
 		});
 
+		// Object of available Players, index by player id. User object instead of Array - http://stackoverflow.com/a/2002981
+		var bench = {
+		<?php foreach ($players as $player): ?>
+		    <?= $player['id']; ?>: new Player(<?= $player['id']; ?>, '<?= $player['slack_user_id'] ?>', '<?= $player['slack_user_name'] ?>', '<?= $player['slack_profile_pic_url'] ?>'),
+		<?php endforeach; ?>
+		};
+
 		// Get selected game type score to win
 		$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
 
@@ -486,6 +493,7 @@ $mysqli->close();
   		function handleDropEvent( event, ui ) {
 			var draggable = ui.draggable;
 			var playerId = draggable.data('player-id');
+
 			ui.draggable.position( { of: $(this), my: '5px 5px', at: '5px 5px' } );
 			ui.draggable.draggable( 'disable' );
     		$(this).droppable( 'disable' );
@@ -499,6 +507,13 @@ $mysqli->close();
 			$(this).droppable().addClass('active');
 
 			//Add the player to the game
+			var new_player = bench[playerId];
+			new_player.team = $(this).droppable().data('team');
+			new_player.position = $(this).droppable().data('position');
+
+			console.log(new_player);
+			console.log(bench[playerId]);
+
 			var trayNumber = $(this).droppable().data('active-tray-id');
 			var trayTeam = $(this).droppable().data('team');
 			var trayPosition = $(this).droppable().data('position');
