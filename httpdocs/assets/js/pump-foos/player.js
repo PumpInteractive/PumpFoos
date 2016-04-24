@@ -7,4 +7,5 @@ function Player(id, slack_user_id, slack_user_name, slack_profile_pic_url)
 
 	this.team = null;
 	this.position = null;
+	this.tray_id = null;
 }

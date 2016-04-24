@@ -1,9 +1,10 @@
 function Game()
 {
+    var self = this; // Save the scope of this for use in closures
+
     this.id = null;
     this.game_type_id = null;
     this.on = false;
-    this.type_id = null;
     this.number_of_players = null;
     this.score_to_win = null;
     this.first_serving_team = null;
@@ -16,7 +17,87 @@ function Game()
     this.players = [];
 
     this.clock = new Clock();
+
+    // Setup Game Type change listener
+    $('#game_type_id').change(function(){
+        self.set_game_type();
+    });
+
+    // Call initital set_game_type
+    this.set_game_type();
+
+    // Start Game Listener
+    $('#start_game').click(function(){
+        self.start();
+    });
+
+    // Setup New Game Listener
+    $('#new-match').on('click touch', function() {
+        location.reload();
+    });
 }
+
+Game.prototype.set_game_type = function() {
+    var self = this; // Save the scope of this for use in closures
+
+    // Update Score to Win text box
+    $('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
+
+    // set visible positions
+    this.number_of_players = $('#game_type_id option:selected').data('number_of_players');
+
+    // Show and hide appropriate trays
+    $('.player-tray-wrapper').each(function() {
+        if($(this).hasClass(self.number_of_players+'-player')) {
+            $(this).animate({height: 'show'}, 350);
+        } else {
+            $(this).animate({height: 'hide'}, 350);
+        }
+    });
+};
+
+Game.prototype.add_player = function(new_player) {
+
+    //Activate the player buttons for the added player
+    $('.player-buttons-'+new_player.tray_id).children().animate({opacity: 'show'}, 350);
+    $('.player-buttons-'+new_player.tray_id).children('.challenge').attr('data-player-challenge-id', new_player.id);
+
+    //Activate bars for the added player
+    if (this.number_of_players == 4) {
+        $('.bars-'+new_player.tray_id).animate({opacity: 'show'}, 350);
+        $('.bars-'+new_player.tray_id+' .score-plus').data('player_id', new_player.id);
+    } else if(this.number_of_players == 2) {
+        if(new_player.team == 1) {
+            $('.bars-1').animate({opacity: 'show'}, 350);
+            $('.bars-2').animate({opacity: 'show'}, 350);
+
+            $('.bars-1 .score-plus').data('player_id', new_player.id);
+            $('.bars-2 .score-plus').data('player_id', new_player.id);
+        } else {
+            $('.bars-3').animate({opacity: 'show'}, 350);
+            $('.bars-4').animate({opacity: 'show'}, 350);
+
+            $('.bars-3 .score-plus').data('player_id', new_player.id);
+            $('.bars-4 .score-plus').data('player_id', new_player.id);
+        }
+    }
+
+    //activate the scoreboard for that team
+    $('#team-'+new_player.team+'-score').animate({opacity: 'show'}, 350);
+
+    // Add the player to the game roster
+    this.players.push(new_player);
+
+    // Check to see if the game can be started
+    this.check_start_game();
+};
+
+Game.prototype.check_start_game = function(first_argument) {
+
+    if(this.number_of_players == this.players.length) {
+        $('#start_game').addClass('active');
+    }
+};
 
 Game.prototype.start = function()
 {
@@ -128,6 +209,7 @@ Game.prototype.start = function()
 Game.prototype.score = function(man)
 {
     var self = this;
+    var $man = $(man); // Save jQuery-erized object of the clicked man element
 
     if (this.on && this.can_trigger_score) {
 
@@ -138,12 +220,12 @@ Game.prototype.score = function(man)
         plusSound.currentTime = 0;
         plusSound.play();
 
-        $(man).addClass('goal');
+        $man.addClass('goal');
         setTimeout(function(){
             $('.score-plus.goal').removeClass('goal');
         }, 350);
 
-        if ($(man).data('team') == 1) {
+        if ($man.data('team') == 1) {
 
             this.team_1_score++;
             $('.score-value[data-team="1"]').text(this.team_1_score);
@@ -210,13 +292,13 @@ Game.prototype.score = function(man)
 
         var goal = new Goal(
             this.id,
-            $(man).data('player_id'),
-            $(man).attr('id').replace('man-', ''),
+            $man.data('player_id'),
+            $man.attr('id').replace('man-', ''),
             defending_player_id,
-            $(man).data('bar'),
-            $(man).data('position'),
-            $(man).data('player_position'),
-            $(man).data('team'),
+            $man.data('bar'),
+            $man.data('position'),
+            $man.data('player_position'),
+            $man.data('team'),
             time_of_goal
         );
 

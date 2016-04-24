@@ -317,7 +317,7 @@ $mysqli->close();
 	<div id="match-modal">
     	<div class="match-modal-inner">
         	<div class="match-modal-text"></div>
-        	<div id="new-match">New Match</div>
+        	<div id="new-match">New Game</div>
     	</div>
 	</div>
 
@@ -337,9 +337,6 @@ $mysqli->close();
 
 
 	<script type="text/javascript">
-		//defaults
-		numberOfPlayers = 4;
-
 		// Shortcut key listeners
 		var scoring_codes = {
 			<?php foreach ($scoring_codes as $man_id => $scoring_code): ?>
@@ -351,40 +348,18 @@ $mysqli->close();
 		    	$('#'+scoring_codes[e.keyCode]).click();
 		});
 
-		// Object of available Players, index by player id. Use object instead of Array for indexing - http://stackoverflow.com/a/2002981
+		// Object of available Players, indexed by player id. Use object instead of Array for indexing - http://stackoverflow.com/a/2002981
 		var bench = {
 		<?php foreach ($players as $player): ?>
 		    <?= $player['id']; ?>: new Player(<?= $player['id']; ?>, '<?= $player['slack_user_id'] ?>', '<?= $player['slack_user_name'] ?>', '<?= $player['slack_profile_pic_url'] ?>'),
 		<?php endforeach; ?>
 		};
 
-		// Get selected game type score to win
-		$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
-
-		$('#game_type_id').change(function(){
-			$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
-
-			//set visible positions
-			numberOfPlayers = $('#game_type_id option:selected').data('number_of_players');
-			$('.player-tray-wrapper').each(function() {
-				if($(this).hasClass(numberOfPlayers+'-player')) {
-					$(this).animate({height: 'show'}, 350);
-				} else {
-					$(this).animate({height: 'hide'}, 350);
-				}
-			});
-		});
-		// trigger game_type_id change to check for 2 player default
-		$('#game_type_id').change();
+		// Create the Game controller object
+		var game = new Game();
 
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
-
-		var game = new Game();
-
-		$('#new-match').on('click touch', function() {
-    		location.reload();
-		});
 
 		$('#updatePlayers').on('click touch',function() {
 		  event.preventDefault();
@@ -480,15 +455,6 @@ $mysqli->close();
     		drop: handleDropEvent
   		});
 
-  		function checkStartGame() {
-  			// get number of players required for currently selected game
-  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
-
-  			if(number_of_players == game.players.length) {
-  				$('#start_game').addClass('active');
-  			}
-  		}
-
 		//listen for a drop event
   		function handleDropEvent( event, ui ) {
 			var draggable = ui.draggable;
@@ -510,41 +476,9 @@ $mysqli->close();
 			var new_player = bench[playerId];
 			new_player.team = $(this).droppable().data('team');
 			new_player.position = $(this).droppable().data('position');
+			new_player.tray_id = $(this).droppable().data('active-tray-id');
 
-			game.players.push(new_player);
-
-			var trayNumber = $(this).droppable().data('active-tray-id');
-			var trayTeam = $(this).droppable().data('team');
-
-            //Activate the player buttons for the added player
-            $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
-            $('.player-buttons-'+trayNumber).children('.challenge').attr('data-player-challenge-id', playerId);
-
-			//Activate bars for the added player
-			if (numberOfPlayers == 4) {
-				$('.bars-'+trayNumber).animate({opacity: 'show'}, 350);
-				$('.bars-'+trayNumber+' .score-plus').data('player_id', playerId);
-			} else if(numberOfPlayers == 2) {
-				if(trayTeam == 1) {
-					$('.bars-1').animate({opacity: 'show'}, 350);
-					$('.bars-2').animate({opacity: 'show'}, 350);
-
-					$('.bars-1 .score-plus').data('player_id', playerId);
-					$('.bars-2 .score-plus').data('player_id', playerId);
-				} else {
-					$('.bars-3').animate({opacity: 'show'}, 350);
-					$('.bars-4').animate({opacity: 'show'}, 350);
-
-					$('.bars-3 .score-plus').data('player_id', playerId);
-					$('.bars-4 .score-plus').data('player_id', playerId);
-				}
-			}
-
-			//activate the scoreboard for that team
-			var scoreTrigger = $(this).droppable().data('team');
-			$('#team-'+scoreTrigger+'-score').animate({opacity: 'show'}, 350);
-
-			checkStartGame();
+			game.add_player(new_player);
 		}
 
         //Challenge
@@ -573,9 +507,7 @@ $mysqli->close();
 			$('#player-error-modal').hide();
 		});
 
-		$('#start_game').click(function(){
-			game.start();
-		});
+
 	</script>
 </body>
 </html>
