@@ -14,6 +14,6 @@ Thumbs.db
 config.php
 /vendor
 
-# Ignore SASS generation cache #
+# CodeKit #
 .sass-cache
-.map
+*.map
