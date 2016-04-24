@@ -16,3 +16,4 @@ config.php
 
 # Ignore SASS generation cache #
 .sass-cache
+.map
