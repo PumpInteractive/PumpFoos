@@ -195,15 +195,15 @@ $mysqli->close();
 	        						</div>
 	        					</div>
 	    					</div>
-	    					<div class="poles poles-2">
-								<div class="pole">
+	    					<div class="bars bars-2">
+								<div class="bar">
 									<?php foreach($men['1']['3-bar-goalie'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 		    						<?php foreach($men['1']['2-bar'] as $man): ?>
 		    							<div class="man">
 		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -223,15 +223,15 @@ $mysqli->close();
 	    						    </div>
 	    						</div>
 	    					</div>
-	    					<div class="poles poles-1">
-		    					<div class="pole">
+	    					<div class="bars bars-1">
+		    					<div class="bar">
 									<?php foreach($men['1']['5-bar'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 		    						<?php foreach($men['1']['3-bar-attack'] as $man): ?>
 		    							<div class="man">
 		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -250,15 +250,15 @@ $mysqli->close();
 					<div class="on-field">
 
 						<div class="position-wrapper">
-	    					<div class="poles poles-3">
-		    					<div class="pole">
+	    					<div class="bars bars-3">
+		    					<div class="bar">
 		    						<?php foreach($men['2']['3-bar-attack'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 									<?php foreach($men['2']['5-bar'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -279,15 +279,15 @@ $mysqli->close();
 						</div>
 
 						<div class="position-wrapper">
-	    					<div class="poles poles-4">
-		    					<div class="pole">
+	    					<div class="bars bars-4">
+		    					<div class="bar">
 		    						<?php foreach($men['2']['2-bar'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 									<?php foreach($men['2']['3-bar-goalie'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -351,7 +351,7 @@ $mysqli->close();
 		    	$('#'+scoring_codes[e.keyCode]).click();
 		});
 
-		// Object of available Players, index by player id. User object instead of Array - http://stackoverflow.com/a/2002981
+		// Object of available Players, index by player id. Use object instead of Array for indexing - http://stackoverflow.com/a/2002981
 		var bench = {
 		<?php foreach ($players as $player): ?>
 		    <?= $player['id']; ?>: new Player(<?= $player['id']; ?>, '<?= $player['slack_user_id'] ?>', '<?= $player['slack_user_name'] ?>', '<?= $player['slack_profile_pic_url'] ?>'),
@@ -511,42 +511,32 @@ $mysqli->close();
 			new_player.team = $(this).droppable().data('team');
 			new_player.position = $(this).droppable().data('position');
 
-			console.log(new_player);
-			console.log(bench[playerId]);
+			game.players.push(new_player);
 
 			var trayNumber = $(this).droppable().data('active-tray-id');
 			var trayTeam = $(this).droppable().data('team');
-			var trayPosition = $(this).droppable().data('position');
-
-			var trayPlayer = {
-				'id': playerId,
-				'team': trayTeam,
-				'position': trayPosition
-			};
-
-			game.players.push(trayPlayer);
 
             //Activate the player buttons for the added player
             $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
             $('.player-buttons-'+trayNumber).children('.challenge').attr('data-player-challenge-id', playerId);
 
-			//Activate poles for the added player
+			//Activate bars for the added player
 			if (numberOfPlayers == 4) {
-				$('.poles-'+trayNumber).animate({opacity: 'show'}, 350);
-				$('.poles-'+trayNumber+' .score-plus').data('player_id', playerId);
+				$('.bars-'+trayNumber).animate({opacity: 'show'}, 350);
+				$('.bars-'+trayNumber+' .score-plus').data('player_id', playerId);
 			} else if(numberOfPlayers == 2) {
 				if(trayTeam == 1) {
-					$('.poles-1').animate({opacity: 'show'}, 350);
-					$('.poles-2').animate({opacity: 'show'}, 350);
+					$('.bars-1').animate({opacity: 'show'}, 350);
+					$('.bars-2').animate({opacity: 'show'}, 350);
 
-					$('.poles-1 .score-plus').data('player_id', playerId);
-					$('.poles-2 .score-plus').data('player_id', playerId);
+					$('.bars-1 .score-plus').data('player_id', playerId);
+					$('.bars-2 .score-plus').data('player_id', playerId);
 				} else {
-					$('.poles-3').animate({opacity: 'show'}, 350);
-					$('.poles-4').animate({opacity: 'show'}, 350);
+					$('.bars-3').animate({opacity: 'show'}, 350);
+					$('.bars-4').animate({opacity: 'show'}, 350);
 
-					$('.poles-3 .score-plus').data('player_id', playerId);
-					$('.poles-4 .score-plus').data('player_id', playerId);
+					$('.bars-3 .score-plus').data('player_id', playerId);
+					$('.bars-4 .score-plus').data('player_id', playerId);
 				}
 			}
 

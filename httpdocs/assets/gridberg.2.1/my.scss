@@ -453,14 +453,14 @@ $crimson: #c40000;
 
     			};
 			}
-			.poles {
+			.bars {
 				flex-grow: 1;
 				padding: 0px 0px 0px 20px;
 				display: none;
-				&.poles-3, &.poles-4 {
+				&.bars-3, &.bars-4 {
 					padding: 0px 20px 0px 0px;
 				}
-				.pole {
+				.bar {
 	    			display: flex;
 	    			padding: 0px 15px 14px 15px;
 	    			justify-content: center;
@@ -1128,13 +1128,13 @@ $crimson: #c40000;
 					display: inline-block;
 				}
 			}
-			.poles {
+			.bars {
 				margin-top: 0px;
 				padding: 0px;
-				&.poles-3, &.poles-4 {
+				&.bars-3, &.bars-4 {
 					padding: 0px 0px 0px 0px;
 				}
-				.pole {
+				.bar {
 					.man {
 	    				display: block;
 	    				flex-grow: 1;

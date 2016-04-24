@@ -348,13 +348,13 @@ Game.prototype.swap_players = function(button) {
 
     var trays;
 
-    //Activate poles for the added player
+    //Activate bars for the added player
     if ($button.data('team') == 1) {
-        attack = $('.poles-1 .score-plus').data('player_id');
-        defence = $('.poles-2 .score-plus').data('player_id');
+        attack = $('.bars-1 .score-plus').data('player_id');
+        defence = $('.bars-2 .score-plus').data('player_id');
 
-        $('.poles-1 .score-plus').data('player_id', defence);
-        $('.poles-2 .score-plus').data('player_id', attack);
+        $('.bars-1 .score-plus').data('player_id', defence);
+        $('.bars-2 .score-plus').data('player_id', attack);
 
         var attack_tray = $('#team-1 [data-active-tray-id="1"] .player').detach();
         var defence_tray = $('#team-1 [data-active-tray-id="2"] .player').detach();
@@ -363,11 +363,11 @@ Game.prototype.swap_players = function(button) {
         $('[data-active-tray-id="2"]').append(attack_tray);
 
     } else {
-        attack = $('.poles-3 .score-plus').data('player_id');
-        defence = $('.poles-4 .score-plus').data('player_id');
+        attack = $('.bars-3 .score-plus').data('player_id');
+        defence = $('.bars-4 .score-plus').data('player_id');
 
-        $('.poles-3 .score-plus').data('player_id', defence);
-        $('.poles-4 .score-plus').data('player_id', attack);
+        $('.bars-3 .score-plus').data('player_id', defence);
+        $('.bars-4 .score-plus').data('player_id', attack);
 
         var attack_tray = $('#team-2 [data-active-tray-id="3"] .player').detach();
         var defence_tray = $('#team-2 [data-active-tray-id="4"] .player').detach();
