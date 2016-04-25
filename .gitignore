@@ -13,4 +13,7 @@ Thumbs.db
 
 config.php
 /vendor
-config.codekit
+
+# CodeKit #
+.sass-cache
+*.map
