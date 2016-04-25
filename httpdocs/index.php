@@ -133,8 +133,7 @@ $mysqli->close();
 			<div class="players-dummy">
 				<div class="players handle">
 					<h5>Bench</h5>
-					<div id="updatePlayers">Refresh Players</div><br />
-					<a id="statsButton" href="/stats.php">Statistics</a>
+					<div id="updatePlayers">Refresh Players</div>
 					<br /><br />
 					<div class="players-inner">
 						<?php foreach ($players as $player): ?>
@@ -320,6 +319,7 @@ $mysqli->close();
     	<div class="match-modal-inner">
         	<div class="match-modal-text"></div>
         	<div id="new-match">New Game</div>
+        	<div id=""><a href="/stats.php">Statistics</a></div>
         	<div id="undo-win">Undo Last Goal</div>
     	</div>
 	</div>
