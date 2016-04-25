@@ -127,7 +127,9 @@ $mysqli->close();
 			<div class="players-dummy">
 				<div class="players handle">
 					<h5>Bench</h5>
-					<div id="updatePlayers">Refresh Players</div><br /><br />
+					<div id="updatePlayers">Refresh Players</div><br />
+					<a id="statsButton" href="/stats.php">Statistics</a>
+					<br /><br />
 					<div class="players-inner">
 						<?php foreach ($players as $player): ?>
 						    <div class="player-tray" data-tray-id="<?= $player['id']; ?>">

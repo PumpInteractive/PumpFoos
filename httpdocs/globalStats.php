@@ -1,4 +1,8 @@
 <!-- Bread crumb is created dynamically -->
+<?php
+require_once realpath(__DIR__ . '/../').'/httpdocs/database.php';
+$database = new Database();
+?>
 <!-- row -->
 <div class="row">
 	
@@ -31,113 +35,44 @@
 	<div class="row">
 		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			
-			<!-- Widget ID (each widget will need unique ID)-->
+
 			<div class="jarviswidget" id="wid-id-2">
-				<!-- widget options:
-					usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-					
-					data-widget-colorbutton="false"	
-					data-widget-editbutton="false"
-					data-widget-togglebutton="false"
-					data-widget-deletebutton="false"
-					data-widget-fullscreenbutton="false"
-					data-widget-custombutton="false"
-					data-widget-collapsed="true" 
-					data-widget-sortable="false"
-					
-				-->
+
 				<header>
 					<span class="widget-icon"> <i class="fa fa-bolt"></i> </span>
 					<h2>Live Preview</h2>				
 					
 				</header>
 
-				<!-- widget div-->
 				<div>
 					
-					<!-- widget edit box -->
 					<div class="jarviswidget-editbox">
-						<!-- This area used as dropdown edit box -->
+
 						<input class="form-control" type="text">	
 					</div>
-					<!-- end widget edit box -->
-					
-					<!-- widget content -->
+
+
+
 					<div class="widget-body">
 						<h2>Live Game Preview</h2>
-						<script>
-						checkForLive();
-						window.setInterval(function(){
-							checkForLive();
-						}, 10000);
-
-						function checkForLive(){
-						$.ajax({
-						    url: 'liveGameTracker.php',
-						    contentType: "application/json",
-					        dataType: 'json',
-					        data: '{}',
-					        success: function(data, status, xhr) {
-					        	var id;
-					             $.each(data, function() {
-									  $.each(this, function(k, v) {
-									  	if(k == "id")
-									  	{
-									  		id = v;
-									  	}
-									  });
-									});
-
-					             getGoals(id);
-					        },
-					        error: function(xhr, status, error) {
-					             alert(status);
-					        }
-						  });
-						}
-
-
-						function getGoals(gameID)
-						{
-							$.ajax({
-						    url: 'liveGameTracker.php',
-						    contentType: "application/json",
-					        dataType: 'json',
-					        data: {
-								'game_id': gameID
-							},
-					        success: function(data, status, xhr) {
-					        	if(data == 0)
-					        	{
-					        		$('#gameSummary').text('No Goals');
-					        	}
-					        	else{
-					             $.each(data, function() {
-									  $.each(this, function(k, v) {
-									  	var currentList = $("#gameSummary").val();
-									    $("#gameSummary").text(currentList+" Goal!");
-									  });
-									});
-					         	}
-					        },
-					        error: function(xhr, status, error) {
-					             alert(status);
-					        }
-						  });
-						}
-						</script>
-						<div id="gameSummary">
-
+						<div class="row">
+							<div class="col-sm-6 col-md-6 col-lg-6">
+								<div id="gameSummary">
+									<p id="gameInfo">No game in progress..</p>
+									<p id="goalInfo"></p>
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-6 col-lg-6" style="text-align: center;">
+								<a class="btn btn-lg btn-primary" href="/">Play a Game!</a>
+							</div>
 
 						</div>
 					</div>
-					<!-- end widget content -->
-					
 				</div>
-				<!-- end widget div -->
+
 				
 			</div>
-			<!-- end widget -->
+
 
 		</article>
 
@@ -182,25 +117,9 @@
 					<!-- widget content -->
 					<div class="widget-body">
 						<?php
-						require_once realpath(__DIR__ . '/../').'/config.php';
-
-						$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
-
-						if ($mysqli->connect_errno) {
-							$response['status'] = 'error';
-							$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
-
-							echo json_encode($response);
-
-							exit();
-						}
-
-
 						$sql = "SELECT * FROM games;";
 
-						if (!$result = $mysqli->query($sql)) {
-							die ('There was an error running query[' . $mysqli->error . ']');
-						}
+						$result = $database->sqlQuery($sql);
 
 						$num_games = $result->num_rows;
 
@@ -222,18 +141,13 @@
 
 						$sql1 = "SELECT * FROM goals;";
 
-						if (!$result1 = $mysqli->query($sql1)) {
-							die ('There was an error running query[' . $mysqli->error . ']');
-						}
-
+						$result1 = $database->sqlQuery($sql1);
 
 						$num_goals = $result1->num_rows;
 
 						$sql2 = "SELECT count(*) AS num from games_players WHERE team=team GROUP BY game_id";
 
-						if (!$result2 = $mysqli->query($sql2)) {
-							die ('There an an error running query['.$mysqli->error . ']');
-						}
+						$result2 = $database->sqlQuery($sql2);
 
 						$numSingleGames = 0;
 						$numDoublesGames = 0;
@@ -251,13 +165,13 @@
 
 						?>
 						<div class="row">
-							<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
+							<div class="col-sm-4 col-md-4 col-lg-4" style="text-align: center;">
 								<p><b>Games Played:</b> <br /><br /><span class="label label-primary" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $num_games; ?></span></p>
 							</div>
-							<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
+							<div class="col-sm-4 col-md-4 col-lg-4" style="text-align: center;">
 								<p><b>Goals Scored:</b> <br /><br /><span class="label label-success" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $num_goals; ?></span></p>
 							</div>
-							<div class="col-sm-6 col-md-4 col-lg-4" style="text-align: center;">
+							<div class="col-sm-4 col-md-4 col-lg-4" style="text-align: center;">
 								<p><b>Time Well Spent:</b> <br /><br /><span class="label label-danger" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo gmdate("H:i:s", $total_time) ?></span></p>
 							</div>
 						</div>
@@ -266,8 +180,8 @@
 							<div class="col-sm-12 col-md-12 col-lg-12">
 								<p><span style="color: #e6b800;font-weight:bold;">Yellow</span> vs. <span style="font-weight: bold;">Black</span></p>
 								<?php
-								$yellowPercent = $yellowWins/$num_games;
-								$blackPercent = $blackWins/$num_games;
+								$yellowPercent = $yellowWins/($num_games > 0 ? $num_games : 1);
+								$blackPercent = $blackWins/($num_games > 0 ? $num_games : 1);
 								?>
 								<div class="progress progress-lg progress-striped active">
 									<?php if($yellowPercent > $blackPercent)
@@ -286,10 +200,10 @@
 							<hr class="simple">
 							<div class="col-sm-12 col-md-12 col-lg-12">
 								<div class="col-sm-6 col-md-6 col-lg-6" style="text-align: center;">
-									<p><b>Avg game length:</b> <br /><br /><span class="label label-success" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo gmdate("H:i:s", $total_time/$num_games) ?></span></p>
+									<p><b>Avg game length:</b> <br /><br /><span class="label label-success" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo gmdate("H:i:s", $total_time/($num_games > 0 ? $num_games : 1)) ?></span></p>
 								</div>
 								<div class="col-sm-6 col-md-6 col-lg-6" style="text-align: center;">
-								<p><b>Singles Games vs. Doubles Games</b><br /><br /><span class="label label-primary" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $numSingleGames; ?></span> : <span class="label label-danger" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $numDoublesGames; ?></span></p>
+									<p><b>Singles Games vs. Doubles Games</b><br /><br /><span class="label label-primary" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $numSingleGames; ?></span> : <span class="label label-danger" style="text-align: center;padding: 10px;font-size: 20pt;"><?php echo $numDoublesGames; ?></span></p>
 								</div>
 							</div>
 						</div>
@@ -360,25 +274,10 @@
 							</thead>
 							<tbody>
 								<?php
-								require_once realpath(__DIR__ . '/../').'/config.php';
-
-								$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
-
-								if ($mysqli->connect_errno) {
-									$response['status'] = 'error';
-									$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
-
-									echo json_encode($response);
-
-									exit();
-								}
-
 
 								$sql = "SELECT * from players";
 
-								if (!$result = $mysqli->query($sql)) {
-									die ('There was an error running query[' . $mysqli->error . ']');
-								}
+								$result = $database->sqlQuery($sql);
 
 								?>
 								<?php while ($row = $result->fetch_assoc()): ?>
@@ -389,17 +288,9 @@
 									$getWins = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.winning_team=games_players.team AND players.id={$player_id}";
 									$getLosses = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.losing_team=games_players.team AND players.id={$player_id}";
 
-
-									if (!$result2 = $mysqli->query($getGoals)) {
-										die ('There was an error running query[' . $mysqli->error . ']');
-									}
-									if(!$result3 = $mysqli->query($getWins)) {
-										die ('There was an error running query[' . $mysqli->error . ']');
-									}
-									if(!$result4 = $mysqli->query($getLosses)) {
-										die ('There was an error running query[' . $mysqli->error . ']');
-									}
-
+									$result2 = $database->sqlQuery($getGoals);
+									$result3 = $database->sqlQuery($getWins);
+									$result4 = $database->sqlQuery($getLosses);
 
 									$numWins = $result3->num_rows;
 									$numLosses = $result4->num_rows;
@@ -554,11 +445,11 @@
 
 	// load related plugins
 	
-	loadScript("assets/js/plugin/datatables/jquery.dataTables.min.js", function(){
-		loadScript("assets/js/plugin/datatables/dataTables.colVis.min.js", function(){
-			loadScript("assets/js/plugin/datatables/dataTables.tableTools.min.js", function(){
-				loadScript("assets/js/plugin/datatables/dataTables.bootstrap.min.js", function(){
-					loadScript("assets/js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+	loadScript("/assets/js/plugin/datatables/jquery.dataTables.min.js", function(){
+		loadScript("/assets/js/plugin/datatables/dataTables.colVis.min.js", function(){
+			loadScript("/assets/js/plugin/datatables/dataTables.tableTools.min.js", function(){
+				loadScript("/assets/js/plugin/datatables/dataTables.bootstrap.min.js", function(){
+					loadScript("/assets/js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
 				});
 			});
 		});

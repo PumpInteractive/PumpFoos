@@ -1,26 +1,13 @@
 <?php
-
-require_once realpath(__DIR__ . '/../').'/config.php';
-
-$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
-
-if ($mysqli->connect_errno) {
-	$response['status'] = 'error';
-	$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
-
-	echo json_encode($response);
-
-	exit();
-}
+require_once realpath(__DIR__ . '/../').'/httpdocs/database.php';
+$database = new Database();
 
 if(isset($_GET['game_id']))
 {
 	$gameID = $_GET['game_id'];
 	$sql = "SELECT * FROM goals JOIN players on goals.scoring_player_id=players.id WHERE goals.game_id={$gameID}";
 
-	if (!$result = $mysqli->query($sql)) {
-		die ('There was an error running query[' . $mysqli->error . ']');
-	}
+	$result = $database->sqlQuery($sql);
 
 	$myArray = array();
 
@@ -43,9 +30,7 @@ if(isset($_GET['game_id']))
 else{
 	$sql = "SELECT * FROM games WHERE start IS NOT NULL AND end IS NULL";
 
-	if (!$result = $mysqli->query($sql)) {
-		die ('There was an error running query[' . $mysqli->error . ']');
-	}
+	$result = $database->sqlQuery($sql);
 
 	$myArray = array();
 

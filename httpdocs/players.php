@@ -1,3 +1,7 @@
+<?php
+require_once realpath(__DIR__ . '/../').'/httpdocs/database.php';
+$database = new Database();
+?>
 <!-- Bread crumb is created dynamically -->
 <!-- row -->
 <div class="row">
@@ -67,82 +71,72 @@
 					
 					<!-- widget content -->
 					<div class="widget-body" style="text-align: center;">
-								<?php
-								require_once realpath(__DIR__ . '/../').'/config.php';
 
-								$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
+						<div class="row">
+							<?php
 
-								if ($mysqli->connect_errno) {
-									$response['status'] = 'error';
-									$response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
+							$sql = "SELECT * from players";
 
-									echo json_encode($response);
+							$result = $database->sqlQuery($sql);
 
-									exit();
-								}
+							?>
+							<?php while ($row = $result->fetch_assoc()): ?>
+								<?php $player_id = $row["id"];
+								$getWins = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.winning_team=games_players.team AND players.id={$player_id}";
+								$getLosses = "SELECT games.id,games.winning_team,players.slack_user_name FROM pumpfoos.games JOIN pumpfoos.games_players ON pumpfoos.games.id=pumpfoos.games_players.game_id JOIN pumpfoos.players ON pumpfoos.players.id=pumpfoos.games_players.player_id WHERE games.losing_team=games_players.team AND players.id={$player_id}";
 
-								$sql = "SELECT * from players";
+								$result3 = $database->sqlQuery($getWins);
+								$result4 = $database->sqlQuery($getLosses);
 
-								if (!$result = $mysqli->query($sql)) {
-									die ('There was an error running query[' . $mysqli->error . ']');
-								}
+								$numWins = $result3->num_rows;
+								$numLosses = $result4->num_rows; ?>
+								<div class="col-sm-6 col-md-4 col-lg-3" style="padding: 15px;">
+									<img src="<?php echo $row['slack_profile_pic_url'];?>" alt="user_profile" />
+									<p>
+										<?php 
 
-
-
-								$colsLG = 12/($result->num_rows / 2);
-								$colsMD = 12/($result->num_rows / 4);
-
-								?>
-
-									<div class="row">
-									<?php while ($row = $result->fetch_assoc()): ?>
-										<div class="col-sm-6 col-md-4 col-lg-3" style="padding: 15px;">
-											<img src="<?php echo $row['slack_profile_pic_url'];?>" alt="user_profile" />
-											<p>
-												<?php 
-
-												echo '<b>Name:</b> '. ucfirst($row["slack_user_name"]).'<br />';
-												echo '<b>Games Played:</b> '.'0'.'<br />';
-												echo '<b>Wins:</b> '.'0'.'<br />';
-												echo '<b>Losses:</b> '.'0'.'<br />';
-												?>
-											</p>
-										</div>
-									<?php endwhile; ?>
+										echo '<b>Name:</b> '. ucfirst($row["slack_user_name"]).'<br />';
+										echo '<b>Games Played:</b> '.($numWins+$numLosses).'<br />';
+										echo '<b>Wins:</b> '.$numWins.'<br />';
+										echo '<b>Losses:</b> '.$numLosses.'<br />';
+										?>
+									</p>
 								</div>
+								<?php endwhile; ?>
+								</div>
+							</div>
+							<!-- end widget content -->
+
 						</div>
-						<!-- end widget content -->
-						
+						<!-- end widget div -->
+
 					</div>
-					<!-- end widget div -->
-					
-				</div>
-				<!-- end widget -->
+					<!-- end widget -->
 
-			</article>
-			<!-- WIDGET END -->
-			
-		</div>
+				</article>
+				<!-- WIDGET END -->
 
-		<!-- end row -->
-
-		<!-- row -->
-
-		<div class="row">
-
-			<!-- a blank row to get started -->
-			<div class="col-sm-12">
-				<!-- your contents here -->
 			</div>
-			
-		</div>
 
-		<!-- end row -->
+			<!-- end row -->
 
-	</section>
-	<!-- end widget grid -->
+			<!-- row -->
 
-	<script type="text/javascript">
+			<div class="row">
+
+				<!-- a blank row to get started -->
+				<div class="col-sm-12">
+					<!-- your contents here -->
+				</div>
+
+			</div>
+
+			<!-- end row -->
+
+		</section>
+		<!-- end widget grid -->
+
+		<script type="text/javascript">
 
 	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 	 *
@@ -212,4 +206,4 @@
 		}
 
 
-</script>
+	</script>
