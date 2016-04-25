@@ -296,6 +296,20 @@ $crimson: #c40000;
 			}
 
 		}
+		.goal-badge {
+			border-radius: 6px;
+			padding: 5px;
+			margin-top: 10px;
+			@include header-bold;
+		}
+		.goal-team-1 {
+			color: white;
+			background-color: $blackteam;
+		}
+		.goal-team-2 {
+			color: white;
+			background-color: $yellowteam;
+		}
 	}
 }
 #momentum-wrapper {
@@ -410,6 +424,9 @@ $crimson: #c40000;
 		min-height: 50%;
 		width: 100%;
 		transition: height 0.35s;
+		.swap_positions {
+			display: none;
+		}
 		h2 {
 			@include text-percent(26);
 			@include header-bold;
@@ -837,6 +854,21 @@ $crimson: #c40000;
         #new-match {
             margin-top: 30px;
             background: $sage-green;
+    	    width: 100%;;
+    	    border: 0px;
+    	    @include header-bold;
+    	    @include text-percent(24);
+    	    padding: 10px;
+    	    text-align: center;
+    	    color: white;
+    	    text-transform: uppercase;
+    	    cursor: pointer;
+    	    outline: none;
+    	    border-radius: 6px;
+        }
+        #undo-win {
+            margin-top: 30px;
+            background: $crimson;
     	    width: 100%;;
     	    border: 0px;
     	    @include header-bold;

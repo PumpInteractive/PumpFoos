@@ -13,10 +13,13 @@ function Game()
     this.team_2_score = 0;
     this.momentum_stepper = 50; // Initil value for momentum bar just to avoid division by 0
     this.can_trigger_score = true; // flag to prevent double tracking a goal
+    this.can_trigger_undo = true; // flag to prevent double undo a goal
     this.goals = [];
     this.players = [];
 
     this.clock = new Clock();
+
+    this.confetti = new Confetti();
 
     // Setup Game Type change listener
     $('#game_type_id').change(function(){
@@ -40,11 +43,11 @@ function Game()
 Game.prototype.set_game_type = function() {
     var self = this; // Save the scope of this for use in closures
 
-    // Update Score to Win text box
-    $('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
-
     // set visible positions
     this.number_of_players = $('#game_type_id option:selected').data('number_of_players');
+
+    // Update Score to Win text box
+    $('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
 
     // Show and hide appropriate trays
     $('.player-tray-wrapper').each(function() {
@@ -121,6 +124,10 @@ Game.prototype.start = function()
                 $('html').removeClass('disable-scrolling');
             }, 350);
 
+            // Show Swap Positions
+            if(this.number_of_players == 4)
+                $('.swap_positions').show();
+
             // Show Scoreboards
             $('.score-value[data-team="1"]').text(this.team_1_score);
             $('.score-value[data-team="2"]').text(this.team_2_score);
@@ -131,8 +138,8 @@ Game.prototype.start = function()
             });
 
             // Enable team swap
-            $('.swap_team').on('click touch', function(){
-                self.swap_players(this);
+            $('.swap_positions').on('click touch', function(){
+                self.swap_positions(this);
             });
 
             // Randomly choose starting team, will generate a 1 or a 2
@@ -187,11 +194,9 @@ Game.prototype.start = function()
                         self.momentum_stepper = 100 / self.score_to_win;
 
                         // Enable Goal Undo-er
-                        $('#undo_goal').on('click touch', function(){
+                        $('#undo_goal, #undo-win').on('click touch', function(){
                             self.undo_goal();
                         });
-
-                        console.log(self);
                     } else if (response.status == 'fail') {
 
                     } else if (response.status == 'error') {
@@ -208,83 +213,47 @@ Game.prototype.start = function()
 
 Game.prototype.score = function(man)
 {
-    var self = this;
-    var $man = $(man); // Save jQuery-erized object of the clicked man element
-
     if (this.on && this.can_trigger_score) {
 
         this.can_trigger_score = false; // stop accidential double taps of goals
 
-        var time_of_goal = this.clock.current_time;
-        var defending_player_id = null;
         plusSound.currentTime = 0;
         plusSound.play();
+
+        var self = this;
+        var $man = $(man); // Save jQuery-erized object of the clicked man element
+        var scoring_team = $man.data('team');
+        var defending_team = scoring_team == 1 ? 2 : 1;
+        var time_of_goal = this.clock.current_time;
+        var scoring_player = null;
+        var defending_player = null;
+
+        // get the scoring Player
+        scoring_player = $.grep(this.players, function(item){ return (item.id == $man.data('player_id'))})[0];
+
+        // get scored on Player
+        if (this.number_of_players == 4) {
+            defending_player = $.grep(this.players, function(e){ return (e.team == defending_team && e.position == 'defence'); })[0];
+        } else {
+            defending_player = $.grep(this.players, function(e){ return (e.team == defending_team); })[0];
+        }
 
         $man.addClass('goal');
         setTimeout(function(){
             $('.score-plus.goal').removeClass('goal');
         }, 350);
 
-        if ($man.data('team') == 1) {
+        // use object index notation for easier code maintaning
+        this['team_'+scoring_team+'_score']++;
+        $('.score-value[data-team="'+scoring_team+'"]').text(this['team_'+scoring_team+'_score']);
 
-            this.team_1_score++;
-            $('.score-value[data-team="1"]').text(this.team_1_score);
 
-            //shake
-            if ((this.team_1_score * self.momentum_stepper) >= 50 && (this.team_1_score * self.momentum_stepper) < 75) {
-                $('.momentum-team-1-fill').addClass('shake-little');
-            } else if ((this.team_1_score * self.momentum_stepper) >= 75) {
-                $('.momentum-team-1-fill').removeClass('shake-little');
-                $('.momentum-team-1-fill').addClass('shake');
-            }
 
-            //momentum
-            $('.momentum-team-1-fill').css('width', ((this.team_1_score) * self.momentum_stepper)+'%');
-            $('.momentum-team-2-fill').css('width', ((this.team_2_score) * self.momentum_stepper)+'%');
+        this.update_momentum();
 
-            // get scored on goalie id
-            if (this.number_of_players == 4) {
-                var find_goalie = $.grep(this.players, function(e){ return (e.team == '2' && e.position == 'back'); });
-                defending_player_id = find_goalie[0].id;
-            } else {
-                var find_goalie = $.grep(this.players, function(e){ return (e.team == '2'); });
-                defending_player_id = find_goalie[0].id;
-            }
-
-            // Scored on team serves
-            $('.serving_team[data-team="1"]').hide();
-            $('.serving_team[data-team="2"]').show();
-
-        } else {
-            this.team_2_score++;
-            $('.score-value[data-team="2"]').text(this.team_2_score);
-
-            //shake
-            if ((this.team_2_score * self.momentum_stepper) >= 50 && (this.team_2_score * self.momentum_stepper) < 75) {
-                $('.momentum-team-2-fill').addClass('shake-little');
-            } else if ((this.team_2_score * self.momentum_stepper) >= 75 ) {
-                $('.momentum-team-2-fill').removeClass('shake-little');
-                $('.momentum-team-2-fill').addClass('shake');
-            }
-
-            //momentum
-            $('.momentum-team-2-fill').css('width', ((this.team_2_score) * self.momentum_stepper)+'%');
-            $('.momentum-team-1-fill').css('width', ((this.team_1_score) * self.momentum_stepper)+'%');
-
-            // get scored on goalie id
-            if (this.number_of_players == 4) {
-                var find_goalie = $.grep(this.players, function(e){ return (e.team == '1' && e.position == 'back'); });
-                defending_player_id = find_goalie[0].id;
-            } else {
-                var find_goalie = $.grep(this.players, function(e){ return (e.team == '1'); });
-                defending_player_id = find_goalie[0].id;
-            }
-
-            // Scored on team serves
-            $('.serving_team[data-team="1"]').show();
-            $('.serving_team[data-team="2"]').hide();
-
-        }
+        // Scored on team serves
+        $('.serving_team[data-team="'+scoring_team+'"]').hide();
+        $('.serving_team[data-team="'+defending_team+'"]').show();
 
         setTimeout(function(){
             self.can_trigger_score = true
@@ -292,9 +261,9 @@ Game.prototype.score = function(man)
 
         var goal = new Goal(
             this.id,
-            $man.data('player_id'),
+            scoring_player,
             $man.attr('id').replace('man-', ''),
-            defending_player_id,
+            defending_player,
             $man.data('bar'),
             $man.data('position'),
             $man.data('player_position'),
@@ -308,7 +277,6 @@ Game.prototype.score = function(man)
             data: goal.toJson(),
             dataType: 'json',
             success: function(response){
-                console.log(response);
 
                 if (response.status == 'success') {
 
@@ -317,7 +285,14 @@ Game.prototype.score = function(man)
                     // push the goal onto the goal stack for easy undo
                     self.goals.push(goal);
 
-                    $('#goal_stream').prepend('<div id="goal_id_'+response.data.goal_id+'">Goal ID: '+response.data.goal_id+'</div>');
+                    var goal_badge = '<div class="goal-badge goal-team-'+goal.team+'" id="goal_id_'+goal.id+'" style="display: none;">'+goal.scoring_player.slack_user_name+'<br />';
+                    if(goal.team == 1)
+                        goal_badge += self.team_1_score+' - '+self.team_2_score;
+                    else
+                        goal_badge += self.team_2_score+' - '+self.team_1_score;
+                    goal_badge += '</div>';
+
+                    $(goal_badge).prependTo($('#goal_stream')).slideDown("fast");
 
                     // Check the score to see if anyone won after the goal is saved
                     self.check_win();
@@ -336,59 +311,46 @@ Game.prototype.score = function(man)
 
 Game.prototype.undo_goal = function()
 {
-    if(this.goals.length > 0) {
+    if(this.goals.length > 0 && this.can_trigger_undo) {
+
+        this.can_trigger_undo = false; // stop accidential double taps of undo button
+
         var self = this;
         var undo_goal = this.goals.pop();
+        var undo_win = !this.on // getting pretty nerdy here. If game.on == false, game is over, so send true to undo win
+
+        setTimeout(function(){
+            self.can_trigger_undo = true
+        }, 3000); // Can only trigger a undo every 3 seconds
 
         $.ajax({
             type: "POST",
-            url: "/undo_goal.php",
+            url: "/undo-goal.php",
             data: {
-                'goal_id': undo_goal.id
+                'undo_goal_id': undo_goal.id,
+                'game_id': this.id,
+                'undo_win': undo_win
             },
             dataType: 'json',
             success: function(response){
-                console.log(response);
 
                 if (response.status == 'success') {
-                    $('#goal_id_'+undo_goal.id).remove();
-
-                    if (undo_goal.team == 1) {
-
-                        self.team_1_score--;
-                        $('.score-value[data-team="1"]').text(self.team_1_score);
-
-                        //shake
-                        if ((self.team_1_score * self.momentum_stepper) >= 50 && (self.team_1_score * self.momentum_stepper) < 75) {
-                            $('.momentum-team-1-fill').addClass('shake-little');
-                        } else if ((self.team_1_score * self.momentum_stepper) >= 75) {
-                            $('.momentum-team-1-fill').removeClass('shake-little');
-                            $('.momentum-team-1-fill').addClass('shake');
-                        }
-
-                        //momentum
-                        $('.momentum-team-1-fill').css('width', ((self.team_1_score) * self.momentum_stepper)+'%');
-                        $('.momentum-team-2-fill').css('width', ((self.team_2_score) * self.momentum_stepper)+'%');
-
-
-                    } else {
-
-                        self.team_2_score--;
-                        $('.score-value[data-team="2"]').text(self.team_2_score);
-
-                        //shake
-                        if ((self.team_2_score * self.momentum_stepper) >= 50 && (self.team_2_score * self.momentum_stepper) < 75) {
-                            $('.momentum-team-2-fill').addClass('shake-little');
-                        } else if ((self.team_2_score * self.momentum_stepper) >= 75 ) {
-                            $('.momentum-team-2-fill').removeClass('shake-little');
-                            $('.momentum-team-2-fill').addClass('shake');
-                        }
-
-                        //momentum
-                        $('.momentum-team-2-fill').css('width', ((self.team_2_score) * self.momentum_stepper)+'%');
-                        $('.momentum-team-1-fill').css('width', ((self.team_1_score) * self.momentum_stepper)+'%');
+                    if (undo_win) {
+                        self.on = true; // game back on!
+                        $('.match-modal-text').html('');
+                        $('#match-modal').animate({opacity: 'hide'}, 350);
+                        $('#confetti').animate({opacity: 'hide'}, 350, function(){
+                            self.confetti.stop();
+                        });
 
                     }
+
+                    $('#goal_id_'+undo_goal.id).slideUp(function(){$(this).remove();});
+
+                    self['team_'+undo_goal.team+'_score']--;
+                    $('.score-value[data-team="'+undo_goal.team+'"]').text(self['team_'+undo_goal.team+'_score']);
+
+                    self.update_momentum();
 
                     // Figure out who last served
                     if(self.goals.length > 0) {
@@ -408,10 +370,6 @@ Game.prototype.undo_goal = function()
                             $('.serving_team[data-team="2"]').show();
                         }
                     }
-
-
-
-
                 } else if (response.status == 'fail') {
                     // Retry?
                 } else if (response.status == 'error') {
@@ -422,41 +380,48 @@ Game.prototype.undo_goal = function()
     }
 }
 
-Game.prototype.swap_players = function(button) {
-    $button = $(button);
-
-    var attack;
-    var defence;
-
-    var trays;
-
-    //Activate bars for the added player
-    if ($button.data('team') == 1) {
-        attack = $('.bars-1 .score-plus').data('player_id');
-        defence = $('.bars-2 .score-plus').data('player_id');
-
-        $('.bars-1 .score-plus').data('player_id', defence);
-        $('.bars-2 .score-plus').data('player_id', attack);
-
-        var attack_tray = $('#team-1 [data-active-tray-id="1"] .player').detach();
-        var defence_tray = $('#team-1 [data-active-tray-id="2"] .player').detach();
-
-        $('[data-active-tray-id="1"]').append(defence_tray);
-        $('[data-active-tray-id="2"]').append(attack_tray);
-
-    } else {
-        attack = $('.bars-3 .score-plus').data('player_id');
-        defence = $('.bars-4 .score-plus').data('player_id');
-
-        $('.bars-3 .score-plus').data('player_id', defence);
-        $('.bars-4 .score-plus').data('player_id', attack);
-
-        var attack_tray = $('#team-2 [data-active-tray-id="3"] .player').detach();
-        var defence_tray = $('#team-2 [data-active-tray-id="4"] .player').detach();
-
-        $('[data-active-tray-id="3"]').append(defence_tray);
-        $('[data-active-tray-id="4"]').append(attack_tray);
+Game.prototype.update_momentum = function() {
+    // Set the shakes
+    if ((this.team_1_score * this.momentum_stepper) >= 50 && (this.team_1_score * this.momentum_stepper) < 75) {
+        $('.momentum-team-1-fill').addClass('shake-little');
+    } else if ((this.team_1_score * this.momentum_stepper) >= 75 ) {
+        $('.momentum-team-1-fill').removeClass('shake-little');
+        $('.momentum-team-1-fill').addClass('shake');
     }
+
+    if ((this.team_2_score * this.momentum_stepper) >= 50 && (this.team_2_score * this.momentum_stepper) < 75) {
+        $('.momentum-team-2-fill').addClass('shake-little');
+    } else if ((this.team_2_score * this.momentum_stepper) >= 75 ) {
+        $('.momentum-team-2-fill').removeClass('shake-little');
+        $('.momentum-team-2-fill').addClass('shake');
+    }
+
+    // momentum bar width
+    $('.momentum-team-1-fill').css('width', ((this.team_1_score) * this.momentum_stepper)+'%');
+    $('.momentum-team-2-fill').css('width', ((this.team_2_score) * this.momentum_stepper)+'%');
+};
+
+Game.prototype.swap_positions = function(button) {
+
+    var team = $(button).data('team');
+    var current_attack_player = $.grep(this.players, function(item){ return (item.team == team && item.position == 'attack')})[0];
+    var current_defence_player = $.grep(this.players, function(item){ return (item.team == team && item.position == 'defence')})[0];
+
+    // Player objects are by reference into this.players array, so edit them here and they'll update in this.players array
+    current_attack_player.position = 'defence';
+    current_defence_player.position = 'attack';
+
+    // Update scoring men buttons with new player ids
+    $('#team-'+team+' .attack .score-plus').data('player_id', current_defence_player.id);
+    $('#team-'+team+' .defence .score-plus').data('player_id', current_attack_player.id);
+
+    // Pull the trays out of the DOM
+    var current_attack_tray = $('#team-'+team+' .attack .player').detach();
+    var current_defence_tray = $('#team-'+team+' .defence .player').detach();
+
+    // Put the trays back into the DOM flipped
+    $('#team-'+team+' .attack .player-tray').append(current_defence_tray);
+    $('#team-'+team+' .defence .player-tray').append(current_attack_tray);
 };
 
 Game.prototype.check_win = function()
@@ -466,7 +431,8 @@ Game.prototype.check_win = function()
     if(this.team_1_score >= this.score_to_win || this.team_2_score >= this.score_to_win) {
         // end the game
         this.on = false;
-        this.clock.stop();
+
+        // Grab the time, but don't stop the clock in case the winning goal is undone
         var duration = this.clock.current_time;
 
         /* Sweet Audio Bro */
@@ -490,7 +456,8 @@ Game.prototype.check_win = function()
                 $('.match-modal-text').html(response.data.message);
                 $('#match-modal').animate({opacity: 'show'}, 350);
                 $('#confetti').animate({opacity: 'show'}, 350);
-                confetti();
+                self.confetti.start();
+
             } else if (response.status == 'fail') {
                 // Retry?
             } else if (response.status == 'error') {

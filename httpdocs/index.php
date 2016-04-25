@@ -181,17 +181,17 @@ $mysqli->close();
 				<div id="start_game"><span>Start Game</span></div>
 			</div>
 			<div id="team-1" class="team-box">
-				<h2>Black Team <button class="swap_team" data-team="1">Swap Positions</button> <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
+				<h2>Black Team <button class="swap_positions" data-team="1">Swap Positions</button> <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
 				<div class="team">
 					<div class="on-field">
-    					<div class="position-wrapper">
+    					<div class="position-wrapper defence">
 	    					<div class="player-tray-wrapper clearfix 4-player">
 	        					<div class="player-buttons player-buttons-2 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
 	        					<div class="player-info">
 	        					    <h4 class="position">Defence</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1" data-position="back">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1" data-position="defence">
 	        						</div>
 	        					</div>
 	    					</div>
@@ -212,14 +212,14 @@ $mysqli->close();
 								</div>
 							</div>
     					</div>
-    					<div class="position-wrapper">
+    					<div class="position-wrapper attack">
 	    					<div class="player-tray-wrapper clearfix 2-player 4-player">
 	    						<div class="player-buttons player-buttons-1 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position">Attack</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1" data-position="front">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1" data-position="attack">
 	    						    </div>
 	    						</div>
 	    					</div>
@@ -245,11 +245,11 @@ $mysqli->close();
 			</div>
 
 			<div id="team-2" class="team-box">
-				<h2>Yellow Team <button class="swap_team" data-team="2">Swap Positions</button> <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
+				<h2>Yellow Team <button class="swap_positions" data-team="2">Swap Positions</button> <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
 
-						<div class="position-wrapper">
+						<div class="position-wrapper attack">
 	    					<div class="bars bars-3">
 		    					<div class="bar">
 		    						<?php foreach($men['2']['3-bar-attack'] as $man): ?>
@@ -272,13 +272,13 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Attack</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="front">
+	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="attack">
 	        						</div>
 	    						</div>
 	    					</div>
 						</div>
 
-						<div class="position-wrapper">
+						<div class="position-wrapper defence">
 	    					<div class="bars bars-4">
 		    					<div class="bar">
 		    						<?php foreach($men['2']['2-bar'] as $man): ?>
@@ -301,7 +301,7 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Defence</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="back">
+	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="defence">
 	        						</div>
 	    						</div>
 	    					</div>
@@ -318,6 +318,7 @@ $mysqli->close();
     	<div class="match-modal-inner">
         	<div class="match-modal-text"></div>
         	<div id="new-match">New Game</div>
+        	<div id="undo-win">Undo Last Goal</div>
     	</div>
 	</div>
 

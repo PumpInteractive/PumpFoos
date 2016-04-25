@@ -9,7 +9,9 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 $response = [];
 
 // Get all data to score a goal
-$goal_id = isset($_POST['goal_id']) ? $_POST['goal_id'] : null;
+$undo_goal_id = isset($_POST['undo_goal_id']) ? $_POST['undo_goal_id'] : null;
+$game_id = isset($_POST['game_id']) ? $_POST['game_id'] : null;
+$undo_win = isset($_POST['undo_win']) && $_POST['undo_win'] === 'true' ? true : false;
 
 $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
 
@@ -23,7 +25,22 @@ if ($mysqli->connect_errno) {
 }
 
 // Save the goal
-$mysqli->query("DELETE FROM goals WHERE id = '$goal_id'");
+$mysqli->query("DELETE FROM goals WHERE id = '$undo_goal_id'");
+
+if ($undo_win && !empty($game_id)) {
+	$query = "UPDATE `games`
+		SET
+			`end` = NULL,
+			`duration` = NULL,
+			`team_1_final_score` = NULL,
+			`team_2_final_score` = NULL,
+			`winning_team` = NULL,
+			`losing_team` = NULL
+		WHERE
+			`id` = '$game_id'
+	";
+	$mysqli->query($query);
+}
 
 $response['status'] = 'success';
 $response['data'] = [];
