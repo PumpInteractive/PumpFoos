@@ -176,7 +176,7 @@ $crimson: #c40000;
 		margin-bottom: 5px;
 		&.charcoal {
     		color: $charcoal;
-		} 
+		}
     }
 }
 .player-tray {
@@ -294,7 +294,21 @@ $crimson: #c40000;
 					}
 				}
 			}
-			
+
+		}
+		.goal-badge {
+			border-radius: 6px;
+			padding: 5px;
+			margin-top: 10px;
+			@include header-bold;
+		}
+		.goal-team-1 {
+			color: white;
+			background-color: $blackteam;
+		}
+		.goal-team-2 {
+			color: white;
+			background-color: $yellowteam;
 		}
 	}
 }
@@ -410,6 +424,9 @@ $crimson: #c40000;
 		min-height: 50%;
 		width: 100%;
 		transition: height 0.35s;
+		.swap_positions {
+			display: none;
+		}
 		h2 {
 			@include text-percent(26);
 			@include header-bold;
@@ -450,17 +467,17 @@ $crimson: #c40000;
     				background-color: rgba(10,10,10,0.1);
     			}
     			&:last-of-type {
-    				
+
     			};
 			}
-			.poles {
+			.bars {
 				flex-grow: 1;
 				padding: 0px 0px 0px 20px;
 				display: none;
-				&.poles-3, &.poles-4 {
+				&.bars-3, &.bars-4 {
 					padding: 0px 20px 0px 0px;
 				}
-				.pole {
+				.bar {
 	    			display: flex;
 	    			padding: 0px 15px 14px 15px;
 	    			justify-content: center;
@@ -501,7 +518,7 @@ $crimson: #c40000;
 							text-align: center;
 							margin: 0px auto;
 							border: 4px solid $charcoal;
-							
+
 							transition: all 0.35s;
 							-webkit-transition: all 0.35s;
 							background-image: url('../../images/man-black.svg');
@@ -849,6 +866,21 @@ $crimson: #c40000;
     	    outline: none;
     	    border-radius: 6px;
         }
+        #undo-win {
+            margin-top: 30px;
+            background: $crimson;
+    	    width: 100%;;
+    	    border: 0px;
+    	    @include header-bold;
+    	    @include text-percent(24);
+    	    padding: 10px;
+    	    text-align: center;
+    	    color: white;
+    	    text-transform: uppercase;
+    	    cursor: pointer;
+    	    outline: none;
+    	    border-radius: 6px;
+        }
     }
 }
 #match-modal.display {
@@ -1054,7 +1086,7 @@ $crimson: #c40000;
 					}
 				}
 			}
-			
+
 		}
 	}
 }
@@ -1145,13 +1177,13 @@ $crimson: #c40000;
 					display: inline-block;
 				}
 			}
-			.poles {
+			.bars {
 				margin-top: 0px;
 				padding: 0px;
-				&.poles-3, &.poles-4 {
+				&.bars-3, &.bars-4 {
 					padding: 0px 0px 0px 0px;
 				}
-				.pole {
+				.bar {
 					.man {
 	    				display: block;
 	    				flex-grow: 1;

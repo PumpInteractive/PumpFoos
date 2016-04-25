@@ -87,6 +87,10 @@ $mysqli->close();
 	<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="assets/js/dragdealer/dragdealer.js"></script>
 	<script src="assets/js/confetti.js"></script>
+	<script src="assets/js/pump-foos/player.js"></script>
+	<script src="assets/js/pump-foos/goal.js"></script>
+	<script src="assets/js/pump-foos/clock.js"></script>
+	<script src="assets/js/pump-foos/game.js"></script>
 
 </head>
 <body>
@@ -121,6 +125,8 @@ $mysqli->close();
 						</div>
 					</div>
 				</div>
+				<button id="undo_goal">UNDO GOAL</button>
+				<div id="goal_stream"></div>
 			</div>
 		</div>
 		<div id="bench">
@@ -133,8 +139,7 @@ $mysqli->close();
 					<div class="players-inner">
 						<?php foreach ($players as $player): ?>
 						    <div class="player-tray" data-tray-id="<?= $player['id']; ?>">
-								<div class="player" data-player-id="<?= $player['id']; ?>" data-player-name="<?= $player['slack_user_name']; ?>"
-									style='background-image: url("<?= $player['slack_profile_pic_url']; ?>")'>
+								<div class="player" data-player-id="<?= $player['id']; ?>" style='background-image: url("<?= $player['slack_profile_pic_url']; ?>")'>
 								<div class="label"><?= $player['slack_user_name']; ?></div>
 								</div>
 							</div>
@@ -178,29 +183,29 @@ $mysqli->close();
 				<div id="start_game"><span>Start Game</span></div>
 			</div>
 			<div id="team-1" class="team-box">
-				<h2>Black Team <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
+				<h2>Black Team <button class="swap_positions" data-team="1">Swap Positions</button> <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
 				<div class="team">
 					<div class="on-field">
-    					<div class="position-wrapper">
+    					<div class="position-wrapper defence">
 	    					<div class="player-tray-wrapper clearfix 4-player">
 	        					<div class="player-buttons player-buttons-2 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
 	        					<div class="player-info">
 	        					    <h4 class="position">Defence</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1" data-position="back">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="2" data-team="1" data-position="defence">
 	        						</div>
 	        					</div>
 	    					</div>
-	    					<div class="poles poles-2">
-								<div class="pole">
+	    					<div class="bars bars-2">
+								<div class="bar">
 									<?php foreach($men['1']['3-bar-goalie'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 		    						<?php foreach($men['1']['2-bar'] as $man): ?>
 		    							<div class="man">
 		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -209,26 +214,26 @@ $mysqli->close();
 								</div>
 							</div>
     					</div>
-    					<div class="position-wrapper">
+    					<div class="position-wrapper attack">
 	    					<div class="player-tray-wrapper clearfix 2-player 4-player">
 	    						<div class="player-buttons player-buttons-1 left">
 	        						<div class="challenge" data-player-challenge-id="">C</div>
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position">Attack</h4>
-	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1" data-position="front">
+	        						<div class="player-tray drop-tray gray" data-active-tray-id="1" data-team="1" data-position="attack">
 	    						    </div>
 	    						</div>
 	    					</div>
-	    					<div class="poles poles-1">
-		    					<div class="pole">
+	    					<div class="bars bars-1">
+		    					<div class="bar">
 									<?php foreach($men['1']['5-bar'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 		    						<?php foreach($men['1']['3-bar-attack'] as $man): ?>
 		    							<div class="man">
 		    								<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="1" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -242,20 +247,20 @@ $mysqli->close();
 			</div>
 
 			<div id="team-2" class="team-box">
-				<h2>Yellow Team <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
+				<h2>Yellow Team <button class="swap_positions" data-team="2">Swap Positions</button> <span class="serving_team" data-team="2" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="2"></div></h2>
 				<div class="team">
 					<div class="on-field">
 
-						<div class="position-wrapper">
-	    					<div class="poles poles-3">
-		    					<div class="pole">
+						<div class="position-wrapper attack">
+	    					<div class="bars bars-3">
+		    					<div class="bar">
 		    						<?php foreach($men['2']['3-bar-attack'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 									<?php foreach($men['2']['5-bar'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -269,22 +274,22 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Attack</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="front">
+	        						<div class="player-tray drop-tray" data-active-tray-id="3" data-team="2" data-position="attack">
 	        						</div>
 	    						</div>
 	    					</div>
 						</div>
 
-						<div class="position-wrapper">
-	    					<div class="poles poles-4">
-		    					<div class="pole">
+						<div class="position-wrapper defence">
+	    					<div class="bars bars-4">
+		    					<div class="bar">
 		    						<?php foreach($men['2']['2-bar'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
 										</div>
 									<?php endforeach; ?>
 								</div>
-								<div class="pole">
+								<div class="bar">
 									<?php foreach($men['2']['3-bar-goalie'] as $man): ?>
 										<div class="man">
 											<div id="man-<?= $man['id']; ?>" class="score-plus" data-team="2" data-bar="<?= $man['bar']; ?>" data-position="<?= $man['position']; ?>" data-player_position="<?= $man['player_position']; ?>"><?= $man['display_number']; ?></div>
@@ -298,7 +303,7 @@ $mysqli->close();
 	    						</div>
 	    						<div class="player-info">
 	        						<h4 class="position charcoal">Defence</h4>
-	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="back">
+	        						<div class="player-tray drop-tray" data-active-tray-id="4" data-team="2" data-position="defence">
 	        						</div>
 	    						</div>
 	    					</div>
@@ -314,7 +319,8 @@ $mysqli->close();
 	<div id="match-modal">
     	<div class="match-modal-inner">
         	<div class="match-modal-text"></div>
-        	<div id="new-match">New Match</div>
+        	<div id="new-match">New Game</div>
+        	<div id="undo-win">Undo Last Goal</div>
     	</div>
 	</div>
 
@@ -334,9 +340,6 @@ $mysqli->close();
 
 
 	<script type="text/javascript">
-		//defaults
-		numberOfPlayers = 4;
-
 		// Shortcut key listeners
 		var scoring_codes = {
 			<?php foreach ($scoring_codes as $man_id => $scoring_code): ?>
@@ -348,263 +351,18 @@ $mysqli->close();
 		    	$('#'+scoring_codes[e.keyCode]).click();
 		});
 
-		// Get selected game type score to win
-		$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
+		// Object of available Players, indexed by player id. Use object instead of Array for indexing - http://stackoverflow.com/a/2002981
+		var bench = {
+		<?php foreach ($players as $player): ?>
+		    <?= $player['id']; ?>: new Player(<?= $player['id']; ?>, '<?= $player['slack_user_id'] ?>', '<?= $player['slack_user_name'] ?>', '<?= $player['slack_profile_pic_url'] ?>'),
+		<?php endforeach; ?>
+		};
 
-		$('#game_type_id').change(function(){
-			$('#score_to_win').val($('#game_type_id option:selected').data('score_to_win'));
-
-			//set visible positions
-			numberOfPlayers = $('#game_type_id option:selected').data('number_of_players');
-			$('.player-tray-wrapper').each(function() {
-				if($(this).hasClass(numberOfPlayers+'-player')) {
-					$(this).animate({height: 'show'}, 350);
-				} else {
-					$(this).animate({height: 'hide'}, 350);
-				}
-			});
-		})
+		// Create the Game controller object
+		var game = new Game();
 
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
-
-		function str_pad_left(string, pad, length) {
-			return (new Array(length+1).join(pad)+string).slice(-length);
-		}
-
-		var game = {
-			on: false,
-			id: null,
-			type_id: null,
-			start_time: null,
-            number_of_players: null,
-            score_to_win: null,
-            serving_team: null,
-            team_1_score: 0,
-            team_2_score: 0,
-            can_trigger_score: true, // flag to prevent double tracking a goal
-            goals: [],
-            players: [],
-            clock: {
-            	on: false,
-            	time: 0,
-            	start: function() {
-            		game.clock.on = true;
-            		setTimeout(game.clock.tick, 500);
-            	},
-            	stop: function() {
-            		game.clock.on = false;
-            	},
-            	tick: function() {
-            		game.clock.time = Math.round(new Date().getTime() / 1000) - game.start_time;
-            		var minutes = Math.floor(game.clock.time / 60);
-            		var seconds = game.clock.time - minutes * 60;
-
-            		$('#game_clock').text(str_pad_left(minutes,'0',2)+':'+str_pad_left(seconds,'0',2));
-
-            		if(game.clock.on)
-            			setTimeout(game.clock.tick, 500);
-            	}
-            },
-			start: function(){
-				if(!game.on){
-					// get number of players required for currently selected game
-		  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
-
-		  			if(game.players.length == number_of_players) {
-
-		  				//collapse the #game-config
-		  				gameConfigHeight = 0;
-		  				$('html').addClass('disable-scrolling');
-		  				$('#game-info').addClass('open');
-		  				$('#game-config').addClass('closed');
-		  				$('#momentum-wrapper').addClass('open');
-		  				setTimeout(function(){
-							$('html').removeClass('disable-scrolling');
-						}, 350);
-
-						// Show Scoreboards
-						$('.score-value[data-team="1"]').text(game.team_1_score);
-						$('.score-value[data-team="2"]').text(game.team_2_score);
-
-						// Randomly choose starting team, will generate a 1 or a 2
-						game.serving_team = Math.floor(Math.random() * (2)) + 1;
-
-						$('.coin-floater').fadeIn();
-
-						if(game.serving_team == 1) {
-
-							setTimeout(function(){
-								$('.serving_team[data-team="1"]').fadeIn();
-								$('.serving_team[data-team="2"]').fadeOut();
-							}, 3000);
-
-							$('#coin').addClass('black-serves');
-
-						} else {
-
-							setTimeout(function(){
-								$('.serving_team[data-team="1"]').fadeOut();
-								$('.serving_team[data-team="2"]').fadeIn();
-							}, 3000);
-
-							$('#coin').addClass('yellow-serves');
-
-						}
-
-						setTimeout(function(){
-							$('.coin-floater').fadeOut(400, function() {
-								// Start clock
-								game.start_time = Math.round(new Date().getTime() / 1000); // time in seconds for easy time_of_goal calculations
-								game.clock.start();
-							});
-						}, 4000);
-
-		  				var game_type_id = $('#game_type_id option:selected').val();
-
-		  				$.ajax({
-							type: "POST",
-							url: "/start-game.php",
-							data: {
-								'game_type_id': game_type_id,
-								'players': JSON.stringify(game.players)
-							},
-							dataType: 'json',
-							success: function(response){
-								if (response.status == 'success') {
-									game.on = true;
-									game.id = response.data.game_id;
-					                game.number_of_players = number_of_players;
-					                game.score_to_win = $('#score_to_win').val();
-
-					                console.log(game);
-								} else if (response.status == 'fail') {
-
-								} else if (response.status == 'error') {
-									alert(response.message);
-								}
-							}
-		  				});
-		  			} else {
-		  				$('.player-error-modal-text').text("Pick "+number_of_players+" Players!");
-				   		$('#player-error-modal').animate({opacity: 'show'}, 350);
-		  			}
-		  		}
-			},
-			score: function(man){
-				if (game.on) {
-					var time_of_goal = Math.round(new Date().getTime() / 1000) - game.start_time
-					var momentumStepper = 100 / game.score_to_win;
-	                var defending_player_id = null;
-	                plusSound.currentTime = 0;
-					plusSound.play();
-
-					$(man).addClass('goal');
-					setTimeout(function(){
-						$('.score-plus.goal').removeClass('goal');
-					}, 350);
-
-					if ($(man).data('team') == 1) {
-
-						game.team_1_score++;
-						$('.score-value[data-team="1"]').text(game.team_1_score);
-                        
-                        //shake
-                        if ((game.team_1_score * momentumStepper) >= 50 && (game.team_1_score * momentumStepper) < 75) {
-                            $('.momentum-team-1-fill').addClass('shake-little');
-                        } else if ((game.team_1_score * momentumStepper) >= 75) {
-                            $('.momentum-team-1-fill').removeClass('shake-little');
-                            $('.momentum-team-1-fill').addClass('shake');
-                        }
-                        
-						//momentum
-						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
-						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
-
-	                    // get scored on goalie id
-	                    if (game.number_of_players == 4) {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2' && e.position == 'back'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    } else {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '2'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    }
-
-	                    // Scored on team serves
-	                    $('.serving_team[data-team="1"]').hide();
-	                    $('.serving_team[data-team="2"]').show();
-
-					} else {
-						game.team_2_score++;
-						$('.score-value[data-team="2"]').text(game.team_2_score);
-                        
-                        //shake
-                        if ((game.team_2_score * momentumStepper) >= 50 && (game.team_2_score * momentumStepper) < 75) {
-                            $('.momentum-team-2-fill').addClass('shake-little');
-                        } else if ((game.team_2_score * momentumStepper) >= 75 ) {
-                            $('.momentum-team-2-fill').removeClass('shake-little');
-                            $('.momentum-team-2-fill').addClass('shake');
-                        }
-                        
-						//momentum
-						$('.momentum-team-2-fill').css('width', ((game.team_2_score) * momentumStepper)+'%');
-						$('.momentum-team-1-fill').css('width', ((game.team_1_score) * momentumStepper)+'%');
-
-	                    // get scored on goalie id
-	                    if (game.number_of_players == 4) {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1' && e.position == 'back'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    } else {
-	                    	var find_goalie = $.grep(game.players, function(e){ return (e.team == '1'); });
-	                        defending_player_id = find_goalie[0].id;
-	                    }
-
-	                    // Scored on team serves
-	                    $('.serving_team[data-team="1"]').show();
-	                    $('.serving_team[data-team="2"]').hide();
-
-					}
-
-	                $.ajax({
-	                    type: "POST",
-	                    url: "/score.php",
-	                    data: {
-	                        'game_id': game.id,
-	                        'scoring_player_id': $(man).data('player_id'),
-	                        'scoring_man_id': $(man).attr('id').replace('man-', ''),
-	                        'defending_player_id': defending_player_id,
-	                        'bar': $(man).data('bar'),
-	                        'position': $(man).data('position'),
-	                        'player_position': $(man).data('player_position'),
-	                        'team': $(man).data('team'),
-	                        'time_of_goal': time_of_goal
-	                    },
-	                    dataType: 'json',
-	                    success: function(response){
-	                        console.log(response);
-
-	                        if (response.status == 'success') {
-	                            // do nothing visually as we've already made the UI updates
-	                            // push the goal onto the goal stack for easy undo
-	                            game.goals.push(response.data.goal_id);
-
-	                            // Check the score to see if anyone won after the goal is saved
-	                            scoreChecker();
-
-
-	                        } else if (response.status == 'fail') {
-	                            // Retry?
-	                        } else if (response.status == 'error') {
-	                            // Retry?
-	                        }
-	                    }
-	                });
-				}
-			}
-		};
-		$('#new-match').on('click touch', function() {
-    		location.reload();
-		});
 
 		$('#updatePlayers').on('click touch',function() {
 		  event.preventDefault();
@@ -664,56 +422,6 @@ $mysqli->close();
 		});
 
 
-		//Record and Update Scores
-		$('.score-plus').on('click touch', function(){
-			if(game.can_trigger_score) {
-				game.can_trigger_score = false;
-				game.score(this);
-				setTimeout(function(){game.can_trigger_score = true}, 3000); // Can only trigger a goal every 3 seconds
-			}
-		});
-
-		function scoreChecker() {
-
-			if(game.team_1_score >= game.score_to_win || game.team_2_score >= game.score_to_win) {
-				var time_of_win = Math.round(new Date().getTime() / 1000) - game.start_time
-
-				// end the game
-				game.on = false;
-				game.clock.stop();
-
-				/* Sweet Audio Bro */
-				var muchRejoicing = new Audio('assets/sounds/much-rejoicing.mp3');
-				muchRejoicing.play();
-				event.preventDefault();
-				$.ajax({
-				type: 'POST',
-				url: 'win-game.php',
-				data: {
-					'game_id': game.id,
-					'duration': time_of_win,
-					'team_1_final_score': game.team_1_score,
-					'team_2_final_score': game.team_2_score,
-					'winning_team': game.team_1_score > game.team_2_score ? 1 : 2,
-					'losing_team': game.team_1_score < game.team_2_score ? 1 : 2,
-				},
-				dataType: 'json',
-				success: function(response) {
-					if (response.status == 'success') {
-					    $('.match-modal-text').html(response.data.message);
-					    $('#match-modal').animate({opacity: 'show'}, 350);
-					    $('#confetti').animate({opacity: 'show'}, 350);
-					    confetti();
-					} else if (response.status == 'fail') {
-					    // Retry?
-					} else if (response.status == 'error') {
-					    // Retry?
-					}
-
-				   }
-				});
-			}
-		}
 
 		//Start dragdealer
 		var dragDealer = new Dragdealer('bench', {
@@ -750,19 +458,11 @@ $mysqli->close();
     		drop: handleDropEvent
   		});
 
-  		function checkStartGame() {
-  			// get number of players required for currently selected game
-  			var number_of_players = $('#game_type_id option:selected').data('number_of_players');
-
-  			if(number_of_players == game.players.length) {
-  				$('#start_game').addClass('active');
-  			}
-  		}
-
 		//listen for a drop event
   		function handleDropEvent( event, ui ) {
 			var draggable = ui.draggable;
 			var playerId = draggable.data('player-id');
+
 			ui.draggable.position( { of: $(this), my: '5px 5px', at: '5px 5px' } );
 			ui.draggable.draggable( 'disable' );
     		$(this).droppable( 'disable' );
@@ -776,47 +476,12 @@ $mysqli->close();
 			$(this).droppable().addClass('active');
 
 			//Add the player to the game
-			var trayNumber = $(this).droppable().data('active-tray-id');
-			var trayTeam = $(this).droppable().data('team');
-			var trayPosition = $(this).droppable().data('position');
+			var new_player = bench[playerId];
+			new_player.team = $(this).droppable().data('team');
+			new_player.position = $(this).droppable().data('position');
+			new_player.tray_id = $(this).droppable().data('active-tray-id');
 
-			var trayPlayer = {
-				'id': playerId,
-				'team': trayTeam,
-				'position': trayPosition
-			};
-
-			game.players.push(trayPlayer);
-
-            //Activate the player buttons for the added player
-            $('.player-buttons-'+trayNumber).children().animate({opacity: 'show'}, 350);
-            $('.player-buttons-'+trayNumber).children('.challenge').attr('data-player-challenge-id', playerId);
-
-			//Activate poles for the added player
-			if (numberOfPlayers == 4) {
-				$('.poles-'+trayNumber).animate({opacity: 'show'}, 350);
-				$('.poles-'+trayNumber+' .score-plus').data('player_id', playerId);
-			} else if(numberOfPlayers == 2) {
-				if(trayTeam == 1) {
-					$('.poles-1').animate({opacity: 'show'}, 350);
-					$('.poles-2').animate({opacity: 'show'}, 350);
-
-					$('.poles-1 .score-plus').data('player_id', playerId);
-					$('.poles-2 .score-plus').data('player_id', playerId);
-				} else {
-					$('.poles-3').animate({opacity: 'show'}, 350);
-					$('.poles-4').animate({opacity: 'show'}, 350);
-
-					$('.poles-3 .score-plus').data('player_id', playerId);
-					$('.poles-4 .score-plus').data('player_id', playerId);
-				}
-			}
-
-			//activate the scoreboard for that team
-			var scoreTrigger = $(this).droppable().data('team');
-			$('#team-'+scoreTrigger+'-score').animate({opacity: 'show'}, 350);
-
-			checkStartGame();
+			game.add_player(new_player);
 		}
 
         //Challenge
@@ -845,7 +510,7 @@ $mysqli->close();
 			$('#player-error-modal').hide();
 		});
 
-		$('#start_game').click(game.start);
+
 	</script>
 </body>
 </html>
