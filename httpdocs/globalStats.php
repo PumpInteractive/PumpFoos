@@ -259,17 +259,17 @@ $database = new Database();
 							<thead>			                
 								<tr>
 									<th data-hide="phone"> <i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i>Name</th>
-									<th data-class="expand"><i class="fa fa-fw fa-gamepad text-muted hidden-md hidden-sm hidden-xs"></i> GP</th>
-									<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> W</th>
-									<th data-class="expand"><i class="fa fa-fw fa-times text-muted hidden-md hidden-sm hidden-xs"></i> L</th>
-									<th data-class="expand"><i class="fa fa-fw fa-percent text-muted hidden-md hidden-sm hidden-xs"></i> Win</th>
-									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> GF</th>
-									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GA</th>
-									<th data-class="expand"><i class="fa fa-fw fa-line-chart text-muted hidden-md hidden-sm hidden-xs"></i> +/- </th>
-									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GPG</th>
-									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> GAA </th>
-									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> AG </th>
-									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> DG </th>
+									<th data-class="expand"><i class="fa fa-fw fa-gamepad text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Games Played">GP</a></th>
+									<th data-class="expand"><i class="fa fa-fw fa-trophy text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Wins">W</a></th>
+									<th data-class="expand"><i class="fa fa-fw fa-times text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Loses">L</a></th>
+									<th data-class="expand"><i class="fa fa-fw fa-percent text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Winning Percentage">Win</a></th>
+									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Goals For">GF</a></th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Goals Against">GA</a></th>
+									<th data-class="expand"><i class="fa fa-fw fa-line-chart text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Plus/Minus">+/-</a> </th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Goals Per Game">GPG</a></th>
+									<th data-class="expand"><i class="fa fa-fw fa-minus-circle text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Goals Against Average">GAA</a> </th>
+									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Attack Goals Scored">AG</a> </th>
+									<th data-class="expand"><i class="fa fa-fw fa-soccer-ball-o text-muted hidden-md hidden-sm hidden-xs"></i> <a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="Defense Goals Scored">DG</a> </th>
 								</tr>
 							</thead>
 							<tbody>
