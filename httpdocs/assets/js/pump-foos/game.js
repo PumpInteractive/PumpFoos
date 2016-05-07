@@ -500,16 +500,29 @@ Game.prototype.check_trophies = function check_trophies() {
   $.each(this.trophies, function (key,info) {
     info = info[0];
     switch (key) {
-      // Goalie score
       case 'hat-trick':
+        if (self.goals.length >= 3) {
+          var lastThree = self.goals.slice(self.goals.length - 3, self.goals.length);
 
+          // Check if they're all the same man
+          if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id) {
+            console.log(lastThree);
+            var trophy = new Trophy(info, self, goal);
+            trophy.award()
+          }
+        }
 
         break;
       case 'quad-trick':
         if (self.goals.length >= 4) {
-
+          var lastFour = self.goals.slice(self.goals.length - 4, self.goals.length);
+          // Check if they're all the same man
+          if (lastFour[0].scoring_man_id == lastFour[1].scoring_man_id && lastFour[0].scoring_man_id == lastFour[2].scoring_man_id && lastFour[1].scoring_man_id == lastFour[3].scoring_man_id) {
+            var trophy = new Trophy(info, self, this.goals[this.goals.length]);
+          }
         }
         break;
+        // Goalie score
       case 'goalie-goal':
       // Get the last goal
         var goal = self.goals[self.goals.length - 1];

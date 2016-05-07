@@ -375,7 +375,7 @@ $mysqli->close();
 
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
-    
+
 
 		$('#updatePlayers').on('click touch',function() {
 		  event.preventDefault();
@@ -522,7 +522,7 @@ $mysqli->close();
 		$('#player-error-thanks').on("click touch", function(){
 			$('#player-error-modal').hide();
 		});
-
+    function () {}
 
 	</script>
 </body>

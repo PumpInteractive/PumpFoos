@@ -24,8 +24,5 @@ Trophy.prototype.award = function award() {
 		trophyHeader.empty();
 		trophyBody.empty();
 	});
-
-
-
-
+	// Update database
 }
