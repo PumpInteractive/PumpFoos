@@ -36,7 +36,7 @@ $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATAB
 if ($mysqli->connect_errno) {
     $response['status'] = 'error';
     $response['message'] = "Database Connect Failed: ".$mysqli->connect_error;
-
+    
     echo json_encode($response);
 
     exit();

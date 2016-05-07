@@ -65,6 +65,59 @@ $crimson: #c40000;
 	overflow: hidden;
 	@include clearfix;
 }
+
+#trophy {
+  position: fixed;
+  bottom: 10%;
+  width: 100%;
+  display: none;
+  .trophy-wrapper {
+    display: block;
+    text-align: left;
+    margin: 0 auto;
+    width: 25%;
+    border-radius: 100px;
+    background-color: white;
+    position: relative;
+    overflow: hidden;
+    @include clearfix;
+    .trophy-icon {
+      display: block;
+      background-color: #ccc;
+      width: 100px;
+      float: left;
+      i {
+        padding:15px 15px;
+        font-size:72px;
+
+        border-radius: 100px;
+        color: #50aa00;
+      }
+    }
+    .trophy-text {
+      margin: 20px 0;
+      display: block;
+      font-family: 'Titillium Web', sans-serif;
+      .trophy-header {
+        display: block;
+        font-size: 24px;
+
+      }
+      .trophy-body {
+        display: block;
+        font-size: 16px;
+      }
+    }
+
+  }
+
+}
+
+#trophy.award {
+  -ms-transform: translate(50px,100px); /* IE 9 */
+  -webkit-transform: translate(50px,100px); /* Safari */
+  transform: translate(50px,100px);
+}
 .coin-floater{
 	position: fixed;
 	top: 0px;
@@ -1290,4 +1343,5 @@ $crimson: #c40000;
         }
     }
 }
+
 }

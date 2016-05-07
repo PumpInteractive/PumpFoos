@@ -26,3 +26,8 @@ Goal.prototype.toJson = function() {
         time_of_goal: this.time_of_goal
     };
 };
+
+Goal.prototype.trophy_check = function trophy_check()
+{
+  
+}
