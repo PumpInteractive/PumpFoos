@@ -11,7 +11,7 @@ function Game()
     this.serving_team = null;
     this.team_1_score = 0;
     this.team_2_score = 0;
-    this.momentum_stepper = 50; // Initil value for momentum bar just to avoid division by 0
+    this.momentum_stepper = 50; // Initial value for momentum bar just to avoid division by 0
     this.can_trigger_score = true; // flag to prevent double tracking a goal
     this.can_trigger_undo = true; // flag to prevent double undo a goal
     this.goals = [];
