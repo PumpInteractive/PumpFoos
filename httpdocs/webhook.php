@@ -6,16 +6,16 @@ require_once realpath(__DIR__ . '/../').'/config.php';
 
 // Handle Outgoing controllers implementation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_WEBHOOKS_TOKEN) { // Valid token, continue
-    
+
     /* Receives these variables from Slack
-    $_POST['token'], 
-    $_POST['team_id'], 
-    $_POST['team_domain'], 
-    $_POST['channel_id'], 
-    $_POST['channel_name'], 
-    $_POST['timestamp'], 
-    $_POST['user_id'], 
-    $_POST['user_name'], 
+    $_POST['token'],
+    $_POST['team_id'],
+    $_POST['team_domain'],
+    $_POST['channel_id'],
+    $_POST['channel_name'],
+    $_POST['timestamp'],
+    $_POST['user_id'],
+    $_POST['user_name'],
     $_POST['text'],
     $_POST['trigger_word']
     */
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['t
 
         case "stats":
             $response = [
-                "text" => "This doesn't do anything yet. Wanna help build it?"
+                "text" => "This doesn't do anything yet. Wanna help build it? Tim says Eventually."
             ];
             echo json_encode($response);
             break;
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['t
             $team2 = (!empty($_POST['player4'])) ? '<@'.$_POST['player3'].'> and <@'.$_POST['player4'].'>' : '<@'.$_POST['player3'].'>';
 
             if ($_POST['teamScore1'] > $_POST['teamScore2']) {
-
+              
                 $text = $team1 . ' win vs ' . $team2;
                 $result = $controller->logMatchWithString($text, true);
 
@@ -101,5 +101,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token']) && $_POST['t
     }
 
 } else {
-    die();  
+    die();
 }
