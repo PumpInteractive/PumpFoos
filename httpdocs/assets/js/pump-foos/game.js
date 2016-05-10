@@ -11,7 +11,7 @@ function Game()
     this.serving_team = null;
     this.team_1_score = 0;
     this.team_2_score = 0;
-    this.momentum_stepper = 50; // Initil value for momentum bar just to avoid division by 0
+    this.momentum_stepper = 50; // Initial value for momentum bar just to avoid division by 0
     this.can_trigger_score = true; // flag to prevent double tracking a goal
     this.can_trigger_undo = true; // flag to prevent double undo a goal
     this.goals = [];
@@ -506,8 +506,8 @@ Game.prototype.check_trophies = function check_trophies() {
 
           // Check if they're all the same man
           if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id) {
-            console.log(lastThree);
-            var trophy = new Trophy(info, self, goal);
+
+            var trophy = new Trophy(info, self, this.goals[this.goals.length]);
             trophy.award()
           }
         }
@@ -535,6 +535,10 @@ Game.prototype.check_trophies = function check_trophies() {
         }
         break;
 
+      // case:'action'
+      //  break;
+
+      //
     }
   })
 

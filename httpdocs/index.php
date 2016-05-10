@@ -522,7 +522,7 @@ $mysqli->close();
 		$('#player-error-thanks').on("click touch", function(){
 			$('#player-error-modal').hide();
 		});
-    function () {}
+
 
 	</script>
 </body>
