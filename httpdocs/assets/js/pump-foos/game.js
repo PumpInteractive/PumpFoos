@@ -16,9 +16,8 @@ function Game()
     this.can_trigger_undo = true; // flag to prevent double undo a goal
     this.goals = [];
     this.players = [];
-
+    this.trophies = {};
     this.clock = new Clock();
-
     this.confetti = new Confetti();
 
     // Setup Game Type change listener
@@ -38,9 +37,12 @@ function Game()
     $('#new-match').on('click touch', function() {
         location.reload();
     });
+
+    // Get the trophies
+    this.get_trophies();
 }
 
-Game.prototype.set_game_type = function() {
+Game.prototype.set_game_type = function set_game_type() {
     var self = this; // Save the scope of this for use in closures
 
     // set visible positions
@@ -59,7 +61,7 @@ Game.prototype.set_game_type = function() {
     });
 };
 
-Game.prototype.add_player = function(new_player) {
+Game.prototype.add_player = function add_player(new_player) {
 
     //Activate the player buttons for the added player
     $('.player-buttons-'+new_player.tray_id).children().animate({opacity: 'show'}, 350);
@@ -95,18 +97,18 @@ Game.prototype.add_player = function(new_player) {
     this.check_start_game();
 };
 
-Game.prototype.check_start_game = function(first_argument) {
+Game.prototype.check_start_game = function check_start_game(first_argument) {
 
     if(this.number_of_players == this.players.length) {
         $('#start_game').addClass('active');
     }
 };
 
-Game.prototype.start = function()
+Game.prototype.start = function start()
 {
     var self = this; // Save the scope of this for use in closures
 
-    if(!this.on){
+    if (!this.on) {
         // get number of players required for currently selected game
         var number_of_players = $('#game_type_id option:selected').data('number_of_players');
 
@@ -211,7 +213,7 @@ Game.prototype.start = function()
     }
 };
 
-Game.prototype.score = function(man)
+Game.prototype.score = function score(man)
 {
     if (this.on && this.can_trigger_score) {
 
@@ -271,6 +273,8 @@ Game.prototype.score = function(man)
             time_of_goal
         );
 
+
+
         $.ajax({
             type: "POST",
             url: "/score.php",
@@ -294,6 +298,8 @@ Game.prototype.score = function(man)
 
                     $(goal_badge).prependTo($('#goal_stream')).slideDown("fast");
 
+                    // Check to see if any players scored any trophies
+                    self.check_trophies();
                     // Check the score to see if anyone won after the goal is saved
                     self.check_win();
 
@@ -332,7 +338,7 @@ Game.prototype.undo_goal = function()
                 'undo_win': undo_win
             },
             dataType: 'json',
-            success: function(response){
+            success: function(response) {
 
                 if (response.status == 'success') {
                     if (undo_win) {
@@ -432,6 +438,7 @@ Game.prototype.check_win = function()
         // end the game
         this.on = false;
 
+
         // Grab the time, but don't stop the clock in case the winning goal is undone
         var duration = this.clock.current_time;
 
@@ -463,8 +470,73 @@ Game.prototype.check_win = function()
             } else if (response.status == 'error') {
                 // Retry?
             }
-
            }
         });
     }
+
 };
+
+
+Game.prototype.get_trophies = function get_trophies()
+{
+  var self = this;
+
+  $.ajax({
+    url: 'getTrophies.php',
+    dataType: 'json',
+    success: function (response) {
+      self.trophies = response;
+
+    },
+    error: function (response) {
+      console.log(response);
+    }
+  })
+}
+
+Game.prototype.check_trophies = function check_trophies() {
+  // This loops through every trophy possible in game.
+  var self = this;
+  $.each(this.trophies, function (key,info) {
+    info = info[0];
+    switch (key) {
+      case 'hat-trick':
+        if (self.goals.length >= 3) {
+          var lastThree = self.goals.slice(self.goals.length - 3, self.goals.length);
+
+          // Check if they're all the same man
+          if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id) {
+            console.log(lastThree);
+            var trophy = new Trophy(info, self, goal);
+            trophy.award()
+          }
+        }
+
+        break;
+      case 'quad-trick':
+        if (self.goals.length >= 4) {
+          var lastFour = self.goals.slice(self.goals.length - 4, self.goals.length);
+          // Check if they're all the same man
+          if (lastFour[0].scoring_man_id == lastFour[1].scoring_man_id && lastFour[0].scoring_man_id == lastFour[2].scoring_man_id && lastFour[1].scoring_man_id == lastFour[3].scoring_man_id) {
+            var trophy = new Trophy(info, self, this.goals[this.goals.length]);
+          }
+        }
+        break;
+        // Goalie score
+      case 'goalie-goal':
+      // Get the last goal
+        var goal = self.goals[self.goals.length - 1];
+        // Check if the scoring player is a goalie;
+        if (goal.bar == "3-bar-goalie") {
+          // Create a trophy object
+          var trophy = new Trophy(info, self, goal);
+          // Award the trophy (Shows an overlay)
+          trophy.award();
+        }
+        break;
+
+    }
+  })
+
+
+}

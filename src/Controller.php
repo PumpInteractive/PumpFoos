@@ -45,7 +45,7 @@ class Controller
             $losing_team = trim($teams[1]);
 
             $mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME);
-
+            // Records the losing team
             foreach($losing_team_players[0] as $key => $player){
                 // Update stats
                 $query = 'INSERT INTO players (slack_user_id, games_played, losses) VALUES (\''.$losing_team_players[1][$key].'\', games_played+1, losses+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, losses=losses + 1';
@@ -56,7 +56,7 @@ class Controller
                 }
 
             }
-
+            // Records winning team
             foreach($winning_team_players[0] as $key => $player){
                 // Update stats
                 $query = 'INSERT INTO players (slack_user_id, games_played, wins) VALUES (\''.$winning_team_players[1][$key].'\', games_played+1, wins+1) ON DUPLICATE KEY UPDATE games_played=games_played + 1, wins=wins + 1';

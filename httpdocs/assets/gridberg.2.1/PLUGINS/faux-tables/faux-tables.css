@@ -1,0 +1,18 @@
+/* Your Build: */
+/* Set the Total Number of Columns in your Grid */
+/* Set the 1st breakpoint in your Grid */
+/* Set the 2nd breakpoint in your Grid */
+/* Set the default Padding for your Columns */
+/* Set a custom padding class for first breakpoint (col-f-lp, col-f-rp) */
+/* Set a custom padding class for second breakpoint (col-t-lp, col-t-rp) */
+/* DO NOT EDIT ABOVE THIS LINE - Your config.scss variables are imported here.*/
+.faux-table {
+  display: table;
+  width: 100%; }
+  .faux-table .faux-row {
+    display: table-row;
+    width: 100%; }
+    .faux-table .faux-row .faux-cell {
+      display: table-cell; }
+
+/*# sourceMappingURL=faux-tables.css.map */

@@ -71,6 +71,7 @@ $mysqli->close();
 	<link href='http://fonts.googleapis.com/css?family=Titillium+Web:300,300italic,400,400italic,900,700,700italic' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Dosis:400,500,600,700' rel='stylesheet' type='text/css'>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" >
 
 	<!-- Styles -->
 	<link rel="stylesheet" href="assets/gridberg.2.1/CSS/gridberg.css">
@@ -90,6 +91,7 @@ $mysqli->close();
 	<script src="assets/js/pump-foos/player.js"></script>
 	<script src="assets/js/pump-foos/goal.js"></script>
 	<script src="assets/js/pump-foos/clock.js"></script>
+  <script src="assets/js/pump-foos/trophy.js"></script>
 	<script src="assets/js/pump-foos/game.js"></script>
 
 </head>
@@ -337,7 +339,17 @@ $mysqli->close();
         	<div id="player-error-thanks">Okay!</div>
     	</div>
 	</div>
-
+  <div id="trophy">
+    <div class="trophy-wrapper">
+      <div class="trophy-icon">
+        <i class="fa fa-trophy" aria-hidden="true"></i>
+      </div>
+      <div class="trophy-text">
+        <span class="trophy-header"></span>
+        <span class="trophy-body"></span>
+      </div>
+    </div>
+  </div>
 
 	<script type="text/javascript">
 		// Shortcut key listeners
@@ -363,6 +375,7 @@ $mysqli->close();
 
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
+
 
 		$('#updatePlayers').on('click touch',function() {
 		  event.preventDefault();
@@ -509,7 +522,7 @@ $mysqli->close();
 		$('#player-error-thanks').on("click touch", function(){
 			$('#player-error-modal').hide();
 		});
-
+    function () {}
 
 	</script>
 </body>
