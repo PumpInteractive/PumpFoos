@@ -506,8 +506,8 @@ Game.prototype.check_trophies = function check_trophies() {
 
           // Check if they're all the same man
           if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id) {
-            console.log(lastThree);
-            var trophy = new Trophy(info, self, goal);
+
+            var trophy = new Trophy(info, self, this.goals[this.goals.length]);
             trophy.award()
           }
         }
@@ -535,6 +535,10 @@ Game.prototype.check_trophies = function check_trophies() {
         }
         break;
 
+      // case:'action'
+      //  break;
+
+      //
     }
   })
 
