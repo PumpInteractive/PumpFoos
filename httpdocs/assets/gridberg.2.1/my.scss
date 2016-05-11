@@ -1083,6 +1083,11 @@ $crimson: #c40000;
 		width: 33.333%;
 	}
 }
+#trophy {
+  .trophy-wrapper {
+    width: 75%;
+  }
+}
 }
 @media handheld, only screen and (max-width: $col-t-breakpoint) {
 .players {
