@@ -499,26 +499,38 @@ Game.prototype.check_trophies = function check_trophies() {
   var self = this;
   $.each(this.trophies, function (key,info) {
     info = info[0];
+
     switch (key) {
       case 'hat-trick':
+
         if (self.goals.length >= 3) {
+          console.log(self.goals);
           var lastThree = self.goals.slice(self.goals.length - 3, self.goals.length);
 
           // Check if they're all the same man
-          if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id) {
-
-            var trophy = new Trophy(info, self, this.goals[this.goals.length]);
-            trophy.award()
+          if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id && !self.scored_hat_trick) {
+            var trophy = new Trophy(info, self, self.goals[self.goals.length - 1]);
+            trophy.award();
+            self.scored_hat_trick = true
+          } else {
+            self.scored_hat_trick = false;
           }
         }
 
         break;
       case 'quad-trick':
+
         if (self.goals.length >= 4) {
+
           var lastFour = self.goals.slice(self.goals.length - 4, self.goals.length);
           // Check if they're all the same man
-          if (lastFour[0].scoring_man_id == lastFour[1].scoring_man_id && lastFour[0].scoring_man_id == lastFour[2].scoring_man_id && lastFour[1].scoring_man_id == lastFour[3].scoring_man_id) {
-            var trophy = new Trophy(info, self, this.goals[this.goals.length]);
+          console.log(lastFour[0].scoring_man_id);
+          console.log(lastFour[1].scoring_man_id);
+          console.log(lastFour[2].scoring_man_id);
+          console.log(lastFour[3].scoring_man_id);
+          if (lastFour[0].scoring_man_id == lastFour[1].scoring_man_id && lastFour[0].scoring_man_id == lastFour[2].scoring_man_id && lastFour[1].scoring_man_id == lastFour[3].scoring_man_id ) {
+            var trophy = new Trophy(info, self, self.goals[self.goals.length - 1]);
+            trophy.award();
           }
         }
         break;
@@ -527,7 +539,7 @@ Game.prototype.check_trophies = function check_trophies() {
       // Get the last goal
         var goal = self.goals[self.goals.length - 1];
         // Check if the scoring player is a goalie;
-        if (goal.bar == "3-bar-goalie") {
+        if (goal.bar == "3-bar-goalie" && goal.position == "middle") {
           // Create a trophy object
           var trophy = new Trophy(info, self, goal);
           // Award the trophy (Shows an overlay)
