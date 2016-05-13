@@ -60,7 +60,7 @@ if (file_exists($directory)) {
             // Run the patch
             echo "Running Patch #$patch_number\n";
 
-            $patch_code = file_get_contents($directory . $file);
+            $patch_code = file_get_contents($directory . $patch_file);
 
             // execute mysql multi query
             if ($mysqli->multi_query($patch_code)) {
