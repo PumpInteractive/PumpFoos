@@ -71,6 +71,7 @@ $crimson: #c40000;
   bottom: 10%;
   width: 100%;
   display: none;
+  z-index: 10000;
   .trophy-wrapper {
     display: block;
     text-align: left;
@@ -89,7 +90,6 @@ $crimson: #c40000;
       i {
         padding:15px 15px;
         font-size:72px;
-
         border-radius: 100px;
         color: #50aa00;
       }

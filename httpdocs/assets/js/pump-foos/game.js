@@ -497,14 +497,13 @@ Game.prototype.get_trophies = function get_trophies()
 Game.prototype.check_trophies = function check_trophies() {
   // This loops through every trophy possible in game.
   var self = this;
-  $.each(this.trophies, function (key,info) {
+  $.each(self.trophies, function (key,info) {
     info = info[0];
 
     switch (key) {
-      case 'hat-trick':
+      case 'natural-hat-trick':
 
         if (self.goals.length >= 3) {
-          console.log(self.goals);
           var lastThree = self.goals.slice(self.goals.length - 3, self.goals.length);
 
           // Check if they're all the same man
@@ -518,7 +517,7 @@ Game.prototype.check_trophies = function check_trophies() {
         }
 
         break;
-      case 'quad-trick':
+      case 'natural-quad-trick':
 
         if (self.goals.length >= 4) {
 

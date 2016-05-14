@@ -3,10 +3,9 @@ function Trophy(trophy, game, goal)
 	this.id = trophy.id;
 	this.name = trophy.name;
 	this.trigger_goal = goal;
-	console.log(goal);
 	// This is a bit messy, but it capitalizes the first letter of the player's name and the section called {player_name} with it. // http://stackoverflow.com/questions/1026069/
 	this.description = trophy.description.replace("{player_name}", goal.scoring_player.slack_user_name.charAt(0).toUpperCase() + goal.scoring_player.slack_user_name.slice(1));
-	trophySound = new Audio('assets/sounds/achievement.mp3');
+	this.trophySound = new Audio('assets/sounds/achievements/' + trophy.soundfile);
 }
 
 
@@ -21,7 +20,7 @@ Trophy.prototype.award = function award() {
 	trophyHeader.append(this.name);
 	trophyBody.append(this.description);
 	// $().show()
-	trophySound.play();
+	self.trophySound.play();
 	trophy.show(500, 'easeInQuad').delay(1750).hide(500, 'easeOutQuad', function () {
 		trophyHeader.empty();
 		trophyBody.empty();
