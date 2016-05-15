@@ -33,7 +33,7 @@ Trophy.prototype.award = function award() {
 			'player_id': self.trigger_goal.scoring_player.id,
 			'trophy_id': self.id
 		},
-		success: function (response) {
+		error: function (response) {
 			console.log(response);
 		}
 	});
