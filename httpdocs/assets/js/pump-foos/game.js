@@ -19,7 +19,8 @@ function Game()
     this.trophies = {};
     this.clock = new Clock();
     this.confetti = new Confetti();
-
+    this.scored_hat_trick = [];
+    this.scored_quad_trick = [];
     // Setup Game Type change listener
     $('#game_type_id').change(function(){
         self.set_game_type();
@@ -497,44 +498,81 @@ Game.prototype.get_trophies = function get_trophies()
 Game.prototype.check_trophies = function check_trophies() {
   // This loops through every trophy possible in game.
   var self = this;
-  $.each(this.trophies, function (key,info) {
+
+  var ocurrences = [];
+  $.each(self.goals, function (i, goal)  {
+    // if it doesn't exists
+    if (!(goal.scoring_man_id in ocurrences) && !(self.scored)) {
+      ocurrences[goal.scoring_man_id] = 1;
+    } else {
+      ocurrences[goal.scoring_man_id] += 1;
+    }
+  });
+  $.each(self.trophies, function (key,info) {
     info = info[0];
-
     switch (key) {
+      /* REGULAR HAT TRICK */
       case 'hat-trick':
-
         if (self.goals.length >= 3) {
-          console.log(self.goals);
+          $.each(ocurrences, function (key) {
+            if (ocurrences[key] == 3 && !self.scored_hat_trick[key]) {
+              var goal = self.goals[self.goals.length - 1];
+              var trophy = new Trophy(info, self, goal);
+              // Adds the scoring_man_id as the index and sets its value to true. This way, trophies can only be won per man once per game
+              self.scored_hat_trick[key] = true;
+              trophy.award();
+            }
+          });
+        }
+
+        break;
+      /* REGULAR QUAD TRICK */
+      case 'quad-trick':
+        if (self.goals.length >= 4) {
+          $.each(ocurrences, function (key) {
+            if (ocurrences[key] == 4 && !self.scored_quad_trick[key]) {
+              var goal = self.goals[self.goals.length - 1];
+              var trophy = new Trophy(info, self, goal);
+              trophy.award();
+              // Adds the scoring_man_id as the index and sets its value to true. This way, trophies can only be won per man once per game
+              self.scored_quad_trick[key] = true;
+            } else {
+              self.scored_quad_trick[key] = false;
+            }
+          });
+        }
+        break;
+      /* NATURAL HAT TRICK */
+      case 'natural-hat-trick':
+        if (self.goals.length >= 3) {
           var lastThree = self.goals.slice(self.goals.length - 3, self.goals.length);
 
           // Check if they're all the same man
-          if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id && !self.scored_hat_trick) {
+          if (lastThree[0].scoring_man_id == lastThree[1].scoring_man_id && lastThree[0].scoring_man_id == lastThree[2].scoring_man_id && !self.scored_natural_hat_trick) {
             var trophy = new Trophy(info, self, self.goals[self.goals.length - 1]);
             trophy.award();
-            self.scored_hat_trick = true
+            self.scored_natural_hat_trick = true
           } else {
-            self.scored_hat_trick = false;
+            self.scored_natural_hat_trick = false;
           }
         }
 
         break;
-      case 'quad-trick':
-
+      /* NATURAL QUAD TRICK */
+      case 'natural-quad-trick':
         if (self.goals.length >= 4) {
-
           var lastFour = self.goals.slice(self.goals.length - 4, self.goals.length);
           // Check if they're all the same man
-          console.log(lastFour[0].scoring_man_id);
-          console.log(lastFour[1].scoring_man_id);
-          console.log(lastFour[2].scoring_man_id);
-          console.log(lastFour[3].scoring_man_id);
-          if (lastFour[0].scoring_man_id == lastFour[1].scoring_man_id && lastFour[0].scoring_man_id == lastFour[2].scoring_man_id && lastFour[1].scoring_man_id == lastFour[3].scoring_man_id ) {
+          if (lastFour[0].scoring_man_id == lastFour[1].scoring_man_id && lastFour[0].scoring_man_id == lastFour[2].scoring_man_id && lastFour[1].scoring_man_id == lastFour[3].scoring_man_id && !self.scored_natural_quad_trick) {
             var trophy = new Trophy(info, self, self.goals[self.goals.length - 1]);
             trophy.award();
+            self.scored_natural_quad_trick = true;
+          } else {
+            self.scored_natural_quad_trick = false;
           }
         }
         break;
-        // Goalie score
+      /* GOALIE GOAL */
       case 'goalie-goal':
       // Get the last goal
         var goal = self.goals[self.goals.length - 1];
@@ -546,8 +584,7 @@ Game.prototype.check_trophies = function check_trophies() {
           trophy.award();
         }
         break;
-
-      // case:'action'
+      // case 'action':
       //  break;
 
       //
