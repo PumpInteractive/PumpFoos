@@ -40,7 +40,7 @@ $result->close();
 
 // grab patch files and order them numerically, then if haven't been run, run it!
 $file_patches = [];
-$directory = './patches/';
+$directory = __DIR__.'/patches/';
 
 if (file_exists($directory)) {
 
