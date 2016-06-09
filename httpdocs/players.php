@@ -90,53 +90,57 @@ $database = new Database();
 
 								$numWins = $result3->num_rows;
 								$numLosses = $result4->num_rows; ?>
-								<div class="col-sm-6 col-md-4 col-lg-3" style="padding: 15px;">
-									<img src="<?php echo $row['slack_profile_pic_url'];?>" alt="user_profile" />
-									<p>
-										<?php 
+								<div class="col-sm-6 col-md-4 col-lg-3" style="padding: 10px;">
+									<div class="row">
+										<img src="<?php echo $row['slack_profile_pic_url'];?>" alt="user_profile" />
+										<p>
+											<?php 
 
-										echo '<b>Name:</b> '. ucfirst($row["slack_user_name"]).'<br />';
-										echo '<b>Games Played:</b> '.($numWins+$numLosses).'<br />';
-										echo '<b>Wins:</b> '.$numWins.'<br />';
-										echo '<b>Losses:</b> '.$numLosses.'<br />';
-										?>
-									</p>
+											echo '<b>Name:</b> '. ucfirst($row["slack_user_name"]).'<br />';
+											echo '<b>Games Played:</b> '.($numWins+$numLosses).'<br />';
+											echo '<b>Wins:</b> '.$numWins.'<br />';
+											echo '<b>Losses:</b> '.$numLosses;
+											?>
+										</p>
+									</div>
+									<div class="row" style="height: 50px;">
+										<ul class="demo-btns">	
+										<?php $getAchievements = "SELECT count(id) as count, name FROM trophies_players JOIN trophies ON trophies.id=trophies_players.trophy_id WHERE trophies_players.player_id={$player_id} GROUP BY name";
+											$result5 = $database->sqlQuery($getAchievements);
+											if($result5->num_rows > 0){
+												foreach($result5 as $achievement)
+												{
+													echo '<li style="padding: 5px;"><a href="javascript:void(0);" rel="tooltip" data-placement="top" data-original-title="'. $achievement['name'] . '(x '. $achievement['count'].')"><i class="fa fa-trophy"></i></a></li>';
+												}
+											}
+											?>
+										</ul>
+									</div>
 								</div>
-								<?php endwhile; ?>
-								</div>
-							</div>
-							<!-- end widget content -->
-
+							<?php endwhile; ?>
 						</div>
-						<!-- end widget div -->
-
 					</div>
-					<!-- end widget -->
+					<!-- end widget content -->
 
-				</article>
-				<!-- WIDGET END -->
-
-			</div>
-
-			<!-- end row -->
-
-			<!-- row -->
-
-			<div class="row">
-
-				<!-- a blank row to get started -->
-				<div class="col-sm-12">
-					<!-- your contents here -->
 				</div>
+				<!-- end widget div -->
 
 			</div>
+			<!-- end widget -->
 
-			<!-- end row -->
+		</article>
+		<!-- WIDGET END -->
 
-		</section>
-		<!-- end widget grid -->
+	</div>
 
-		<script type="text/javascript">
+	<!-- end row -->
+
+	<!-- row -->
+
+</section>
+<!-- end widget grid -->
+
+<script type="text/javascript">
 
 	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 	 *
