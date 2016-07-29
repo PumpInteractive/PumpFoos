@@ -1,19 +1,67 @@
-# OS generated files #
-######################
+####################################
+### All paths should be absolute ###
+####################################
+
+### Project Specific ###
+########################
+
+/data/www/vendor
+/data/www/config.php
+### Framework ###
+#################
+
+## Craft CMS ##
+# Only need to ignore backups as craft adds .gitignore file automatically to /storage/runtime
+/data/www/craft/storage/backups/*
+/data/www/craft/config/db.php
+
+## CakePHP 2 ##
+
+## Cake tmp Directories
+/data/www/app/tmp/cache/models/*
+!/data/www/app/tmp/cache/models/empty
+
+/data/www/app/tmp/cache/persistent/*
+!/data/www/app/tmp/cache/persistent/empty
+
+/data/www/app/tmp/cache/views/*
+!/data/www/app/tmp/cache/views/empty
+
+/data/www/app/tmp/logs/*
+!/data/www/app/tmp/logs/empty
+
+/data/www/app/tmp/sessions/*
+!/data/www/app/tmp/sessions/empty
+
+/data/www/app/tmp/tests/*
+!/data/www/app/tmp/tests/empty
+
+# Sensitive Information
+/data/www/app/Config/core.php
+/data/www/app/Config/database.php
+
+/data/www/vendors/*
+
+### Apache ###
+##############
+# Make sure /logs/ folder has a .gitkeep in it
+/logs/*
+!/logs/.gitkeep
+
+# Make sure /config/ssl/ has a .gitkeep in it
+/config/ssl/*.live.*
+!/config/ssl/.gitkeep
+
+
+### Broad ###
+#############
+
+.vagrant
+.sass-cache
+.codekit-cache
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
-
-# PROJECT FILES #
-#################
-
-config.php
-/vendor
-
-# CodeKit #
-.sass-cache
-*.map
+Icon?

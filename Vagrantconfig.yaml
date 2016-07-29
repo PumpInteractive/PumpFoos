@@ -1,0 +1,5 @@
+---
+name: "pumpfoos"
+domains: ['www']
+databases: ['pumpfoos.sql'] # = ["www/example_craft.sql", "site2/example_cakephp.sql"] # Starting from the /sql folder
+aliases: [] # = ['site2.dev', 'site3.dev'] # Only needed for subdomains other than main <project_name>.dev domain
