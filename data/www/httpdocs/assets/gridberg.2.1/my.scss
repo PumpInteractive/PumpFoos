@@ -1350,3 +1350,38 @@ $crimson: #c40000;
 }
 
 }
+
+#setPlayers {
+    margin-top: 15px;
+    background: #2196F3;
+    width: 100%;
+    border: 0px;
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 700;
+    font-size: 93.75%;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+}
+
+#playersPresent {
+  display: none; /* Default to let the toggle work */
+  height: 0;
+  -webkit-box-shadow: inset 0px 0px 6px 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0px 0px 6px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0px 0px 6px 5px rgba(0, 0, 0, 0.2);
+  padding: 12px 18px;
+  .present-players-inner {
+    display: block;
+    width: 100%;
+  }
+
+}
+#playersPresent.toggle {
+  display: flex;
+  height: 120px;
+}

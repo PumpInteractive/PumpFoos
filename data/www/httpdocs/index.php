@@ -136,6 +136,7 @@ $mysqli->close();
 				<div class="players handle">
 					<h5>Bench</h5>
 					<div id="updatePlayers">Refresh Players</div>
+          <div id="setPlayers">Players Present</div>
 					<br /><br />
 					<div class="players-inner">
 						<?php foreach ($players as $player): ?>
@@ -183,6 +184,12 @@ $mysqli->close();
 
 				<div id="start_game"><span>Start Game</span></div>
 			</div>
+      <div id="playersPresent">
+        <div class="present-players-inner">
+          <div class="player-tray drop-tray">
+					</div>
+        </div>
+      </div>
 			<div id="team-1" class="team-box">
 				<h2>Black Team <button class="swap_positions" data-team="1">Swap Positions</button> <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
 				<div class="team">
@@ -437,7 +444,7 @@ $mysqli->close();
 
 
 		//Start dragdealer
-		var dragDealer = new Dragdealer('bench', {
+		var benchDragDealer = new Dragdealer('bench', {
 			horizontal: false,
   			vertical: true,
 		});
@@ -452,7 +459,7 @@ $mysqli->close();
 		function disableDragDealer() {
 			//figure out how to disenable dragdealer
 			vertPx = parseInt($('.players').css('transform').split(',')[5]);
-			dragDealer.options.vertical = false;
+			benchDragDealer.options.vertical = false;
 			$('.players-dummy').css('transform', 'translateY(' + vertPx + 'px)');
 			$('.players').css('transform', 'translateY(0px)');
 
@@ -461,7 +468,7 @@ $mysqli->close();
 		function enableDragDealer() {
 			//figure out how to reenable dragdealer
 			$('.players-dummy').css('transform', 'translateY(0px)');
-			dragDealer.options.vertical = true;
+			benchDragDealer.options.vertical = true;
 			$('.players').css('transform', 'translateY(' + vertPx + 'px)');
 
 		}
@@ -493,7 +500,7 @@ $mysqli->close();
 			new_player.team = $(this).droppable().data('team');
 			new_player.position = $(this).droppable().data('position');
 			new_player.tray_id = $(this).droppable().data('active-tray-id');
-
+      console.log($(this));
 			game.add_player(new_player);
 		}
 
@@ -523,6 +530,9 @@ $mysqli->close();
 			$('#player-error-modal').hide();
 		});
 
+    $('#setPlayers').click(function () {
+      $('#playersPresent').toggleClass('toggle', 500);
+    });
 
 	</script>
 </body>
