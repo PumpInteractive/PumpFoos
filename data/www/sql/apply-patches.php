@@ -1,11 +1,12 @@
 <?php
 // ** MOVE OUT OF VIEW SOON :)
-require_once realpath(__DIR__ . '/../data/www/vendor/').'/autoload.php';
+require_once realpath(__DIR__ . '/../vendor/').'/autoload.php';
 
-require_once realpath(__DIR__ . '/../data/www/').'/config.php';
+require_once realpath(__DIR__ . '/../').'/config.php';
 
 // Get all data for the view
-$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME, 3306);
+$mysqli = new \mysqli(DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME, 3306, '/Applications/MAMP/tmp/mysql/mysql.sock');
+
 if ($mysqli->connect_errno) {
     printf("Database Connect Failed: %s\n", $mysqli->connect_error);
     exit();
