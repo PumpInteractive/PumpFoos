@@ -1374,14 +1374,19 @@ $crimson: #c40000;
   -webkit-box-shadow: inset 0px 0px 6px 5px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: inset 0px 0px 6px 5px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0px 0px 6px 5px rgba(0, 0, 0, 0.2);
-  padding: 12px 18px;
   .present-players-inner {
-    display: block;
+    display: flex;
     width: 100%;
+    .drop-tray {
+      display: inline-block;
+      margin-left: 15px;
+      margin-top: 10px;
+    }
   }
 
 }
 #playersPresent.toggle {
-  display: flex;
+  display: block;
   height: 120px;
+
 }

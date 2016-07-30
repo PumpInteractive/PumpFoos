@@ -477,16 +477,20 @@ $mysqli->close();
 		$('.drop-tray').droppable( {
     		drop: handleDropEvent
   		});
-
+    $('#playersPresent').on("drop", '.drop-tray' ,function (event, ui) {
+      $('<div class="player-tray drop-tray"></div>').appendTo('#playersPresent .present-players-inner').droppable({
+        drop: handleDropEvent
+      });
+    });
 		//listen for a drop event
-  		function handleDropEvent( event, ui ) {
+		function handleDropEvent( event, ui ) {
 			var draggable = ui.draggable;
 			var playerId = draggable.data('player-id');
 
 			ui.draggable.position( { of: $(this), my: '5px 5px', at: '5px 5px' } );
 			ui.draggable.draggable( 'disable' );
     		$(this).droppable( 'disable' );
-			ui.draggable.draggable( 'option', 'revert', false );
+			ui.draggable.draggable( 'option', 'reve rt', false );
 
 			//detach the player and then insert them in the new tray so there is no funny business.
 			var element = ui.draggable.detach();
@@ -500,7 +504,6 @@ $mysqli->close();
 			new_player.team = $(this).droppable().data('team');
 			new_player.position = $(this).droppable().data('position');
 			new_player.tray_id = $(this).droppable().data('active-tray-id');
-      console.log($(this));
 			game.add_player(new_player);
 		}
 

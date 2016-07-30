@@ -136,12 +136,12 @@ Game.prototype.start = function start()
             $('.score-value[data-team="2"]').text(this.team_2_score);
 
             // Enable Scoring detection
-            $('.score-plus').on('click touch', function(){
+            $('.score-plus').on('click touch', function() {
                 self.score(this);
             });
 
             // Enable team swap
-            $('.swap_positions').on('click touch', function(){
+            $('.swap_positions').on('click touch', function() {
                 self.swap_positions(this);
             });
 
