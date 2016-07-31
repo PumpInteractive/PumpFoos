@@ -160,14 +160,12 @@ Game.prototype.start = function start()
                 $('#coin').addClass('black-serves');
 
             } else {
-
                 setTimeout(function(){
                     $('.serving_team[data-team="1"]').fadeOut();
                     $('.serving_team[data-team="2"]').fadeIn();
                 }, 3000);
 
                 $('#coin').addClass('yellow-serves');
-
             }
 
             setTimeout(function(){
@@ -584,6 +582,8 @@ Game.prototype.check_trophies = function check_trophies() {
           trophy.award();
         }
         break;
+        // case 'action':
+        //  break;
       // case 'action':
       //  break;
 

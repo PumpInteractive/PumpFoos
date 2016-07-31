@@ -137,6 +137,7 @@ $mysqli->close();
 					<h5>Bench</h5>
 					<div id="updatePlayers">Refresh Players</div>
           <div id="setPlayers">Players Present</div>
+          <div id="presentReset">Reset</div>
 					<br /><br />
 					<div class="players-inner">
 						<?php foreach ($players as $player): ?>
@@ -504,7 +505,17 @@ $mysqli->close();
 			new_player.team = $(this).droppable().data('team');
 			new_player.position = $(this).droppable().data('position');
 			new_player.tray_id = $(this).droppable().data('active-tray-id');
-			game.add_player(new_player);
+      isInTeam = false;
+
+      $('.team').each(function() {
+        if ($(this).has(event.target).length > 0) {
+          isInTeam = true;
+        }
+      });
+      if (isInTeam) {
+        game.add_player(new_player);
+      }
+
 		}
 
         //Challenge
@@ -534,9 +545,18 @@ $mysqli->close();
 		});
 
     $('#setPlayers').click(function () {
-      $('#playersPresent').toggleClass('toggle', 500);
+      $('#playersPresent').slideToggle(500);
+      $('#presentReset').slideToggle(500);
     });
-
+    $('#presentReset').click(function() {
+      $('#playersPresent div[data-player-id]').each(function() {
+        $(this).appendTo('div[data-tray-id=' + $(this).data('player-id') + ']');
+      });
+      $('#playersPresent .present-players-inner').empty();
+      $('<div class="player-tray drop-tray"></div>').appendTo('#playersPresent .present-players-inner').droppable({
+        drop: handleDropEvent
+      });
+    });
 	</script>
 </body>
 </html>
