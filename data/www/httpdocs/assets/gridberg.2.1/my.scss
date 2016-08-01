@@ -1369,6 +1369,7 @@ $crimson: #c40000;
 }
 
 #playersPresent {
+  position: relative;
   display: none; /* Default to let the toggle work */
   height: 120px;
   -webkit-box-shadow: inset 0px 0px 6px 5px rgba(0, 0, 0, 0.2);
@@ -1383,7 +1384,25 @@ $crimson: #c40000;
       margin-top: 10px;
     }
   }
-
+  .present-players-set-button {
+    background: #50aa00;
+    border: 0px;
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 700;
+    font-size: 93.75%;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+    position: absolute;
+    width: 82px;
+    right: 15px;
+    top: 32px;
+    display: none;
+  }
 }
 
 

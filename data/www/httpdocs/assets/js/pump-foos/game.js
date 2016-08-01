@@ -90,10 +90,9 @@ Game.prototype.add_player = function add_player(new_player) {
 
     //activate the scoreboard for that team
     $('#team-'+new_player.team+'-score').animate({opacity: 'show'}, 350);
-
     // Add the player to the game roster
-    this.players.push(new_player);
 
+    this.players.push(new_player);
     // Check to see if the game can be started
     this.check_start_game();
 };
@@ -114,7 +113,8 @@ Game.prototype.start = function start()
         var number_of_players = $('#game_type_id option:selected').data('number_of_players');
 
         this.game_type_id = $('#game_type_id option:selected').val();
-
+        console.log(self.players);
+        console.log(number_of_players);
         if(this.players.length == number_of_players) {
 
             //collapse the #game-config
@@ -160,12 +160,14 @@ Game.prototype.start = function start()
                 $('#coin').addClass('black-serves');
 
             } else {
+
                 setTimeout(function(){
                     $('.serving_team[data-team="1"]').fadeOut();
                     $('.serving_team[data-team="2"]').fadeIn();
                 }, 3000);
 
                 $('#coin').addClass('yellow-serves');
+
             }
 
             setTimeout(function(){
@@ -582,8 +584,6 @@ Game.prototype.check_trophies = function check_trophies() {
           trophy.award();
         }
         break;
-        // case 'action':
-        //  break;
       // case 'action':
       //  break;
 

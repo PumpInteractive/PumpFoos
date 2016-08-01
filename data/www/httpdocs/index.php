@@ -92,6 +92,7 @@ $mysqli->close();
 	<script src="assets/js/pump-foos/goal.js"></script>
 	<script src="assets/js/pump-foos/clock.js"></script>
   <script src="assets/js/pump-foos/trophy.js"></script>
+  <script src="assets/js/pump-foos/rotator.js"></script>
 	<script src="assets/js/pump-foos/game.js"></script>
 
 </head>
@@ -190,6 +191,7 @@ $mysqli->close();
           <div class="player-tray drop-tray">
 					</div>
         </div>
+        <div class="present-players-set-button">Set Present</div>
       </div>
 			<div id="team-1" class="team-box">
 				<h2>Black Team <button class="swap_positions" data-team="1">Swap Positions</button> <span class="serving_team" data-team="1" style="display: none;"><i class="material-icons">gavel</i></span><div class="score-value" data-team="1"></div></h2>
@@ -377,10 +379,9 @@ $mysqli->close();
 		    <?= $player['id']; ?>: new Player(<?= $player['id']; ?>, '<?= $player['slack_user_id'] ?>', '<?= $player['slack_user_name'] ?>', '<?= $player['slack_profile_pic_url'] ?>'),
 		<?php endforeach; ?>
 		};
-
 		// Create the Game controller object
 		var game = new Game();
-
+    var rotator = new Rotator();
 		plusSound = new Audio('assets/sounds/plus.mp3');
 		minusSound = new Audio('assets/sounds/minus.mp3');
 
@@ -512,8 +513,12 @@ $mysqli->close();
           isInTeam = true;
         }
       });
+
       if (isInTeam) {
+        console.log('dropped');
         game.add_player(new_player);
+      } else if ($('.present-players-inner').has(event.target)) {
+        rotator.check_present_players('beforeGame');
       }
 
 		}
@@ -556,7 +561,16 @@ $mysqli->close();
       $('<div class="player-tray drop-tray"></div>').appendTo('#playersPresent .present-players-inner').droppable({
         drop: handleDropEvent
       });
+      rotator.check_present_players('beforeGame');
     });
+
+    $('.present-players-set-button').click(function() {
+      if (rotator.check_present_players('startGame')) {
+        rotator.start();
+        $('#setPlayers').trigger('click');
+      }
+    });
+
 	</script>
 </body>
 </html>
